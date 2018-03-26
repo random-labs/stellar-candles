@@ -7,15 +7,14 @@
     <title>XLM/MOBI</title>
     <link rel="stylesheet" href="styles/main.css?v=20180325">
 
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="scripts/exchange.js?v=20180325"></script>
     <script type="text/javascript" src="scripts/Constants.js?v=20180325"> </script>
     <script type="text/javascript" src="scripts/prerenderedTemplates.js?v=20180325"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 </head>
 <body>
     <div style="height: 100%;">
         <div style="float: left; width: 30%; height: 100%; border: 1px solid goldenrod;">
-            loading data...
             <a href="javascript: getPastTrades(nativeAsset, assetMobi);">go</a>
             <table id="tradeHistoryTable">
                 <thead>
@@ -25,7 +24,11 @@
                     </tr>
                 </thead>
                 <tbody id="tradeHistoryData">
-
+                    <tr></tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>Loading data...</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

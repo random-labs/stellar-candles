@@ -1,14 +1,13 @@
 
 var getPastTrades = function(baseAsset, counterAsset) {
-    var url = "https://horizon.stellar.org/trades?" + baseAsset.ToUrlParameters("base") + "&" + counterAsset.ToUrlParameters("counter") + "&order=desc&limit=30";
+    var url = Constants.API_URL + "/trades?" + baseAsset.ToUrlParameters("base") + "&" + counterAsset.ToUrlParameters("counter") + "&order=desc&limit=40";
 
     $.getJSON(url, function(data) {
-        $("#tradeHistoryPanel").append("<div style='color: green;'>Success!</div>");
-
+        $("#tradeHistoryData").empty();
         //TODO; check nulls
         $.each(data._embedded.records, function( i, record ) {
             $(tradeRow(record))
-                .appendTo( "#tradeHistoryData");
+                .appendTo("#tradeHistoryData");
         });
     })
     .fail(function() {
@@ -35,3 +34,8 @@ function Asset(code, type, issuerAddress, issuerName) {
 var nativeAsset = new Asset("XLM", "native", null, null);
 var assetMobi = new Asset("MOBI", "credit_alphanum4", "GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH", "Mobius.network");
 
+
+$(function() {
+    //TODO: load candle chart first
+    getPastTrades(nativeAsset, assetMobi);
+});
