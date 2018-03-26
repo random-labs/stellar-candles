@@ -1,0 +1,27 @@
+html, body {
+    height: 100%;
+    background-color: lightgrey;
+    font-family: consolas,"Liberation Mono",courier,monospace;
+    font-size: .85rem;
+    color: rgb(91, 106, 114);
+}
+
+#tradeHistoryTable {
+    border-right: 1px solid rgb(91, 106, 114);
+    border-spacing: 0px;
+    border-collapse: separate;
+}
+
+#tradeHistoryData td.buy {
+    color: darkgreen;
+}
+
+#tradeHistoryData td.sell {
+    color: darkred;
+}
+
+#tradeHistoryData td {
+    border-bottom: 1px solid rgb(91, 106, 114);
+    padding-left: 5px;
+    padding-right: 15px;
+}
