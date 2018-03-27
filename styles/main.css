@@ -2,8 +2,12 @@ html, body {
     height: 100%;
     background-color: lightgrey;
     font-family: consolas,"Liberation Mono",courier,monospace;
-    font-size: .85rem;
+    font-size: .92rem;
     color: rgb(91, 106, 114);
+}
+
+.error {
+    color: red;
 }
 
 #tradeHistoryTable {
@@ -25,3 +29,9 @@ html, body {
     padding-left: 5px;
     padding-right: 15px;
 }
+
+#orderBookBids td, #orderBookAsks td {
+    padding-left: 5px;
+    padding-right: 15px;
+}
+

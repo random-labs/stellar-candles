@@ -3,8 +3,8 @@
 var tradeRow = function(record) {
     var sellAccount = record.base_account;
     var sellPrice = record.price.n / record.price.d;
-    var toolTipText = sellAccount.substring(0, 8) + "..." + sellAccount.substring(51) +
-                      " sold " + formatAmount(record.base_amount) + " " + getAssetCode(record, "base");
+    var toolTipText = "seller:" + sellAccount.substring(0, 6) + "..." + sellAccount.substring(50) + " " +
+                      "&#13;&#10;buyer:" + record.counter_account.substring(0, 6) + "..." + record.counter_account.substring(50);
     var templateText = "<tr title='" + toolTipText + "'>" +
                             "<td>" + new Date(record.ledger_close_time).toLocaleTimeString() + "</td>" +
                             "<td class='" + (record.base_is_seller ? "sell" : "buy") + "'>" + formatPrice(sellPrice) + "</td>" +
@@ -13,6 +13,19 @@ var tradeRow = function(record) {
     return templateText;
 };
 
+var getErrorRow = function(xhr, textStatus, error) {
+    return "<tr><td></td></tr> <tr><td class='error' colspan='2'>" + textStatus + " - " +
+           xhr.statusText + " (" + xhr.status + ")<br/>" + xhr.responseText +
+           "</td></tr>";
+};
+/**********************************************************************************************************************/
+/**************** Template for an item from the order-book from https://horizon.stellar.org/order_book ****************/
+var offerRow = function(offer) {
+    return "<tr><td>" + formatPrice(offer.price) + "</td><td>" + formatAmount(offer.amount) + "</td></tr>";
+};
+
+/**********************************************************************************************************************/
+
 var getAssetCode = function(record, prefix) {       //TODO: to one file with the Asset class
     var assetType = record[prefix + "_asset_type"];
     if (Constants.NATIVE_ASSET_TYPE === assetType) {
@@ -20,8 +33,7 @@ var getAssetCode = function(record, prefix) {       //TODO: to one file with the
     }
 
     return record[prefix + "_asset_code"];
-}
-/**********************************************************************************************************************/
+};
 
 //TODO: find this a proper place
 var formatAmount = function(amount) {
