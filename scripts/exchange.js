@@ -5,7 +5,9 @@ var getPastTrades = function(baseAsset, counterAsset) {
     $.getJSON(url, function(data) {
         $("#tradeHistoryData").empty();
         //TODO; check nulls
-        $.each(data._embedded.records, function( i, record ) {
+        $("#currentPrice").html(currentPriceSpan(data._embedded.records[0]));
+
+        $.each(data._embedded.records, function(i, record) {
             $(tradeRow(record)).appendTo("#tradeHistoryData");
         });
     })
@@ -15,10 +17,19 @@ var getPastTrades = function(baseAsset, counterAsset) {
     });
 };
 
+var streamPastTrades = function(baseAsset, counterAsset) {
+    getPastTrades(baseAsset, counterAsset);
+    setTimeout(function() {
+        streamPastTrades(baseAsset, counterAsset);
+    }, Constants.PAST_TRADES_INTERVAL);
+};
+
 var getOrderBook = function(baseAsset, counterAsset) {
-    var url = Constants.API_URL + "/order_book?" + baseAsset.ToUrlParameters("selling") + "&" + counterAsset.ToUrlParameters("buying") + "&limit=20";
+    var url = Constants.API_URL + "/order_book?" + baseAsset.ToUrlParameters("selling") + "&" + counterAsset.ToUrlParameters("buying") + "&limit=17";
 
     $.getJSON(url, function(data) {
+        data = addAutobridgedOffers(data);
+
         $("#orderBookBids").empty();
         $.each(data.bids, function(i, bid) {
             $(offerRow(bid)).appendTo("#orderBookBids");
@@ -33,6 +44,18 @@ var getOrderBook = function(baseAsset, counterAsset) {
         $("#orderBookBids").empty();
         $(getErrorRow(xhr, textStatus, error)).appendTo("#orderBookBids");
     });
+};
+
+var streamOrderBook = function(baseAsset, counterAsset) {
+    getOrderBook(baseAsset, counterAsset);
+    setTimeout(function() {
+        streamOrderBook(baseAsset, counterAsset);
+    }, Constants.ORDERBOOK_INTERVAL);
+};
+
+var addAutobridgedOffers = function(orderBook) {
+    //TODO: check if one of the assets is XLM. If not, add auto-bridged offers through XLM
+    return orderBook;
 };
 
 function Asset(code, type, issuerAddress, issuerName) {
@@ -57,5 +80,6 @@ var assetMobi = new Asset("MOBI", "credit_alphanum4", "GA6HCMBLTZS5VYYBCATRBRZ3B
 
 $(function() {
     //TODO: load candle chart first
-    getPastTrades(nativeAsset, assetMobi);
+    streamPastTrades(nativeAsset, assetMobi);
+    streamOrderBook(nativeAsset, assetMobi);
 });

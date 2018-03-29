@@ -1,6 +1,6 @@
 html, body {
     height: 100%;
-    background-color: lightgrey;
+    background-color: rgb(246, 246, 246);
     font-family: consolas,"Liberation Mono",courier,monospace;
     font-size: .92rem;
     color: rgb(91, 106, 114);
@@ -12,16 +12,17 @@ html, body {
 
 #tradeHistoryTable {
     border-right: 1px solid rgb(91, 106, 114);
+    border-left: 1px solid rgb(91, 106, 114);
     border-spacing: 0px;
     border-collapse: separate;
 }
 
 #tradeHistoryData td.buy {
-    color: darkgreen;
+    color: #46b446;;
 }
 
 #tradeHistoryData td.sell {
-    color: darkred;
+    color: rgb(237, 129, 23);
 }
 
 #tradeHistoryData td {
@@ -35,3 +36,16 @@ html, body {
     padding-right: 15px;
 }
 
+div#currentPrice {
+    font-size: 2rem;
+    font-weight: bold;
+    padding: 14px;
+}
+
+div#currentPrice > span.buy {
+    color: #46b446; /*#3aba3a; rgb(184, 233, 134); */
+}
+
+div#currentPrice > span.sell {
+    color: rgb(237, 129, 23);
+}

@@ -19,6 +19,12 @@ var getErrorRow = function(xhr, textStatus, error) {
            "</td></tr>";
 };
 /**********************************************************************************************************************/
+
+var currentPriceSpan = function(record) {
+    var sellPrice = record.price.n / record.price.d;
+    return "<span class='" + (record.base_is_seller ? "sell" : "buy") + "'>" + formatPrice(sellPrice) + "</span>";
+};
+
 /**************** Template for an item from the order-book from https://horizon.stellar.org/order_book ****************/
 var offerRow = function(offer) {
     return "<tr><td>" + formatPrice(offer.price) + "</td><td>" + formatAmount(offer.amount) + "</td></tr>";

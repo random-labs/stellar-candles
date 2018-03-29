@@ -26,11 +26,11 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-2 col-md-12 col-sm-12" style="border: 1px solid magenta; background-color: yellowgreen;">
+            <div class="col-lg-2 col-md-12 col-sm-12" style="border: 1px solid magenta;">
                 Price here<br />
                 <br />
                 goes.<br />
-                <a href="javascript: getOrderBook(nativeAsset, assetMobi);">go</a>
+                <a href="#" onclick="$('#orderBookBids').empty(); $('#orderBookAsks').empty(); return false;">clear</a>
                 <table>
                     <thead>
                         <th>Price</th>
@@ -41,8 +41,9 @@
                         <tr><td>Loading data...</td></tr>
                     </tbody>
                 </table>
-                <br/>
-                <br/>
+                <div id="currentPrice">
+                    <span>0.0</span>
+                </div>
                 <table>
                     <tbody id="orderBookBids">
                         <tr></tr>
@@ -53,8 +54,8 @@
             <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="border: 1px solid cornflowerblue;">
                 Lorem ipsum
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-4" style="background-color: lightsteelblue;">
-                <a href="javascript: getPastTrades(nativeAsset, assetMobi);">go</a>
+            <div class="col-lg-3 col-md-4 col-sm-4">
+                <a href="#" onclick="$('#tradeHistoryData').empty(); return false;">clear</a>
                 <table id="tradeHistoryTable">
                     <thead>
                     <tr>
