@@ -22,7 +22,7 @@ html, body {
 }
 
 #tradeHistoryData td.sell {
-    color: rgb(237, 129, 23);
+    color: #ED8117;
 }
 
 #tradeHistoryData td {
@@ -47,5 +47,5 @@ div#currentPrice > span.buy {
 }
 
 div#currentPrice > span.sell {
-    color: rgb(237, 129, 23);
+    color: #ED8117;
 }

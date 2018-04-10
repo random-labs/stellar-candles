@@ -11,8 +11,11 @@
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="scripts/3rdParty/bootstrap.min.js?v=20180326"></script>
-    <script type="text/javascript" src="scripts/exchange.js?v=20180325"></script>
+    <script src= "scripts/3rdParty/zingcharts/zingchart.min.js"></script>
+    <script> zingchart.MODULESDIR = "scripts/3rdParty/zingcharts/modules/"; </script>
+
     <script type="text/javascript" src="scripts/Constants.js?v=20180325"> </script>
+    <script type="text/javascript" src="scripts/exchange.js?v=20180325"></script>
     <script type="text/javascript" src="scripts/prerenderedTemplates.js?v=20180325"></script>
 </head>
 <body>
@@ -51,8 +54,10 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="border: 1px solid cornflowerblue;">
-                Lorem ipsum
+            <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="border: 1px solid cornflowerblue; height: 800px;">
+                <div id="marketChart" style="min-height: 500px; height: 100%;">
+
+                </div>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-4">
                 <a href="#" onclick="$('#tradeHistoryData').empty(); return false;">clear</a>
