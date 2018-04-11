@@ -24,6 +24,7 @@ var streamPastTrades = function(baseAsset, counterAsset) {
     }, Constants.PAST_TRADES_INTERVAL);
 };
 
+
 var getOrderBook = function(baseAsset, counterAsset) {
     var url = Constants.API_URL + "/order_book?" + baseAsset.ToUrlParameters("selling") + "&" + counterAsset.ToUrlParameters("buying") + "&limit=17";
 
@@ -58,6 +59,71 @@ var addAutobridgedOffers = function(orderBook) {
     return orderBook;
 };
 
+
+var getDataForChart = function(baseAsset, counterAsset) {
+    const dataRange = "&resolution=900000&limit=192";
+    var url = Constants.API_URL + "/trade_aggregations?" + baseAsset.ToUrlParameters("base") + "&" + counterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
+
+    $.getJSON(url, function(data) {
+        $("#marketChart").empty();
+        var chartConfig = getDefaultChartConfig();
+        var minPrice = Number.MAX_VALUE;
+        var maxPrice = -1.0;
+        var maxVolume = -1.0;
+
+        $.each(data._embedded.records, function(i, record) {
+            //Collect data for a single candle in the candlestick chart
+            var open = parseFloat(record.open);
+            var high = parseFloat(record.high);
+            if (high > maxPrice) {
+                maxPrice = high;
+            }
+            var low = parseFloat(record.low);
+            if (low < minPrice) {
+                minPrice = low;
+            }
+            var close = parseFloat(record.close);
+            var candle = [record.timestamp, [open, high, low, close]];
+            chartConfig.series[0].values.push(candle);             //TODO: setter (i.e. chartConfig.AddCandle(candle);)
+
+            //Collect data for bar chart with volume
+            var volume = parseFloat(record.base_volume);
+            if (volume > maxVolume) {
+                maxVolume = volume;
+            }
+            var volumeBar = [record.timestamp, volume];
+            chartConfig.series[1].values.push(volumeBar);          //TODO: proper wrapper
+
+            chartConfig["scale-x"]["min-value"] = record.timestamp;     //TODO: chartConfig.SetStartTime(record.timestamp);
+        });
+
+        chartConfig["scale-x"].step = "15minute";
+
+        //Set price chart range (TODO: chartConfig.SetHorizontalScale(minPrice, maxPrice); )
+        minPrice = 0.9 * minPrice;
+        maxPrice = 1.1 * maxPrice;
+        var step = (maxPrice - minPrice) / 7.0;
+        chartConfig["scale-y"].values = "" + minPrice.toFixed(2/*Nope!!*/) + ":" + maxPrice.toFixed(2) + ":" + step.toFixed(2/*FUJ!!*/);
+
+        //Set volume chart range (TODO: you know...)
+        step = maxVolume / 3.0;
+        chartConfig["scale-y-2"].values = "0:" + maxVolume.toFixed(2) + ":" + step.toFixed(2);
+
+        zingchart.render({
+            id : 'marketChart',
+            data : chartConfig,
+            height: "100%",
+            width: "100%"
+        });
+    })
+    .fail(function(xhr, textStatus, error) {
+        //TODO: chartConfig.showError(xhr, textStatus);
+        myConfigCandleSticks.title.text = textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText;
+        myConfigCandleSticks.color = "red";
+    });
+};
+
+
 function Asset(code, type, issuerAddress, issuerName) {
     this.AssetCode = code || "XLM";
     this.AssetType = type;
@@ -87,7 +153,11 @@ $(function() {
 
 
 
-
+var getDefaultChartConfig = function() {
+    myConfigCandleSticks.series[0].values = [];
+    myConfigCandleSticks.series[1].values = [];
+    return myConfigCandleSticks;
+};
 //========================================================= TEMPORARY, ZingChart =========================================================
 zingchart.THEME="classic";
 
@@ -95,16 +165,15 @@ var myConfigCandleSticks = {
     "type": "mixed",
     "background-color": "none",
     "title":{
-        "text":"Disney Stock & Volume",
-        "font-family":"Garamond"
-    },
-    "subtitle":{
-        "text":"Source: http://quotes.wsj.com/DIS/historical-prices <span style='color: magenta;'>Hello world</span>",
-        "font-weight":"normal"
+        "text": "Interval: 15min",
+        "font-family": 'consolas,"Liberation Mono",courier,monospace',
+        "color": "#5B6A72",
+        "background-color": "none",
+        "align": "left"
     },
     "plot":{
         "aspect":"candlestick",
-        "bar-width":"50%",
+        "bar-width": "70%", //"50%",
         "tooltip":{
             "visible":false
         }
@@ -155,7 +224,7 @@ var myConfigCandleSticks = {
         "blended": true, //to bind the scale to "scale-y".
         "offset-end": "85%", //to adjust scale offsets.
         "values": "0:75:15",
-        "format": "%vM",
+        "format": "%v",
         "guide":{
             "line-style":"solid"
         },
@@ -339,20 +408,10 @@ var myConfigCandleSticks = {
             "type":"bar",
             "scales": "scale-x,scale-y-2",
             "guide-label": { //for crosshair plot labels
-                "text": "Volume: %vM",
+                "text": "Volume: %v",
                 "decimals": Constants.DEFAULT_AMOUNT_DECIMALS //2
             },
-            "background-color":"#00cc99",
-            "rules":[
-                {
-                    "rule":"%open < %close",
-                    "line-color":"#0099ff"
-                },
-                {
-                    "rule":"%open > %close",
-                    "line-color":"#ff99ff"
-                }
-            ],
+            "background-color": "#5B6A72", //"#00cc99",
             "values":[
                 [1438592400000, 8.43], //08/03/15
                 [1438678800000, 12.62], //08/04/15
@@ -513,8 +572,8 @@ var myConfigCandleSticks = {
 $(function() {
     zingchart.render({
         id : 'marketChart',
-        data : myConfigCandleSticks, //myConfig,
+        data : myConfigCandleSticks,
         height: "100%",
-        width: "100%" //725
+        width: "100%"
     });
 });
