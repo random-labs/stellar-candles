@@ -56,7 +56,11 @@ var formatNumber = function(value, decimals) {
     return trimZeros(numString);
 };
 
+/* Trim trailing zeros from decimal portion */
 var trimZeros = function(str) {
-    return str.replace(/[0\.]*$/, '');
+    if (!str.indexOf('.') <= -1) {
+        return str;
+    }
+    return str.replace(/\.0{1,99}$/, '');
 };
 

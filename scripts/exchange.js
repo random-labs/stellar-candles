@@ -38,7 +38,7 @@ var getOrderBook = function(baseAsset, counterAsset) {
 
         $("#orderBookAsks").empty();
         $.each(data.asks, function(i, ask) {
-            $(offerRow(ask)).appendTo("#orderBookAsks");
+            $(offerRow(ask)).prependTo("#orderBookAsks");
         });
     })
     .fail(function(xhr, textStatus, error) {
@@ -61,7 +61,7 @@ var addAutobridgedOffers = function(orderBook) {
 
 
 var getDataForChart = function(baseAsset, counterAsset) {
-    const dataRange = "&resolution=900000&limit=192";
+    const dataRange = "&resolution=900000&limit=96";
     var url = Constants.API_URL + "/trade_aggregations?" + baseAsset.ToUrlParameters("base") + "&" + counterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
 
     $.getJSON(url, function(data) {
@@ -83,7 +83,7 @@ var getDataForChart = function(baseAsset, counterAsset) {
                 minPrice = low;
             }
             var close = parseFloat(record.close);
-            var candle = [record.timestamp, [open, high, low, close]];
+            var candle = [record.timestamp, [open.toFixed(4/*TODO: dynamic*/), high.toFixed(4/*TODO: dynamic*/), low.toFixed(4/*TODO: dynamic*/), close.toFixed(4/*TODO: dynamic*/)]];
             chartConfig.series[0].values.push(candle);             //TODO: setter (i.e. chartConfig.AddCandle(candle);)
 
             //Collect data for bar chart with volume
@@ -171,6 +171,24 @@ var myConfigCandleSticks = {
         "background-color": "none",
         "align": "left"
     },
+
+    "labels":[
+        {
+            "text":"open: %plot-0-value-0  high: %plot-0-value-1  low: %plot-0-value-2  close: %plot-0-value-3",
+            "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
+            "font-size": "13.5px",
+            "x":"20",
+            "y":"25"
+        },
+        {
+            "text":"volume: %plot-1-value",
+            "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
+            "color": "#5B6A72",
+            "x":"450",
+            "y":"25"
+        }
+    ],
+
     "plot":{
         "aspect":"candlestick",
         "bar-width": "70%", //"50%",
@@ -201,14 +219,14 @@ var myConfigCandleSticks = {
             "text":"%v",
             "transform":{
                 "type":"date",
-                "all":"%D,<br>%M %d, %Y"
+                "all":"%H:%i<br>%D, %M %d, %Y"
             }
         }
     },
     "scale-y":{
         "offset-start": "35%", //to adjust scale offsets.
         "values": "90:130:20",
-        "format": "$%v",
+        "format": "%v",
         "label": {
             "text": "Price (MOBI)"
         },
@@ -237,8 +255,9 @@ var myConfigCandleSticks = {
             "type":"stock",
             "scales": "scale-x,scale-y",
             "guide-label": { //for crosshair plot labels
-                "text": "Open: $%open<br>High: $%high<br>Low: $%low<br>Close: $%close",
-                "decimals": 2
+                "text": "open:%open  high:%high  low:%low  close: %close",
+                "decimals": 2,
+                "visible": false
             },
             "trend-up":{
                 "line-color":"#46b446",
