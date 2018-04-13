@@ -26,8 +26,13 @@ var currentPriceSpan = function(record) {
 };
 
 /**************** Template for an item from the order-book from https://horizon.stellar.org/order_book ****************/
-var offerRow = function(offer) {
+var askOfferRow = function(offer) {
     return "<tr><td>" + formatPrice(offer.price) + "</td><td>" + formatAmount(offer.amount) + "</td></tr>";
+};
+
+var bidOfferRow = function(offer) {
+    var amount = parseFloat(offer.amount) / parseFloat(offer.price);
+    return "<tr><td>" + formatPrice(offer.price) + "</td><td>" + formatAmount(amount) + "</td></tr>";
 };
 
 /**********************************************************************************************************************/
