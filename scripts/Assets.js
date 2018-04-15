@@ -21,5 +21,6 @@ function Asset(code, type, issuerAddress, issuerName) {
 var KnownAssets = {
     "XLM": new Asset("XLM", "native", null, null),
     "CNY-RippleFox": new Asset("CNY", "credit_alphanum4", "GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "RippleFox"),
-    "MOBI": new Asset("MOBI", "credit_alphanum4", "GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH", "Mobius.network")
+    "MOBI": new Asset("MOBI", "credit_alphanum4", "GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH", "Mobius.network"),
+    "RMT": new Asset("RMT", "credit_alphanum4", "GCVWTTPADC5YB5AYDKJCTUYSCJ7RKPGE4HT75NIZOUM4L7VRTS5EKLFN", "SureRemit.co")
 };

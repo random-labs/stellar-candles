@@ -7,7 +7,7 @@ var tradeRow = function(record) {
                       "&#13;&#10;buyer:" + record.counter_account.substring(0, 6) + "..." + record.counter_account.substring(50);
     var templateText = "<tr title='" + toolTipText + "'>" +
                             "<td>" + new Date(record.ledger_close_time).toLocaleTimeString() + "</td>" +
-                            "<td class='" + (record.base_is_seller ? "sell" : "buy") + "'>" + formatPrice(sellPrice) + "</td>" +
+                            "<td class='" + (record.base_is_seller ? "buy" : "sell") + "'>" + formatPrice(sellPrice) + "</td>" +
                             "<td>" + formatAmount(record.base_amount) + "</td></tr>";
 
     return templateText;
@@ -22,7 +22,7 @@ var getErrorRow = function(xhr, textStatus, error) {
 
 var currentPriceSpan = function(record) {
     var sellPrice = record.price.n / record.price.d;
-    return "<span class='" + (record.base_is_seller ? "sell" : "buy") + "'>" + formatPrice(sellPrice) + "</span>";
+    return "<span class='" + (record.base_is_seller ? "buy" : "sell") + "'>" + formatPrice(sellPrice) + "</span>";
 };
 
 /**************** Template for an item from the order-book from https://horizon.stellar.org/order_book ****************/

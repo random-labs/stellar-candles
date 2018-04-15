@@ -94,14 +94,15 @@ var getDataForChart = function(baseAsset, counterAsset) {
             var volumeBar = [record.timestamp, volume];
             chartConfig.series[1].values.push(volumeBar);          //TODO: proper wrapper
 
-            chartConfig["scale-x"]["min-value"] = record.timestamp;     //TODO: chartConfig.SetStartTime(record.timestamp);
+            chartConfig["scale-x"]["min-value"] = record.timestamp;     //TODO: chartConfig.setStartTime(record.timestamp);
         });
 
         chartConfig["scale-x"].step = "15minute";
+        chartConfig.series[1]["guide-label"].decimals = 2;  //TODO: chartConfig.setVolumeDecimals(__var__);
 
         //Set price chart range (TODO: chartConfig.SetHorizontalScale(minPrice, maxPrice); )
-        minPrice = 0.9 * minPrice;
-        maxPrice = 1.1 * maxPrice;
+        minPrice = 0.95 * minPrice;
+        maxPrice = 1.05 * maxPrice;
         var step = (maxPrice - minPrice) / 7.0;
         chartConfig["scale-y"].values = "" + minPrice.toFixed(2/*Nope!!*/) + ":" + maxPrice.toFixed(2) + ":" + step.toFixed(2/*FUJ!!*/);
 
@@ -145,30 +146,64 @@ var myConfigCandleSticks = {
     "type": "mixed",
     "background-color": "none",
     "title":{
-        "text": "Interval: 15min",
-        "font-family": 'consolas,"Liberation Mono",courier,monospace',
+        "text": "Pair: XLM/MOBI            Interval: 15min",
+        "font-family": 'consolas,"Liberation Mono",courier,monospace',          //TODO: from variable
         "color": "#5B6A72",
         "background-color": "none",
         "align": "left"
     },
-
-    "labels":[
+    gui: {
+        behaviors: [        //NOTE: the "About ZingChart" item cannot be removed until I buy their license
+            {id:'ViewSource', enabled:'none'},
+            {id:'Reload', enabled:'none'},
+            {id:'SaveAsImage', enabled:'none'},
+            {id:'DownloadSVG', enabled:'none'},
+            {id:'ViewSource', enabled:'none'},
+            {id:'HideGuide', enabled:'none'}        //TODO? All their docs say 'GuideHide'. Warn them maybe.
+        ]
+    },
+    "labels":[      //TODO
         {
-            "text":"open: %plot-0-value-0  high: %plot-0-value-1  low: %plot-0-value-2  close: %plot-0-value-3",
+            "text":"open: %plot-0-value-0",
             "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
             "font-size": "13.5px",
-            "x":"20",
+            "color": "#5B6A72",                                                     //TODO: from variable
+            "x":"5",
+            "y":"25"
+        },
+        {
+            "text":"high: %plot-0-value-1",
+            "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
+            "font-size": "13.5px",
+            "color": "#46B446",                                                      //TODO: of course, variable
+            "x":"110",
+            "y":"25"
+        },
+        {
+            "text":"low: %plot-0-value-2",
+            "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
+            "font-size": "13.5px",
+            "color": "#ED8117",                                                     //TODO: of course, variable
+            "x":"215",
+            "y":"25"
+        },
+        {
+            "text":"close: %plot-0-value-3",
+            "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
+            "font-size": "13.5px",
+            "color": "#5B6A72",                                                     //TODO: from variable
+            "x":"315",
             "y":"25"
         },
         {
             "text":"volume: %plot-1-value",
             "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
-            "color": "#5B6A72",
-            "x":"450",
+            "font-size": "13.5px",                                                  //TODO: from variable
+            "color": "#5B6A72",                                                     //TODO: from variable
+            "x":"430",
             "y":"25"
         }
     ],
-
     "plot":{
         "aspect":"candlestick",
         "bar-width": "70%", //"50%",
@@ -200,12 +235,13 @@ var myConfigCandleSticks = {
             "transform":{
                 "type":"date",
                 "all":"%H:%i<br>%D, %M %d, %Y"
-            }
+            },
+            "background-color": "#5B6A72"
         }
     },
     "scale-y":{
-        "offset-start": "35%", //to adjust scale offsets.
-        "values": "90:130:20",
+        "offset-start": "30%", //to adjust scale offsets.
+        "values": "0:100:25",
         "format": "%v",
         "label": {
             "text": "Price (MOBI)"
@@ -221,7 +257,7 @@ var myConfigCandleSticks = {
         "placement": "default", //to move scale to default (left) side.
         "blended": true, //to bind the scale to "scale-y".
         "offset-end": "85%", //to adjust scale offsets.
-        "values": "0:75:15",
+        "values": "0:100:20",
         "format": "%v",
         "guide":{
             "line-style":"solid"
@@ -263,7 +299,9 @@ var myConfigCandleSticks = {
             "scales": "scale-x,scale-y-2",
             "guide-label": { //for crosshair plot labels
                 "text": "Volume: %v",
-                "decimals": Constants.DEFAULT_AMOUNT_DECIMALS //2
+                "decimals": Constants.DEFAULT_AMOUNT_DECIMALS,
+                "background-color": "#5B6A72",
+                "color": "#FFFFFF"
             },
             "background-color": "#5B6A72", //"#00cc99",
             "values":[
@@ -276,12 +314,3 @@ var myConfigCandleSticks = {
         }
     ]
 };
-
-$(function() {
-    zingchart.render({
-        id : 'marketChart',
-        data : myConfigCandleSticks,
-        height: "100%",
-        width: "100%"
-    });
-});
