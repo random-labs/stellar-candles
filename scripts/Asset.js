@@ -13,7 +13,7 @@ function Asset(code, type, account) {
         }
 
         return getParams;
-    }
+    };
 }
 
 
@@ -40,6 +40,7 @@ var KnownAssets = {
     "EUR-Moni" : new Asset("EUR", "credit_alphanum4", KnownAccounts.Moni),
     "EURT" : new Asset("EURT", "credit_alphanum4", KnownAccounts.Tempo),
     "ICN" : new Asset("ICN", "credit_alphanum4", KnownAccounts.Papaya1),
+    "JPY" : new Asset("JPY", "credit_alphanum4", KnownAccounts.VcBearJPY),
     "KIN-Papaya" : new Asset("KIN", "credit_alphanum4", KnownAccounts.Papaya1),
     "LINK" : new Asset("LINK", "credit_alphanum4", KnownAccounts.Papaya1),
     "LTC-Liquido" : new Asset("LTC", "credit_alphanum4", KnownAccounts.Liquido),
@@ -53,10 +54,12 @@ var KnownAssets = {
     "REPO" : new Asset("REPO", "credit_alphanum4", KnownAccounts.RepoCoin),
     "RMT": new Asset("RMT", "credit_alphanum4", KnownAccounts.SureRemit),
     "SALT" : new Asset("SALT", "credit_alphanum4", KnownAccounts.Papaya1),
+    "SLT" : new Asset("SLT", "credit_alphanum4", KnownAccounts.SmartLands),
     "STEM" : new Asset("STEM", "credit_alphanum4", KnownAccounts.StemChain),
     "TARI" : new Asset("TARI", "credit_alphanum4", KnownAccounts.CryptoTari),
     "TELLUS" : new Asset("TELLUS", "credit_alphanum12", KnownAccounts.IreneEnergy),
-    "USD" : new Asset("USD", "credit_alphanum4", KnownAccounts.Golix),
+    "USD-Golix" : new Asset("USD", "credit_alphanum4", KnownAccounts.Golix),
+    "XA9" : new Asset("XA9", "credit_alphanum12", KnownAccounts.Astral9),
     "XEL" : new Asset("XEL", "credit_alphanum4", KnownAccounts.NaoXEL),
     "XIM" : new Asset("XIM", "credit_alphanum4", KnownAccounts.XimCoin),
     "XIR" : new Asset("XIR", "credit_alphanum4", KnownAccounts.Xirkle),

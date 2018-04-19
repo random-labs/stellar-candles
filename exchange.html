@@ -14,6 +14,17 @@
     <script src= "scripts/3rdParty/zingcharts/zingchart.min.js"></script>
     <script> zingchart.MODULESDIR = "scripts/3rdParty/zingcharts/modules/"; </script>
 
+
+
+
+
+    <!-- EXPERIMENTAL AT THE MOMENT -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+
+
+
+
     <script type="text/javascript" src="scripts/Account.js?v=20180417"> </script>
     <script type="text/javascript" src="scripts/Asset.js?v=20180412"> </script>
     <script type="text/javascript" src="scripts/Constants.js?v=20180325"> </script>
@@ -39,7 +50,14 @@
                 could be here.
             </div>
             <div class="col-lg-10 col-md-12 col-sm-12" style="border: 1px solid blue;">
-                <a href="#" onclick="getDataForChart(KnownAssets.XLM, KnownAssets.MOBI);">Load chart</a>
+                <a href="#" onclick="getDataForChart(KnownAssets.XLM, KnownAssets.MOBI);">Load chart</a> &nbsp;
+
+                <select class="selectpicker">
+                    <option style="height: 40px; background:url(./images/assets/REPO.png); background-repeat: no-repeat; background-size: 40px 40px">REPO</option>
+                    <option style="height: 40px;"
+                            data-content="<div style='height: 100%; background:url(./images/assets/TARI.png); background-repeat: no-repeat; background-size: 40px 40px'>Relish</div>">TARI</option>
+                    <option>Two two, 2</option>
+                </select>
             </div>
         </div>
 
