@@ -13,17 +13,7 @@
     <script type="text/javascript" src="scripts/3rdParty/bootstrap.min.js?v=20180326"></script>
     <script src= "scripts/3rdParty/zingcharts/zingchart.min.js"></script>
     <script> zingchart.MODULESDIR = "scripts/3rdParty/zingcharts/modules/"; </script>
-
-
-
-
-
-    <!-- EXPERIMENTAL AT THE MOMENT -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-
-
-
+    <script type="text/javascript" src="./scripts/3rdParty/jquery.ddslick.js" ></script>
 
     <script type="text/javascript" src="scripts/Account.js?v=20180417"> </script>
     <script type="text/javascript" src="scripts/Asset.js?v=20180412"> </script>
@@ -52,12 +42,81 @@
             <div class="col-lg-10 col-md-12 col-sm-12" style="border: 1px solid blue;">
                 <a href="#" onclick="getDataForChart(KnownAssets.XLM, KnownAssets.MOBI);">Load chart</a> &nbsp;
 
-                <select class="selectpicker">
-                    <option style="height: 40px; background:url(./images/assets/REPO.png); background-repeat: no-repeat; background-size: 40px 40px">REPO</option>
-                    <option style="height: 40px;"
-                            data-content="<div style='height: 100%; background:url(./images/assets/TARI.png); background-repeat: no-repeat; background-size: 40px 40px'>Relish</div>">TARI</option>
-                    <option>Two two, 2</option>
-                </select>
+
+                <div id="demoDefaultSelection">There should be a drop-down here</div>
+                <script type="text/javascript">
+                    //Dropdown plugin data
+                    var ddData = [
+                        {
+                            text: "ABDT",
+                            value: "ABDT",
+                            selected: false,
+                            description: " ",
+                            imageSrc: "./images/assets/ABDT.png"
+                        },
+                        {
+                            text: "XRP",
+                            value: "XRP",
+                            selected: false,
+                            description: " ",
+                            imageSrc: "./images/assets/XRP.png"
+                        },
+                        {
+                            text: "TARI",
+                            value: "TARI",
+//TODO                            selected: true,
+                            description: " ",
+                            imageSrc: "./images/assets/TARI.png"
+                        },
+                        {
+                            text: "XIM",
+                            value: 4,
+                            selected: false,
+                            description: " ",
+                            imageSrc: "./images/assets/XIM.png"
+                        },
+                        {
+                            text: "BCH",
+                            value: 4,
+                            selected: false,
+                            description: "(bitcoin cash)",
+                            imageSrc: "./images/assets/BCH.png"
+                        },
+                        {
+                            text: "BTC",
+                            value: "BTC",
+                            description: "(bitcoin)",
+                            imageSrc: "./images/assets/BTC.png"
+                        },
+                        {
+                            text: "TELLUS",
+                            value: 4,
+                            description: "Tellus",
+                            imageSrc: "./images/assets/TELLUS.png"
+                        },
+                        {
+                            text: "ABCDEFGHIJ12",
+                            value: 4,
+                            description: "Tellus",
+                            imageSrc: "./images/assets/unknown.png"
+                        },
+                        {
+                            text: "COP",
+                            value: 4,
+                            description: "",
+                            imageSrc: "./images/assets/COP.png"
+                        }
+                    ];
+
+                    $('#demoDefaultSelection').ddslick({
+                        data: ddData,
+                        width: 150,
+                        onSelected: function (data) {
+                            //TODO: I need to think about how to select current asset after initial page load and not trigger this
+                            window.location = "exchange.html#" + data.selectedData.value + "/";
+                        }
+                    });
+                </script>
             </div>
         </div>
 
