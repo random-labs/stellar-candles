@@ -1,0 +1,9 @@
+div#baseAssetCodeDropDown-dd-placeholder,
+div#counterAssetCodeDropDown-dd-placeholder {
+    float: left;
+}
+div#baseAssetAnchorDropDown-dd-placeholder,
+div#counterAssetAnchorDropDown-dd-placeholder {
+    float: left;
+    margin-left:4px;
+}

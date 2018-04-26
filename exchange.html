@@ -7,6 +7,7 @@
 
     <title>XLM/MOBI</title>
     <link rel="stylesheet" href="styles/main.css?v=20180325">
+    <link rel="stylesheet" href="styles/exchange.css?v=20180425">
     <link rel="stylesheet" href="styles/3rdParty/bootstrap.css?v=20180326">
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -39,81 +40,87 @@
                 decide what<br />
                 could be here.
             </div>
-            <div class="col-lg-10 col-md-12 col-sm-12" style="border: 1px solid blue;">
-                <a href="#" onclick="getDataForChart(KnownAssets.XLM, KnownAssets.MOBI);">Load chart</a> &nbsp;
+            <div class="col-lg-5 col-md-12 col-sm-12" style="border: 1px solid blue;">
+                <div id="baseAssetCodeDropDown">There should be a drop-down here</div>
+                <script type="text/javascript">
+                    setupAssetCodesDropDown("#baseAssetCodeDropDown");
+                </script>
 
-
-                <div id="demoDefaultSelection">There should be a drop-down here</div>
+                <div id="baseAssetAnchorDropDown">There should be a drop-down here</div>
                 <script type="text/javascript">
                     //Dropdown plugin data
-                    var ddData = [
+                    var assetIssuersDdData = [
                         {
-                            text: "ABDT",
-                            value: "ABDT",
-                            selected: false,
-                            description: " ",
-                            imageSrc: "./images/assets/ABDT.png"
+                            text: "repocoin.io",
+                            value: "repocoin.io",
+                            description: "repocoin.io"
                         },
                         {
-                            text: "XRP",
-                            value: "XRP",
-                            selected: false,
-                            description: " ",
-                            imageSrc: "./images/assets/XRP.png"
+                            text: "apay.io",
+                            value: "apay.io",
+                            description: "apay.io"
                         },
                         {
-                            text: "TARI",
-                            value: "TARI",
-//TODO                            selected: true,
-                            description: " ",
-                            imageSrc: "./images/assets/TARI.png"
-                        },
-                        {
-                            text: "XIM",
-                            value: 4,
-                            selected: false,
-                            description: " ",
-                            imageSrc: "./images/assets/XIM.png"
-                        },
-                        {
-                            text: "BCH",
-                            value: 4,
-                            selected: false,
-                            description: "(bitcoin cash)",
-                            imageSrc: "./images/assets/BCH.png"
-                        },
-                        {
-                            text: "BTC",
-                            value: "BTC",
-                            description: "(bitcoin)",
-                            imageSrc: "./images/assets/BTC.png"
-                        },
-                        {
-                            text: "TELLUS",
-                            value: 4,
-                            description: "Tellus",
-                            imageSrc: "./images/assets/TELLUS.png"
-                        },
-                        {
-                            text: "ABCDEFGHIJ12",
-                            value: 4,
-                            description: "Tellus",
-                            imageSrc: "./images/assets/unknown.png"
-                        },
-                        {
-                            text: "COP",
-                            value: 4,
-                            description: "",
-                            imageSrc: "./images/assets/COP.png"
+                            text: "(native)",
+                            value: "native",
+                            description: "(native)"
                         }
                     ];
 
-                    $('#demoDefaultSelection').ddslick({
-                        data: ddData,
-                        width: 150,
+                    $('#baseAssetAnchorDropDown').ddslick({
+                        data: assetIssuersDdData,
+                        width: 300,
                         onSelected: function (data) {
                             //TODO: I need to think about how to select current asset after initial page load and not trigger this
-                            window.location = "exchange.html#" + data.selectedData.value + "/";
+                            if ("ADD_CUSTOM"  === data.selectedData.value) {
+                                alert("todo: configuration page");
+                            }
+                            else {
+                                window.location = "exchange.html#" + data.selectedData.value + "/";
+                            }
+                        }
+                    });
+                </script>
+            </div>
+
+            <div class="col-lg-5 col-md-12 col-sm-12" style="border: 1px solid aqua;">
+                <div id="counterAssetCodeDropDown">There should be a drop-down here</div>
+                <script type="text/javascript">
+                    setupAssetCodesDropDown("#counterAssetCodeDropDown");
+                </script>
+
+                <div id="counterAssetAnchorDropDown">There should be a drop-down here</div>
+                <script type="text/javascript">
+                    //Dropdown plugin data
+                    var assetIssuersDdData = [
+                        {
+                            text: "repocoin.io",
+                            value: "repocoin.io",
+                            description: "repocoin.io"
+                        },
+                        {
+                            text: "apay.io",
+                            value: "apay.io",
+                            description: "apay.io"
+                        },
+                        {
+                            text: "(native)",
+                            value: "native",
+                            description: "(native)"
+                        }
+                    ];
+
+                    $("#counterAssetAnchorDropDown").ddslick({
+                        data: assetIssuersDdData,
+                        width: 300,
+                        onSelected: function (data) {
+                            //TODO: I need to think about how to select current asset after initial page load and not trigger this
+                            if ("ADD_CUSTOM"  === data.selectedData.value) {
+                                alert("todo: configuration page");
+                            }
+                            else {
+                                window.location = "exchange.html#" + data.selectedData.value + "/";
+                            }
                         }
                     });
                 </script>
@@ -144,7 +151,7 @@
             </div>
             <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="border: 1px solid cornflowerblue; height: 800px;">
                 <div id="marketChart" style="min-height: 500px; height: 100%;">
-                    Loading chart...
+                    <a href="#" onclick="getDataForChart(KnownAssets.XLM, KnownAssets.MOBI);">Load chart</a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-4">

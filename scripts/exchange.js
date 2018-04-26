@@ -124,6 +124,49 @@ var getDataForChart = function(baseAsset, counterAsset) {
     });
 };
 
+var setupAssetCodesDropDown = function(dropDownSelector) {
+    var assetList = new Array();
+    Constants.DefaultAssetCodes.forEach(function(assetCode){
+        //Search for asset full name among know assets
+        var assetFullName = " ";
+        var assetImage = "unknown.png";
+        for (var asset in KnownAssets) {
+            if (KnownAssets[asset].AssetCode === assetCode) {
+                assetFullName = KnownAssets[asset].FullName;
+                assetImage = assetCode + ".png";
+                break;
+            }
+        }
+
+        assetList.push({
+            text: assetCode,
+            value: assetCode,
+            description: assetFullName,
+            imageSrc: "./images/assets/" + assetImage
+        });
+    });
+
+    assetList.push({
+        text: "[+] Add",
+        value: "ADD_CUSTOM",
+        description: "Add asset manually"
+    });
+
+    $(dropDownSelector).ddslick({
+        data: assetList,
+        width: 150,
+        onSelected: function (data) {
+            //TODO: I need to think about how to select current asset after initial page load and not trigger this
+            if ("ADD_CUSTOM"  === data.selectedData.value) {
+                alert("todo: configuration page");
+            }
+            else {
+                window.location = "exchange.html#" + data.selectedData.value + "/";
+            }
+        }
+    });
+};
+
 
 $(function() {
     //TODO: load candle chart first
