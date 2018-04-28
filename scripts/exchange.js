@@ -161,10 +161,56 @@ var setupAssetCodesDropDown = function(dropDownSelector) {
                 alert("todo: configuration page");
             }
             else {
-                window.location = "exchange.html#" + data.selectedData.value + "/";
+                changeAssets();
             }
         }
     });
+};
+
+var setupAnchorDropDown = function(dropDownSelector, assetCode) {
+    var issuersArray = KnownAssets.GetIssuersByAsset(assetCode);
+    var assetIssuersDdData = new Array();
+    for (var i=0; i<issuersArray.length; i++) {
+        assetIssuersDdData.push({
+            text: issuersArray[i].ShortName,
+            description: issuersArray[i].Domain,
+            value: issuersArray[i].Address
+        });
+    }
+
+    assetIssuersDdData.push({
+        text: "[+] Manage",
+        value: "ADD_CUSTOM",
+        description: "Add anchor manually"
+    });
+
+    $(dropDownSelector).ddslick({
+        data: assetIssuersDdData,
+        width: 250,
+        onSelected: function (data) {
+            //TODO: I need to think about how to select current asset after initial page load and not trigger this
+            if ("ADD_CUSTOM"  === data.selectedData.value) {
+                alert("todo: configuration page");
+            }
+            else {
+                changeAssets();
+            }
+        }
+    });
+};
+
+var changeAssets = function() {
+    var urlAssets = $('div[id^="baseAssetCodeDropDown"]').data('ddslick').selectedData.value;
+    var baseIssuer = $('div[id^="baseAssetAnchorDropDown"]').data('ddslick').selectedData.value;
+    if (baseIssuer != null) {
+        urlAssets += "-" + baseIssuer;
+    }
+    urlAssets += "/" + $('div[id^="counterAssetCodeDropDown"]').data('ddslick').selectedData.value;
+    var counterIssuer = $('div[id^="counterAssetAnchorDropDown"]').data('ddslick').selectedData.value;
+    if (counterIssuer != null) {
+        urlAssets += "-" + counterIssuer;
+    }
+    window.location = "exchange.html#" + urlAssets;
 };
 
 
@@ -189,7 +235,7 @@ var myConfigCandleSticks = {
     "type": "mixed",
     "background-color": "none",
     "title":{
-        "text": "Pair: XLM/MOBI            Interval: 15min",
+        "text": "Interval: 15min (TODO)",
         "font-family": 'consolas,"Liberation Mono",courier,monospace',          //TODO: from variable
         "color": "#5B6A72",
         "background-color": "none",

@@ -40,90 +40,33 @@
                 decide what<br />
                 could be here.
             </div>
-            <div class="col-lg-5 col-md-12 col-sm-12" style="border: 1px solid blue;">
-                <div id="baseAssetCodeDropDown">There should be a drop-down here</div>
-                <script type="text/javascript">
-                    setupAssetCodesDropDown("#baseAssetCodeDropDown");
-                </script>
+            <div class="col-lg-10 col-md-12 col-sm-12" style="border: 1px solid blue;">
+                <div style="width:450px; float: left;">
+                    <div id="baseAssetCodeDropDown">There should be a drop-down here</div>
+                    <script type="text/javascript">
+                        setupAssetCodesDropDown("#baseAssetCodeDropDown");
+                    </script>
 
-                <div id="baseAssetAnchorDropDown">There should be a drop-down here</div>
-                <script type="text/javascript">
-                    //Dropdown plugin data
-                    var assetIssuersDdData = [
-                        {
-                            text: "repocoin.io",
-                            value: "repocoin.io",
-                            description: "repocoin.io"
-                        },
-                        {
-                            text: "apay.io",
-                            value: "apay.io",
-                            description: "apay.io"
-                        },
-                        {
-                            text: "(native)",
-                            value: "native",
-                            description: "(native)"
-                        }
-                    ];
+                    <div id="baseAssetAnchorDropDown">There should be a drop-down here</div>
+                    <script type="text/javascript">
+                        setupAnchorDropDown("#baseAssetAnchorDropDown", "XLM");
+                    </script>
+                    <div class="swapButton">
+                        <a href="#" title="switch assets" onclick="swapAssets()">&lt;==&gt;</a>
+                    </div>
+                </div>
 
-                    $('#baseAssetAnchorDropDown').ddslick({
-                        data: assetIssuersDdData,
-                        width: 300,
-                        onSelected: function (data) {
-                            //TODO: I need to think about how to select current asset after initial page load and not trigger this
-                            if ("ADD_CUSTOM"  === data.selectedData.value) {
-                                alert("todo: configuration page");
-                            }
-                            else {
-                                window.location = "exchange.html#" + data.selectedData.value + "/";
-                            }
-                        }
-                    });
-                </script>
-            </div>
+                <div style="width: 450px; float: left;">
+                    <div id="counterAssetCodeDropDown">There should be a drop-down here</div>
+                    <script type="text/javascript">
+                        setupAssetCodesDropDown("#counterAssetCodeDropDown");
+                    </script>
 
-            <div class="col-lg-5 col-md-12 col-sm-12" style="border: 1px solid aqua;">
-                <div id="counterAssetCodeDropDown">There should be a drop-down here</div>
-                <script type="text/javascript">
-                    setupAssetCodesDropDown("#counterAssetCodeDropDown");
-                </script>
-
-                <div id="counterAssetAnchorDropDown">There should be a drop-down here</div>
-                <script type="text/javascript">
-                    //Dropdown plugin data
-                    var assetIssuersDdData = [
-                        {
-                            text: "repocoin.io",
-                            value: "repocoin.io",
-                            description: "repocoin.io"
-                        },
-                        {
-                            text: "apay.io",
-                            value: "apay.io",
-                            description: "apay.io"
-                        },
-                        {
-                            text: "(native)",
-                            value: "native",
-                            description: "(native)"
-                        }
-                    ];
-
-                    $("#counterAssetAnchorDropDown").ddslick({
-                        data: assetIssuersDdData,
-                        width: 300,
-                        onSelected: function (data) {
-                            //TODO: I need to think about how to select current asset after initial page load and not trigger this
-                            if ("ADD_CUSTOM"  === data.selectedData.value) {
-                                alert("todo: configuration page");
-                            }
-                            else {
-                                window.location = "exchange.html#" + data.selectedData.value + "/";
-                            }
-                        }
-                    });
-                </script>
+                    <div id="counterAssetAnchorDropDown">There should be a drop-down here</div>
+                    <script type="text/javascript">
+                        setupAnchorDropDown("#counterAssetAnchorDropDown", "BTC");
+                    </script>
+                </div>
             </div>
         </div>
 

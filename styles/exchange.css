@@ -7,3 +7,16 @@ div#counterAssetAnchorDropDown-dd-placeholder {
     float: left;
     margin-left:4px;
 }
+
+div.swapButton {
+    float: left;
+    font-size:1.2em;
+    font-weight: bold;
+    /*Lots of hard-code here :-( */
+    line-height: 38px;
+    width: 45px;
+    text-align: center;
+}
+div.swapButton>a {
+    text-decoration: none;
+}

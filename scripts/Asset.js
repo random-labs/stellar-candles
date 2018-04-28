@@ -5,12 +5,12 @@ function Asset(code, fullName, type, account) {
     this.AssetCode = code || "XLM";
     this.FullName = fullName;
     this.AssetType = type;
-    this.Issuer = account.Address;
+    this.Issuer = account;
 
     this.ToUrlParameters = function(prefix) {
         var getParams = prefix + "_asset_code=" + this.AssetCode + "&" + prefix + "_asset_type=" + this.AssetType;
         if (this.Issuer) {
-            getParams += "&" + prefix + "_asset_issuer=" + this.Issuer;
+            getParams += "&" + prefix + "_asset_issuer=" + this.Issuer.Address;
         }
 
         return getParams;
@@ -19,7 +19,7 @@ function Asset(code, fullName, type, account) {
 
 
 var KnownAssets = {
-    "XLM" : new Asset("XLM", "Lumen", "native", {Address:null}),
+    "XLM" : new Asset("XLM", "Lumen", "native", {Address:null, ShortName:"(native)"}),
     "BAT" : new Asset("BAT", "Basic Attention Token", "credit_alphanum4", KnownAccounts.Papaya1),
     "BCH-Papaya" : new Asset("BCH", "Bitcoin Cash", "credit_alphanum4", KnownAccounts.Papaya4),
     "BTC-Golix" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.Golix),
@@ -64,9 +64,20 @@ var KnownAssets = {
     "XEL" : new Asset("XEL", "NaoBTC XEL", "credit_alphanum4", KnownAccounts.NaoXEL),
     "XIM" : new Asset("XIM", "Ximcoin", "credit_alphanum4", KnownAccounts.XimCoin),
     "XIR" : new Asset("XIR", "Xirkle coin", "credit_alphanum4", KnownAccounts.Xirkle),
-    "XLM-Stronghold" : new Asset("XLM", "???", "credit_alphanum4", KnownAccounts.Stronghold),     //WTF?
+//WTF?    "XLM-Stronghold" : new Asset("XLM", "???", "credit_alphanum4", KnownAccounts.Stronghold),
     "XLQ": new Asset("XLQ", "Liquido", "credit_alphanum4", KnownAccounts.Liquido),
     "XRP": new Asset("XRP", "Ripple", "credit_alphanum4", KnownAccounts.VcBearXRP),
     "XTC": new Asset("XTC", "Tai Chi Chain", "credit_alphanum4", KnownAccounts.TaiChiChain),
-    "ZRX": new Asset("ZRX", "0x token", "credit_alphanum4", KnownAccounts.Papaya1)
+    "ZRX": new Asset("ZRX", "0x token", "credit_alphanum4", KnownAccounts.Papaya1),
+
+    GetIssuersByAsset: function (assetCode) {
+        var issuers = new Array();
+        for (var asset in KnownAssets) {
+            if (KnownAssets[asset].AssetCode === assetCode) {
+                issuers.push(KnownAssets[asset].Issuer);
+            }
+        }
+
+        return issuers;
+    }
 };
