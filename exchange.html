@@ -19,8 +19,16 @@
     <script type="text/javascript" src="scripts/Account.js?v=20180417"> </script>
     <script type="text/javascript" src="scripts/Asset.js?v=20180412"> </script>
     <script type="text/javascript" src="scripts/Constants.js?v=20180325"> </script>
+    <script type="text/javascript" src="scripts/CandlestickChart.js?v=20180429"></script>
     <script type="text/javascript" src="scripts/exchange.js?v=20180325"></script>
     <script type="text/javascript" src="scripts/prerenderedTemplates.js?v=20180325"></script>
+
+    <script type="text/javascript">
+        var exchangeUi = new Exchange();
+        $(function() {
+            exchangeUi.Initialize("baseAssetCodeDropDown", "baseAssetAnchorDropDown", "counterAssetCodeDropDown", "counterAssetAnchorDropDown");
+        });
+    </script>
 </head>
 <body>
     <div class="container-fluid">
@@ -43,29 +51,15 @@
             <div class="col-lg-10 col-md-12 col-sm-12" style="border: 1px solid blue;">
                 <div style="width:450px; float: left;">
                     <div id="baseAssetCodeDropDown">There should be a drop-down here</div>
-                    <script type="text/javascript">
-                        setupAssetCodesDropDown("#baseAssetCodeDropDown");
-                    </script>
-
                     <div id="baseAssetAnchorDropDown">There should be a drop-down here</div>
-                    <script type="text/javascript">
-                        setupAnchorDropDown("#baseAssetAnchorDropDown", "XLM");
-                    </script>
                     <div class="swapButton">
-                        <a href="#" title="switch assets" onclick="swapAssets()">&lt;==&gt;</a>
+                        <a href="#" title="switch assets" onclick="exchangeUi.SwapAssets()">&lt;==&gt;</a>
                     </div>
                 </div>
 
                 <div style="width: 450px; float: left;">
                     <div id="counterAssetCodeDropDown">There should be a drop-down here</div>
-                    <script type="text/javascript">
-                        setupAssetCodesDropDown("#counterAssetCodeDropDown");
-                    </script>
-
                     <div id="counterAssetAnchorDropDown">There should be a drop-down here</div>
-                    <script type="text/javascript">
-                        setupAnchorDropDown("#counterAssetAnchorDropDown", "BTC");
-                    </script>
                 </div>
             </div>
         </div>
@@ -94,7 +88,7 @@
             </div>
             <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="border: 1px solid cornflowerblue; height: 800px;">
                 <div id="marketChart" style="min-height: 500px; height: 100%;">
-                    <a href="#" onclick="getDataForChart(KnownAssets.XLM, KnownAssets.MOBI);">Load chart</a>
+                    <a href="#" onclick="exchangeUi.RenderCandlestickChart(KnownAssets.XLM, KnownAssets.MOBI);">Load chart</a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-4">

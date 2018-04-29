@@ -17,6 +17,30 @@ function Asset(code, fullName, type, account) {
     };
 }
 
+/*static*/
+Asset.ParseFromUrlParam = function(assetUrlParam) {
+    var index = assetUrlParam.indexOf("-");
+    var assetCode;
+    var assetIssuer = null;
+    var assetType;
+    if (-1 === index) {
+        if (assetUrlParam != Constants.NATIVE_ASSET_CODE) {
+            throw new Error("Invalid URL parameters: " + assetUrlParam);
+        }
+        else {      //"XLM"
+            assetCode = assetUrlParam;
+            assetType = Constants.NATIVE_ASSET_TYPE;
+        }
+    }
+    else {
+        assetCode = assetUrlParam.substring(0, index);
+        var assetType = assetCode.length <= 4 ? "credit_alphanum4" : "credit_alphanum12";
+        assetIssuer = assetUrlParam.substring(index + 1);
+    }
+
+    return new Asset(assetCode, null, assetType, assetIssuer);
+};
+
 
 var KnownAssets = {
     "XLM" : new Asset("XLM", "Lumen", "native", {Address:null, ShortName:"(native)"}),
