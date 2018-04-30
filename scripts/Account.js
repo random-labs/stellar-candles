@@ -42,5 +42,15 @@ var KnownAccounts = {
     "VcBearJPY" : new Account("GBVAOIACNSB7OVUXJYC5UE2D4YK2F7A24T7EE5YOMN4CE6GCHUTOUQXM", "VCBear", "vcbear.net"),
     "VcBearXRP" : new Account("GA7FCCMTTSUIC37PODEL6EOOSPDRILP6OQI5FWCWDDVDBLJV72W6RINZ", "VCBear", "vcbear.net"),
     "XimCoin" : new Account("GBZ35ZJRIKJGYH5PBKLKOZ5L6EXCNTO7BKIL7DAVVDFQ2ODJEEHHJXIM", "XimCoin", "ximcoin.com"),
-    "Xirkle" : new Account("GAO4DADCRAHA35GD6J3KUNOB5ELZE5D6CGPSJX2WBMEQV7R2M4PGKJL5", "Xirkle", "xirkle.com")
+    "Xirkle" : new Account("GAO4DADCRAHA35GD6J3KUNOB5ELZE5D6CGPSJX2WBMEQV7R2M4PGKJL5", "Xirkle", "xirkle.com"),
+
+    GetAccountByAddress: function(address) {
+        for (var account in KnownAccounts) {
+            if (KnownAccounts[account].Address === address) {
+                return KnownAccounts[account];
+            }
+        }
+
+        return null;
+    }
 };

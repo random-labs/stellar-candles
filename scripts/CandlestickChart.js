@@ -12,10 +12,12 @@ function CandlestickChart() {
     };
 
     this.ShowError = function(xhr, textStatus) {
-        myConfigCandleSticks.title.text = textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText;
-        myConfigCandleSticks.color = "red";
+        "<div class='error'>" + textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText + "</div>";
     };
 
+    this.ShowMissingDataWarning = function() {
+        myConfigCandleSticks.title.text = "No data";
+    };
 
     var myConfigCandleSticks = {
         "type": "mixed",

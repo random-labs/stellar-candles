@@ -13,6 +13,10 @@ var tradeRow = function(record) {
     return templateText;
 };
 
+var noTradesRow = function() {
+    return "<tr><td></td><td></td></tr><tr><td colspan='2'>No trades in this market</td></tr>";
+};
+
 var getErrorRow = function(xhr, textStatus, error) {
     return "<tr><td></td></tr> <tr><td class='error' colspan='2'>" + textStatus + " - " +
            xhr.statusText + " (" + xhr.status + ")<br/>" + xhr.responseText +
@@ -23,6 +27,15 @@ var getErrorRow = function(xhr, textStatus, error) {
 var currentPriceSpan = function(record) {
     var sellPrice = record.price.n / record.price.d;
     return "<span class='" + (record.base_is_seller ? "buy" : "sell") + "'>" + formatPrice(sellPrice) + "</span>";
+};
+
+var noPriceDataSpan = function() {
+    return "<span>(No trades)</span>";
+};
+
+var currentPriceTitle = function(baseAssetCode, counterAssetCode, record) {
+    var sellPrice = record.price.n / record.price.d;
+    return baseAssetCode + "/" + counterAssetCode + " - " + formatPrice(sellPrice);
 };
 
 /**************** Template for an item from the order-book from https://horizon.stellar.org/order_book ****************/

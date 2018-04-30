@@ -20,3 +20,11 @@ div.swapButton {
 div.swapButton>a {
     text-decoration: none;
 }
+
+div.chartNoData {
+    height: 300px;
+    line-height: 300px;
+    background-color: white;
+    text-align: center;
+    font-size: 25px;
+}

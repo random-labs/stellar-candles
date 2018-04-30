@@ -1,31 +1,32 @@
 /**
  * UI model to the Exchange page
  */
-function Exchange() {
+function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDownId, counterIssuerDropDownId) {
     this.BaseAsset = null;
     this.CounterAsset = null;
 
+    var _this = this;
     var candlestickChart = new CandlestickChart();
-    var baseAssetDdId;
-    var baseAnchorDdId;
-    var counterAssetDdId;
-    var counterAnchorDdId;
+    var baseAssetDdId = baseAssetDropDownId;
+    var baseAnchorDdId = baseIssuerDropDownId;
+    var counterAssetDdId = counterAssetDropDownId;
+    var counterAnchorDdId = counterIssuerDropDownId;
 
+    //If user changes the URL parameters manually, re-initialize
+    $(window).bind('hashchange', function() {
+        _this.Initialize();
+    });
 
-    this.Initialize = function(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDownId, counterIssuerDropDownId) {
-        baseAssetDdId = baseAssetDropDownId;
-        baseAnchorDdId = baseIssuerDropDownId;
-        counterAssetDdId = counterAssetDropDownId;
-        counterAnchorDdId = counterIssuerDropDownId;
-
+    this.Initialize = function() {
         parseAssetsFromUrl();
-        setupAssetCodesDropDown("#" + baseAssetDdId);
-        setupAnchorDropDown("#" + baseAnchorDdId, "XLM");
-        setupAssetCodesDropDown("#" + counterAssetDdId);
-        setupAnchorDropDown("#" + counterAnchorDdId, "BTC");
-        //TODO: load candle chart first
-        initPastTradesStream(KnownAssets.XLM, KnownAssets.MOBI);
-        initOrderBookStream(KnownAssets.XLM, KnownAssets.MOBI);
+        setupAssetCodesDropDown(baseAssetDdId, this.BaseAsset.AssetCode);
+        setupAnchorDropDown(baseAnchorDdId, this.BaseAsset.AssetCode, this.BaseAsset.Issuer);
+        setupAssetCodesDropDown(counterAssetDdId, this.CounterAsset.AssetCode);
+        setupAnchorDropDown(counterAnchorDdId, this.CounterAsset.AssetCode, this.CounterAsset.Issuer);
+        //Initial data load
+        getPastTrades(_this.BaseAsset, _this.CounterAsset);
+        getOrderBook(_this.BaseAsset, _this.CounterAsset);
+        renderCandlestickChart();
     };
 
     this.SwapAssets = function() {
@@ -45,21 +46,26 @@ function Exchange() {
         urlPart = urlPart.substring(index+1);
         index = urlPart.indexOf("/");
         if (-1 === index) {
-            throw new Error("Invalid URL parameters: " + urlPart);
+            throw new Error("Invalid URL parameters (missing counter asset): " + urlPart);
         }
 
         var baseAssetPart = urlPart.substring(0, index);
-        this.BaseAsset = Asset.ParseFromUrlParam(baseAssetPart);
+        _this.BaseAsset = Asset.ParseFromUrlParam(baseAssetPart);
         var counterAssetPart = urlPart.substring(index + 1);
-        this.CounterAsset = Asset.ParseFromUrlParam(counterAssetPart);
+        _this.CounterAsset = Asset.ParseFromUrlParam(counterAssetPart);
     };
 
 
-    this.RenderCandlestickChart = function(baseAsset, counterAsset) {               //TODO: private function
+    var renderCandlestickChart = function() {
         const dataRange = "&resolution=900000&limit=96";
-        var url = Constants.API_URL + "/trade_aggregations?" + baseAsset.ToUrlParameters("base") + "&" + counterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
+        var url = Constants.API_URL + "/trade_aggregations?" + _this.BaseAsset.ToUrlParameters("base") + "&" + _this.CounterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
 
         $.getJSON(url, function(data) {
+            if (data._embedded.records.length == 0) {
+                $("#marketChart").html("<div class='chartNoData'>No data</div>");
+                return;
+            }
+
             $("#marketChart").empty();
             var chartConfig = candlestickChart.GetDefaultChartConfig();
             var minPrice = Number.MAX_VALUE;
@@ -113,22 +119,35 @@ function Exchange() {
             });
         })
         .fail(function(xhr, textStatus, error) {
-            candlestickChart.ShowError(xhr, textStatus);
+                $("#marketChart").html("<div class='error'>" + textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText + "</div>");
         });
     };
 
-    var initPastTradesStream = function(baseAsset, counterAsset) {
-        getPastTrades(baseAsset, counterAsset);
+    var initPastTradesStream = function() {
+        if (_this.BaseAsset != null && _this.CounterAsset) {    //We might not be done initializing
+            getPastTrades(_this.BaseAsset, _this.CounterAsset);
+        }
         setTimeout(function() {
-            initPastTradesStream(baseAsset, counterAsset);
+            initPastTradesStream();
         }, Constants.PAST_TRADES_INTERVAL);
     };
 
-    var initOrderBookStream = function(baseAsset, counterAsset) {
-        getOrderBook(baseAsset, counterAsset);
+    var initOrderBookStream = function() {
+        if (_this.BaseAsset != null && _this.CounterAsset) {    //We might not be done initializing
+            getOrderBook(_this.BaseAsset, _this.CounterAsset);
+        }
         setTimeout(function() {
-            initOrderBookStream(baseAsset, counterAsset);
+            initOrderBookStream();
         }, Constants.ORDERBOOK_INTERVAL);
+    };
+
+    var initChartStream = function() {
+        if (_this.BaseAsset != null && _this.CounterAsset) {    //We might not be done initializing
+            renderCandlestickChart();
+        }
+        setTimeout(function() {
+            initChartStream();
+        }, Constants.CHART_INTERVAL);
     };
 
     var getPastTrades = function(baseAsset, counterAsset) {
@@ -136,12 +155,18 @@ function Exchange() {
 
         $.getJSON(url, function(data) {
             $("#tradeHistoryData").empty();
-            //TODO; check nulls
-            $("#currentPrice").html(currentPriceSpan(data._embedded.records[0]));
-
-            $.each(data._embedded.records, function(i, record) {
-                $(tradeRow(record)).appendTo("#tradeHistoryData");
-            });
+            if (data._embedded.records.length === 0) {
+                document.title = baseAsset.AssetCode + "/" + counterAsset.AssetCode;
+                $("#currentPrice").html(noPriceDataSpan());
+                $(noTradesRow()).appendTo("#tradeHistoryData");
+            }
+            else {
+                document.title = currentPriceTitle(baseAsset.AssetCode, counterAsset.AssetCode, data._embedded.records[0]);
+                $("#currentPrice").html(/*TODO: Templates.*/currentPriceSpan(data._embedded.records[0]));
+                $.each(data._embedded.records, function(i, record) {
+                    $(tradeRow(record)).appendTo("#tradeHistoryData");
+                });
+            }
         })
             .fail(function(xhr, textStatus, error) {
                 $("#tradeHistoryData").empty();
@@ -176,7 +201,13 @@ function Exchange() {
         return orderBook;
     };
 
-    var setupAssetCodesDropDown = function(dropDownSelector) {
+    initPastTradesStream();
+    initOrderBookStream();
+    initChartStream();
+
+    var setupAssetCodesDropDown = function(dropDownId, selectedAssetCode) {
+        //In case this is re-init, destroy previous instance
+        $('div[id^="' + dropDownId + '"]').ddslick('destroy');
         var assetList = new Array();
         Constants.DefaultAssetCodes.forEach(function(assetCode){
             //Search for asset full name among know assets
@@ -193,6 +224,7 @@ function Exchange() {
             assetList.push({
                 text: assetCode,
                 value: assetCode,
+                selected: assetCode === selectedAssetCode,
                 description: assetFullName,
                 imageSrc: "./images/assets/" + assetImage
             });
@@ -204,29 +236,32 @@ function Exchange() {
             description: "Add asset manually"
         });
 
-        $(dropDownSelector).ddslick({
+        $("#" + dropDownId).ddslick({
             data: assetList,
             width: 150,
             onSelected: function (data) {
-                //TODO: I need to think about how to select current asset after initial page load and not trigger this
                 if ("ADD_CUSTOM"  === data.selectedData.value) {
                     alert("todo: configuration page");
                 }
                 else {
-                    changeAssets();
+                    changeAssets(false);
                 }
             }
         });
     };
 
-    var setupAnchorDropDown = function(dropDownSelector, assetCode) {
+    var setupAnchorDropDown = function(dropDownId, assetCode, assetIssuer) {
+        //In case this is re-init, destroy previous instance
+        $('div[id^="' + dropDownId + '"]').ddslick('destroy');
         var issuersArray = KnownAssets.GetIssuersByAsset(assetCode);
+        var issuerAccount = KnownAccounts.GetAccountByAddress(assetIssuer.Address);
         var assetIssuersDdData = new Array();
         for (var i=0; i<issuersArray.length; i++) {
             assetIssuersDdData.push({
                 text: issuersArray[i].ShortName,
                 description: issuersArray[i].Domain,
-                value: issuersArray[i].Address
+                value: issuersArray[i].Address,
+                selected: issuersArray[i] == issuerAccount
             });
         }
 
@@ -236,33 +271,41 @@ function Exchange() {
             description: "Add anchor manually"
         });
 
-        $(dropDownSelector).ddslick({
+        $("#" + dropDownId).ddslick({
             data: assetIssuersDdData,
             width: 250,
             onSelected: function (data) {
-                //TODO: I need to think about how to select current asset after initial page load and not trigger this
                 if ("ADD_CUSTOM"  === data.selectedData.value) {
                     alert("todo: configuration page");
                 }
                 else {
-                    changeAssets();
+                    changeAssets(true);
                 }
             }
         });
     };
+
+    /**
+     * Collect base and counter assets from inputs and navigate to new market URL by that.
+     */
+    var changeAssets = function(selectingAnchor) {
+        var urlAssets = $('div[id^="' + baseAssetDdId + '"]').data('ddslick').selectedData.value;
+        if (selectingAnchor) {
+            var baseIssuer = $('div[id^="' + baseAnchorDdId + '"]').data('ddslick').selectedData.value;
+            if (baseIssuer != null) {
+                urlAssets += "-" + baseIssuer;
+            }
+        }
+
+        urlAssets += "/" + $('div[id^="' + counterAssetDdId + '"]').data('ddslick').selectedData.value;
+        if (selectingAnchor) {
+            var counterIssuer = $('div[id^="' + counterAnchorDdId + '"]').data('ddslick').selectedData.value;
+            if (counterIssuer != null) {
+                urlAssets += "-" + counterIssuer;
+            }
+        }
+
+        window.location = "exchange.html#" + urlAssets;
+        _this.Initialize();
+    };
 }
-
-
-var changeAssets = function() {
-    var urlAssets = $('div[id^="baseAssetCodeDropDown"]').data('ddslick').selectedData.value;
-    var baseIssuer = $('div[id^="baseAssetAnchorDropDown"]').data('ddslick').selectedData.value;
-    if (baseIssuer != null) {
-        urlAssets += "-" + baseIssuer;
-    }
-    urlAssets += "/" + $('div[id^="counterAssetCodeDropDown"]').data('ddslick').selectedData.value;
-    var counterIssuer = $('div[id^="counterAssetAnchorDropDown"]').data('ddslick').selectedData.value;
-    if (counterIssuer != null) {
-        urlAssets += "-" + counterIssuer;
-    }
-    window.location = "exchange.html#" + urlAssets;
-};

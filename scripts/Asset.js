@@ -21,24 +21,29 @@ function Asset(code, fullName, type, account) {
 Asset.ParseFromUrlParam = function(assetUrlParam) {
     var index = assetUrlParam.indexOf("-");
     var assetCode;
-    var assetIssuer = null;
-    var assetType;
+    var issuerAddress = null;
+    var assetType = null;
     if (-1 === index) {
+        assetCode = assetUrlParam;
         if (assetUrlParam != Constants.NATIVE_ASSET_CODE) {
-            throw new Error("Invalid URL parameters: " + assetUrlParam);
+            //Try to find issuers of that asset among known accounts
+            issuerAddress = KnownAssets.GetFirstIssuerAddress(assetUrlParam);
+            if (!issuerAddress) {
+                throw new Error("Invalid URL parameters (missing issuer): " + assetUrlParam);
+            }
         }
-        else {      //"XLM"
-            assetCode = assetUrlParam;
-            assetType = Constants.NATIVE_ASSET_TYPE;
-        }
+        else assetType = Constants.NATIVE_ASSET_TYPE;   //"native" for XLM
     }
     else {
         assetCode = assetUrlParam.substring(0, index);
-        var assetType = assetCode.length <= 4 ? "credit_alphanum4" : "credit_alphanum12";
-        assetIssuer = assetUrlParam.substring(index + 1);
+        issuerAddress = assetUrlParam.substring(index + 1);
     }
 
-    return new Asset(assetCode, null, assetType, assetIssuer);
+    if (!assetType) {
+        assetType = assetCode.length <= 4 ? "credit_alphanum4" : "credit_alphanum12";
+    }
+
+    return new Asset(assetCode, null, assetType, new Account(issuerAddress, null, null));
 };
 
 
@@ -77,7 +82,7 @@ var KnownAssets = {
     "PHP" : new Asset("PHP", "Philippine peso", "credit_alphanum4", KnownAccounts.CoinsAsia),
     "REP" : new Asset("REP", "Augur reputation token", "credit_alphanum4", KnownAccounts.Papaya1),
     "REPO" : new Asset("REPO", "RepoCoin", "credit_alphanum4", KnownAccounts.RepoCoin),
-    "RMT": new Asset("RMT", "SureRemit token", "credit_alphanum4", KnownAccounts.SureRemit),
+    "RMT" : new Asset("RMT", "SureRemit token", "credit_alphanum4", KnownAccounts.SureRemit),
     "SALT" : new Asset("SALT", "SALT", "credit_alphanum4", KnownAccounts.Papaya1),
     "SLT" : new Asset("SLT", "Smartlands token", "credit_alphanum4", KnownAccounts.SmartLands),
     "STEM" : new Asset("STEM", "STEMchain", "credit_alphanum4", KnownAccounts.StemChain),
@@ -89,12 +94,12 @@ var KnownAssets = {
     "XIM" : new Asset("XIM", "Ximcoin", "credit_alphanum4", KnownAccounts.XimCoin),
     "XIR" : new Asset("XIR", "Xirkle coin", "credit_alphanum4", KnownAccounts.Xirkle),
 //WTF?    "XLM-Stronghold" : new Asset("XLM", "???", "credit_alphanum4", KnownAccounts.Stronghold),
-    "XLQ": new Asset("XLQ", "Liquido", "credit_alphanum4", KnownAccounts.Liquido),
-    "XRP": new Asset("XRP", "Ripple", "credit_alphanum4", KnownAccounts.VcBearXRP),
-    "XTC": new Asset("XTC", "Tai Chi Chain", "credit_alphanum4", KnownAccounts.TaiChiChain),
-    "ZRX": new Asset("ZRX", "0x token", "credit_alphanum4", KnownAccounts.Papaya1),
+    "XLQ" : new Asset("XLQ", "Liquido", "credit_alphanum4", KnownAccounts.Liquido),
+    "XRP" : new Asset("XRP", "Ripple", "credit_alphanum4", KnownAccounts.VcBearXRP),
+    "XTC" : new Asset("XTC", "Tai Chi Chain", "credit_alphanum4", KnownAccounts.TaiChiChain),
+    "ZRX" : new Asset("ZRX", "0x token", "credit_alphanum4", KnownAccounts.Papaya1),
 
-    GetIssuersByAsset: function (assetCode) {
+    GetIssuersByAsset : function (assetCode) {
         var issuers = new Array();
         for (var asset in KnownAssets) {
             if (KnownAssets[asset].AssetCode === assetCode) {
@@ -103,5 +108,15 @@ var KnownAssets = {
         }
 
         return issuers;
+    },
+
+    GetFirstIssuerAddress : function(assetCode) {
+        for (var asset in KnownAssets) {
+            if (KnownAssets[asset].AssetCode === assetCode) {
+                return KnownAssets[asset].Issuer.Address;
+            }
+        }
+
+        return null;
     }
 };

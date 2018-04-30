@@ -5,7 +5,7 @@
     <meta content="utf-8" http-equiv="encoding">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>XLM/MOBI</title>
+    <title>Exchange</title>
     <link rel="stylesheet" href="styles/main.css?v=20180325">
     <link rel="stylesheet" href="styles/exchange.css?v=20180425">
     <link rel="stylesheet" href="styles/3rdParty/bootstrap.css?v=20180326">
@@ -24,9 +24,9 @@
     <script type="text/javascript" src="scripts/prerenderedTemplates.js?v=20180325"></script>
 
     <script type="text/javascript">
-        var exchangeUi = new Exchange();
+        var exchangeUi = new Exchange("baseAssetCodeDropDown", "baseAssetAnchorDropDown", "counterAssetCodeDropDown", "counterAssetAnchorDropDown");
         $(function() {
-            exchangeUi.Initialize("baseAssetCodeDropDown", "baseAssetAnchorDropDown", "counterAssetCodeDropDown", "counterAssetAnchorDropDown");
+            exchangeUi.Initialize();
         });
     </script>
 </head>
@@ -88,7 +88,7 @@
             </div>
             <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="border: 1px solid cornflowerblue; height: 800px;">
                 <div id="marketChart" style="min-height: 500px; height: 100%;">
-                    <a href="#" onclick="exchangeUi.RenderCandlestickChart(KnownAssets.XLM, KnownAssets.MOBI);">Load chart</a>
+                    <br/><br/>Loading chart...
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-4">
