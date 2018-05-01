@@ -39,7 +39,7 @@ function CandlestickChart() {
                 {id:'HideGuide', enabled:'none'}        //TODO? All their docs say 'GuideHide'. Warn them maybe.
             ]
         },
-        "labels":[      //TODO
+        "labels":[
             {
                 "text":"open: %plot-0-value-0",
                 "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
@@ -53,7 +53,7 @@ function CandlestickChart() {
                 "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
                 "font-size": "13.5px",
                 "color": "#46B446",                                                      //TODO: of course, variable
-                "x":"110",
+                "x":"130",
                 "y":"25"
             },
             {
@@ -61,7 +61,7 @@ function CandlestickChart() {
                 "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
                 "font-size": "13.5px",
                 "color": "#ED8117",                                                     //TODO: of course, variable
-                "x":"215",
+                "x":"255",
                 "y":"25"
             },
             {
@@ -69,7 +69,7 @@ function CandlestickChart() {
                 "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
                 "font-size": "13.5px",
                 "color": "#5B6A72",                                                     //TODO: from variable
-                "x":"315",
+                "x":"375",
                 "y":"25"
             },
             {
@@ -77,7 +77,7 @@ function CandlestickChart() {
                 "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
                 "font-size": "13.5px",                                                  //TODO: from variable
                 "color": "#5B6A72",                                                     //TODO: from variable
-                "x":"430",
+                "x":"510",
                 "y":"25"
             }
         ],

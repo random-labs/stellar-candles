@@ -33,33 +33,33 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-2 col-md-12 col-sm-12" style="border: 1px solid magenta; background-color: pink;">
-                Logo<br />
-                will be<br />
-                right here.
+            <div class="col-lg-3 col-md-3 col-sm-12">
+                <a id="logo" class="link" href="overview.html" title="Stellar Candles">
+                <span class="homeLink">Stellar&nbsp;Candles</span>
+                </a>
             </div>
-            <div class="col-lg-10 col-md-12 col-sm-12" style="border: 1px solid yellow;">
+            <div class="col-lg-9 col-md-9 col-sm-12 headerLinks">
+                <a class="link" href="configuration.html" style="float: right;">Configuration</a>
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-2 col-md-12 col-sm-12" style="border: 1px solid blue;">
-                TODO:<br />
-                decide what<br />
+                TODO: decide what<br />
                 could be here.
             </div>
             <div class="col-lg-10 col-md-12 col-sm-12" style="border: 1px solid blue;">
                 <div style="width:450px; float: left;">
-                    <div id="baseAssetCodeDropDown">There should be a drop-down here</div>
-                    <div id="baseAssetAnchorDropDown">There should be a drop-down here</div>
+                    <div id="baseAssetCodeDropDown">Asset code drop-down here</div>
+                    <div id="baseAssetAnchorDropDown">Anchor drop-down here</div>
                     <div class="swapButton">
-                        <a href="#" title="switch assets" onclick="exchangeUi.SwapAssets()">&lt;==&gt;</a>
+                        <a href="#" title="Switch assets" onclick="exchangeUi.SwapAssets(); return false;">&lt;==&gt;</a>
                     </div>
                 </div>
 
                 <div style="width: 450px; float: left;">
-                    <div id="counterAssetCodeDropDown">There should be a drop-down here</div>
-                    <div id="counterAssetAnchorDropDown">There should be a drop-down here</div>
+                    <div id="counterAssetCodeDropDown">Asset code drop-down here</div>
+                    <div id="counterAssetAnchorDropDown">Anchor drop-down here</div>
                 </div>
             </div>
         </div>
@@ -69,7 +69,7 @@
                 <table>
                     <thead>
                         <th>Price</th>
-                        <th>Amount XLM</th>
+                        <th>Amount <span class="baseAssetCode"></span></th>
                     </thead>
                     <tbody id="orderBookAsks">
                         <tr></tr>
@@ -92,12 +92,12 @@
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-4">
-                <a href="#" onclick="$('#tradeHistoryData').empty(); return false;">clear</a>
                 <table id="tradeHistoryTable">
                     <thead>
                     <tr>
                         <th>Time</th>
-                        <th>Trade</th>
+                        <th>Price</th>
+                        <th>Amount (<span class="baseAssetCode"></span>)</th>
                     </tr>
                     </thead>
                     <tbody id="tradeHistoryData">

@@ -6,51 +6,44 @@ html, body {
     color: #5B6A72;
 }
 
+@font-face {
+    font-family: "Truly Madly Dpad";
+    src: url('../fonts/Truly_Madly_Dpad.otf');
+}
+
+a.link {
+    font-family: "Truly Madly Dpad";
+    font-size: 1.4em;
+    text-decoration: none;
+    color:#355572;
+}
+a.link:hover, a.link:focus {
+    color: #4d81b0;
+}
+
+a#logo {
+    background-image: url('../images/my-lame-logo.png');
+    background-repeat: no-repeat;
+    background-size: 50px 50px;
+    display: inline-block;
+    height: 50px;
+    width: 50px;
+    line-height:50px;
+    padding-left: 58px;
+}
+a#logo > span.homeLink {
+    font-size:32px;
+}
+
+div.headerLinks {
+    line-height: 50px;
+    padding-right: 40px;
+}
+
+th {
+    padding-left: 4px;
+}
+
 .error {
     color: red;
-}
-
-#tradeHistoryTable {
-    border-right: 1px solid #5B6A72;
-    border-left: 1px solid #5B6A72;
-    border-spacing: 0px;
-    border-collapse: separate;
-}
-
-#tradeHistoryData td.buy {
-    color: #46b446;;
-}
-
-#tradeHistoryData td.sell {
-    color: #ED8117;
-}
-
-#tradeHistoryData td {
-    border-bottom: 1px solid #5B6A72;
-    padding-left: 5px;
-    padding-right: 15px;
-}
-
-#orderBookBids td, #orderBookAsks td {
-    padding-left: 5px;
-    padding-right: 15px;
-}
-
-#orderBookBids tr.linked, #orderBookAsks tr.linked {
-    font-style: italic;
-    color: #8396a0;
-}
-
-div#currentPrice {
-    font-size: 2rem;
-    font-weight: bold;
-    padding: 14px;
-}
-
-div#currentPrice > span.buy {
-    color: #46b446; /*#3aba3a; rgb(184, 233, 134); */
-}
-
-div#currentPrice > span.sell {
-    color: #ED8117;
 }

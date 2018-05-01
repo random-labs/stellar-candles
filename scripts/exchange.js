@@ -19,6 +19,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
 
     this.Initialize = function() {
         parseAssetsFromUrl();
+        $(".baseAssetCode").html(_this.BaseAsset.AssetCode);
         setupAssetCodesDropDown(baseAssetDdId, this.BaseAsset.AssetCode);
         setupAnchorDropDown(baseAnchorDdId, this.BaseAsset.AssetCode, this.BaseAsset.Issuer);
         setupAssetCodesDropDown(counterAssetDdId, this.CounterAsset.AssetCode);
@@ -30,7 +31,17 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     };
 
     this.SwapAssets = function() {
-        alert('todo');
+        //Keep it simple - flip it through URL
+        var currentUrl = window.location.href;
+        var hashIndex = currentUrl.indexOf("#");
+        var slashIndex = currentUrl.lastIndexOf("/");
+        if (-1 === hashIndex || -1 === slashIndex || slashIndex<hashIndex) {
+            return;
+        }
+        var newUrl = currentUrl.substring(0, hashIndex+1) +
+                     currentUrl.substring(slashIndex+1) + "/" +
+                     currentUrl.substring(hashIndex+1, slashIndex);
+        window.location = newUrl;
     };
 
     /*
@@ -305,7 +316,8 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             }
         }
 
-        window.location = "exchange.html#" + urlAssets;
+        var currentUrl = window.location.href;
+        window.location = currentUrl.substring(0, currentUrl.indexOf("#")+1) + urlAssets;
         _this.Initialize();
     };
 }
