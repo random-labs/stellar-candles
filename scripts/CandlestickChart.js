@@ -53,7 +53,7 @@ function CandlestickChart() {
                 "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
                 "font-size": "13.5px",
                 "color": "#46B446",                                                      //TODO: of course, variable
-                "x":"130",
+                "x":"150",
                 "y":"25"
             },
             {
@@ -61,7 +61,7 @@ function CandlestickChart() {
                 "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
                 "font-size": "13.5px",
                 "color": "#ED8117",                                                     //TODO: of course, variable
-                "x":"255",
+                "x":"295",
                 "y":"25"
             },
             {
@@ -69,7 +69,7 @@ function CandlestickChart() {
                 "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
                 "font-size": "13.5px",
                 "color": "#5B6A72",                                                     //TODO: from variable
-                "x":"375",
+                "x":"435",
                 "y":"25"
             },
             {
@@ -77,7 +77,7 @@ function CandlestickChart() {
                 "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
                 "font-size": "13.5px",                                                  //TODO: from variable
                 "color": "#5B6A72",                                                     //TODO: from variable
-                "x":"510",
+                "x":"590",
                 "y":"25"
             }
         ],

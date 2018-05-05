@@ -1,5 +1,6 @@
 var Constants = {
     API_URL: "https://horizon.stellar.org",
+    CONFIGURATION_URL: "configuration.html",
     ORDERBOOK_INTERVAL: 7000,
     PAST_TRADES_INTERVAL: 8000,
     CHART_INTERVAL: 15 * 60 * 1000,

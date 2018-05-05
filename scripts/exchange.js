@@ -192,18 +192,37 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             data = addAutobridgedOffers(data);
 
             $("#orderBookBids").empty();
+            var sumBidsAmount = 0.0;
             $.each(data.bids, function(i, bid) {
-                $(bidOfferRow(bid)).appendTo("#orderBookBids");
+                var amount = parseFloat(bid.amount) / parseFloat(bid.price);
+                sumBidsAmount += amount;
+                $(bidOfferRow(bid, amount, sumBidsAmount)).appendTo("#orderBookBids");
             });
 
             $("#orderBookAsks").empty();
+            var sumAsksAmount = 0.0;
             $.each(data.asks, function(i, ask) {
-                $(askOfferRow(ask)).prependTo("#orderBookAsks");
+                sumAsksAmount += parseFloat(ask.amount);
+                $(askOfferRow(ask, sumAsksAmount)).prependTo("#orderBookAsks");
             });
+
+            var maxCumulativeAmount = Math.max(sumBidsAmount, sumAsksAmount);
+            colorizeOrderBookVolume($("#orderBookBids"), "#c8e8c8", maxCumulativeAmount);
+            colorizeOrderBookVolume($("#orderBookAsks"), "#fad9b9", maxCumulativeAmount);
         })
         .fail(function(xhr, textStatus, error) {
             $("#orderBookBids").empty();
             $(getErrorRow(xhr, textStatus, error)).appendTo("#orderBookBids");
+        });
+    };
+
+    var colorizeOrderBookVolume = function(orderBookTable, bgColor, maxAmount) {
+        $(orderBookTable).children("tr").each(function(index, tableRow){
+            var amount = $(tableRow).data("cumulative-amount");
+            var percentage = amount / maxAmount * 100.0;
+            percentage = percentage.toFixed(1);
+            var bgStyle = "linear-gradient(to right, " + bgColor + " " + percentage + "%, rgba(255,255,255,0) " + percentage + "%)";
+            $(tableRow).css("background", bgStyle);
         });
     };
 
@@ -252,7 +271,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             width: 150,
             onSelected: function (data) {
                 if ("ADD_CUSTOM"  === data.selectedData.value) {
-                    alert("todo: configuration page");
+                    window.location.href = Constants.CONFIGURATION_URL;
                 }
                 else {
                     changeAssets(false);
@@ -287,7 +306,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             width: 250,
             onSelected: function (data) {
                 if ("ADD_CUSTOM"  === data.selectedData.value) {
-                    alert("todo: configuration page");
+                    window.location.href = Constants.CONFIGURATION_URL + "?selectAssetCode=" + assetCode;
                 }
                 else {
                     changeAssets(true);

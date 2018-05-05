@@ -39,13 +39,12 @@ var currentPriceTitle = function(baseAssetCode, counterAssetCode, record) {
 };
 
 /**************** Template for an item from the order-book from https://horizon.stellar.org/order_book ****************/
-var askOfferRow = function(offer) {
-    return "<tr"+(Math.random() > 0.5 ? " class='linked' title='linked thru XLM'" : "")+"><td>" + formatPrice(offer.price) + "</td><td>" + formatAmount(offer.amount) + "</td></tr>";
+var askOfferRow = function(offer, cumulativeAmount) {
+    return "<tr data-cumulative-amount='" + cumulativeAmount + "'"+(Math.random() > 0.5 ? " class='linked' title='linked thru XLM'" : "")+"><td>" + formatPrice(offer.price) + "</td><td>" + formatAmount(offer.amount) + "</td></tr>";
 };
 
-var bidOfferRow = function(offer) {
-    var amount = parseFloat(offer.amount) / parseFloat(offer.price);
-    return "<tr><td>" + formatPrice(offer.price) + "</td><td>" + formatAmount(amount) + "</td></tr>";
+var bidOfferRow = function(offer, amount, cumulativeAmount) {
+    return "<tr data-cumulative-amount='" + cumulativeAmount + "'><td>" + formatPrice(offer.price) + "</td><td>" + formatAmount(amount) + "</td></tr>";
 };
 
 /**********************************************************************************************************************/
