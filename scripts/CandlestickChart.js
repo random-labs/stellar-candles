@@ -1,23 +1,69 @@
 /**
  * UI model to candlestick chart of historical trades (used on the Exchange page). Uses ZingChart to draw SVG.
+ * @param {string} baseAssetCode - base asset code (e.g. "XLM", "USD"...)
+ * @param {string} counterAssetCode - counter asset code
  */
 function CandlestickChart() {
     //Setup ZingChart
     zingchart.THEME="classic";
 
-    this.GetDefaultChartConfig = function() {
+    this.GetDefaultChartConfig = function() {           //TODO: DELETE THIS WHEN ALL OPERATIONS ARE PROPERLY WRAPPED
         myConfigCandleSticks.series[0].values = [];
         myConfigCandleSticks.series[1].values = [];
         return myConfigCandleSticks;
+    };
+
+    this.AddCandleData = function(candle, volume) {
+        myConfigCandleSticks.series[0].values.push(candle);
+        myConfigCandleSticks.series[1].values.push(volume);
+    };
+
+    /**
+     * Specify beginning of X axis of this chart by giving timestamp of oldest candle.
+     * @param {number} timestamp - timestamp of the first candle in ticks
+     */
+    this.SetStartTime = function(timestamp) {
+        myConfigCandleSticks["scale-x"]["min-value"] = timestamp;
+    };
+
+    /**
+     * Set scope of the Y axis, i.e. price. The axis will be divided into up to 7 equal segments for visual guidance.
+     * @param {number} minPrice - lower bound
+     * @param {number} maxPrice - upper bound
+     */
+    this.SetPriceScale = function(minPrice, maxPrice, decimals) {
+        var step = (maxPrice - minPrice) / 7.0;
+        myConfigCandleSticks["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" + step.toFixed(decimals);
+    };
+
+    /**
+     * Set range of lower part of X axis (i.e. volume) by giving upper bound.
+     * @param {number} maxVolume
+     */
+    this.SetVolumeScale = function(maxVolume) {
+        var step = maxVolume / 3.0;
+        myConfigCandleSticks["scale-y-2"].values = "0:" + maxVolume.toFixed(2) + ":" + step.toFixed(2);
     };
 
     this.ShowError = function(xhr, textStatus) {
         "<div class='error'>" + textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText + "</div>";
     };
 
-    this.ShowMissingDataWarning = function() {
-        myConfigCandleSticks.title.text = "No data";
+    /**
+     * Render the candlestick chart.
+     * @param {string} placeholderId - an element to put the chart into
+     * @param {string} counterAssetCode - counter asset code (to be shown on y axis label)
+     */
+    this.Render = function (placeholderId, counterAssetCode) {
+        myConfigCandleSticks["scale-y"].label.text = "Price (" + counterAssetCode + ")";
+        zingchart.render({
+            id : placeholderId,
+            data : myConfigCandleSticks,
+            height: "100%",
+            width: "100%"
+        });
     };
+
 
     var myConfigCandleSticks = {
         "type": "mixed",
@@ -121,7 +167,7 @@ function CandlestickChart() {
             "values": "0:100:25",
             "format": "%v",
             "label": {
-                "text": "Price (MOBI)"
+                "text": "Price (TODO)"
             },
             "guide":{
                 "line-style":"solid"

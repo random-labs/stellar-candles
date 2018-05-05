@@ -68,7 +68,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
 
 
     var renderCandlestickChart = function() {
-        const dataRange = "&resolution=900000&limit=96";
+        const dataRange = "&resolution=900000&limit=70";
         var url = Constants.API_URL + "/trade_aggregations?" + _this.BaseAsset.ToUrlParameters("base") + "&" + _this.CounterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
 
         $.getJSON(url, function(data) {
@@ -95,8 +95,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                     minPrice = low;
                 }
                 var close = parseFloat(record.close);
-                var candle = [record.timestamp, [open.toFixed(4/*TODO: dynamic*/), high.toFixed(4/*TODO: dynamic*/), low.toFixed(4/*TODO: dynamic*/), close.toFixed(4/*TODO: dynamic*/)]];
-                chartConfig.series[0].values.push(candle);             //TODO: setter (i.e. chartConfig.AddCandle(candle);)
+                var candle = [record.timestamp, [open, high, low, close]];
 
                 //Collect data for bar chart with volume
                 var volume = parseFloat(record.base_volume);
@@ -104,33 +103,27 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                     maxVolume = volume;
                 }
                 var volumeBar = [record.timestamp, volume];
-                chartConfig.series[1].values.push(volumeBar);          //TODO: proper wrapper
+                candlestickChart.AddCandleData(candle, volumeBar);
 
-                chartConfig["scale-x"]["min-value"] = record.timestamp;     //TODO: chartConfig.setStartTime(record.timestamp);
+                candlestickChart.SetStartTime(record.timestamp);
             });
 
             chartConfig["scale-x"].step = "15minute";
             chartConfig.series[1]["guide-label"].decimals = 2;  //TODO: chartConfig.setVolumeDecimals(__var__);
 
-            //Set price chart range (TODO: candlestickChart.SetHorizontalScale(minPrice, maxPrice); )
+            //Set price chart range
             minPrice = 0.95 * minPrice;
             maxPrice = 1.05 * maxPrice;
-            var step = (maxPrice - minPrice) / 7.0;
-            chartConfig["scale-y"].values = "" + minPrice.toFixed(2/*Nope!!*/) + ":" + maxPrice.toFixed(2) + ":" + step.toFixed(2/*FUJ!!*/);
+            var decimals = Utils.GetPrecisionDecimals(minPrice);
+            candlestickChart.SetPriceScale(minPrice, maxPrice, decimals);
 
-            //Set volume chart range (TODO: you know...)
-            step = maxVolume / 3.0;
-            chartConfig["scale-y-2"].values = "0:" + maxVolume.toFixed(2) + ":" + step.toFixed(2);
+            //Set volume chart range
+            candlestickChart.SetVolumeScale(maxVolume);
 
-            zingchart.render({
-                id : 'marketChart',
-                data : chartConfig,
-                height: "100%",
-                width: "100%"
-            });
+            candlestickChart.Render("marketChart", _this.CounterAsset.AssetCode);
         })
         .fail(function(xhr, textStatus, error) {
-                $("#marketChart").html("<div class='error'>" + textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText + "</div>");
+            $("#marketChart").html("<div class='error'>" + textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText + "</div>");
         });
     };
 

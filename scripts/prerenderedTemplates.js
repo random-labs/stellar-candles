@@ -14,11 +14,11 @@ var tradeRow = function(record) {
 };
 
 var noTradesRow = function() {
-    return "<tr><td></td><td></td></tr><tr><td colspan='2'>No trades in this market</td></tr>";
+    return "<tr><td colspan='3'></td></tr><tr><td colspan='3'>No trades in this market</td></tr>";
 };
 
 var getErrorRow = function(xhr, textStatus, error) {
-    return "<tr><td></td></tr> <tr><td class='error' colspan='2'>" + textStatus + " - " +
+    return "<tr><td></td></tr> <tr><td class='error' colspan='3'>" + textStatus + " - " +
            xhr.statusText + " (" + xhr.status + ")<br/>" + xhr.responseText +
            "</td></tr>";
 };
@@ -26,11 +26,12 @@ var getErrorRow = function(xhr, textStatus, error) {
 
 var currentPriceSpan = function(record) {
     var sellPrice = record.price.n / record.price.d;
-    return "<span class='" + (record.base_is_seller ? "buy" : "sell") + "'>" + formatPrice(sellPrice) + "</span>";
+    var priceString = formatPrice(sellPrice);
+    return "<span class='" + (record.base_is_seller ? "buy" : "sell") + "' title='Last price: " + priceString + " " + record.counter_asset_code + "'>" + priceString + "</span>";
 };
 
 var noPriceDataSpan = function() {
-    return "<span>(No trades)</span>";
+    return "<span>--</span>";
 };
 
 var currentPriceTitle = function(baseAssetCode, counterAssetCode, record) {
@@ -49,27 +50,21 @@ var bidOfferRow = function(offer, amount, cumulativeAmount) {
 
 /**********************************************************************************************************************/
 
-var getAssetCode = function(record, prefix) {       //TODO: to one file with the Asset class
-    var assetType = record[prefix + "_asset_type"];
-    if (Constants.NATIVE_ASSET_TYPE === assetType) {
-        return Constants.NATIVE_ASSET_CODE;
-    }
-
-    return record[prefix + "_asset_code"];
-};
 
 //TODO: find this a proper place
 var formatAmount = function(amount) {
-    return formatNumber(amount, Constants.DEFAULT_AMOUNT_DECIMALS);          //TODO: format number by current DecimalPrecision as set by the user
+    var decimals = Utils.GetPrecisionDecimals(amount);
+    return formatNumber(amount, decimals /* Constants.DEFAULT_AMOUNT_DECIMALS*/);          //TODO: format number by current DecimalPrecision as set by the user
 };
 
 var formatPrice = function(price) {
-    return formatNumber(price, Constants.DEFAULT_PRICE_DECIMALS);          //TODO: format number by current DecimalPrecision as set by the user
+    var decimals = Utils.GetPrecisionDecimals(price);
+    return formatNumber(price, decimals /*Constants.DEFAULT_PRICE_DECIMALS*/);          //TODO: format number by current DecimalPrecision as set by the user
 };
 
 var formatNumber = function(value, decimals) {
     value = parseFloat(value.toString());     //Ensure number
-    var numString = value.toFixed(decimals);
+    var numString = decimals ? value.toFixed(decimals) : value.toString();
     return trimZeros(numString);
 };
 
@@ -78,6 +73,7 @@ var trimZeros = function(str) {
     if (!str.indexOf('.') <= -1) {
         return str;
     }
-    return str.replace(/\.0{1,99}$/, '');
+    str = str.replace(/0{1,99}$/, '');  //Trim trailing zeros
+    return str.replace(/\.$/, '');      //Replace possible trailing dot (if the number was whole)
 };
 
