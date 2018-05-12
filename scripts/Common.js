@@ -24,5 +24,23 @@ var Utils = {
             decimals++;
         }
         return decimals;
+    },
+
+    IntervalAsMilliseconds: function(intervalDesc) {
+        if ("15min" === intervalDesc || "15m" === intervalDesc) {
+            return 900000;
+        }
+        if ("hour" === intervalDesc || "60min" === intervalDesc || "60m" === intervalDesc) {
+            return 3600000;
+        }
+        if ("day" === intervalDesc || "1day" === intervalDesc || "1d" === intervalDesc || intervalDesc.indexOf("24h") === 0) {
+            return 86400000;
+        }
+        if ("week" == intervalDesc || "1week" === intervalDesc || "1w" === intervalDesc || intervalDesc.indexOf("7d") === 0) {
+            return 604800000;
+        }
+
+        //Make it fail in a distinct way
+        return -5050505;
     }
 }

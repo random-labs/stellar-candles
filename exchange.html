@@ -52,16 +52,23 @@
                 <div style="width:450px; float: left;">
                     <div id="baseAssetCodeDropDown">Asset code drop-down here</div>
                     <div id="baseAssetAnchorDropDown">Anchor drop-down here</div>
-                    <div class="swapButton">
+                    <div class="chartButton swapButton">
                         <a href="#" title="Switch assets" onclick="exchangeUi.SwapAssets(); return false;">&lt;==&gt;</a>
                     </div>
                 </div>
 
-                <div style="width: 450px; float: left;">
+                <div style="width: 425px; float: left;">
                     <div id="counterAssetCodeDropDown">Asset code drop-down here</div>
                     <div id="counterAssetAnchorDropDown">Anchor drop-down here</div>
                 </div>
+                <div class="chartButton intervalButtons">
+                    <a id="interval15min" class="link" href="#" onclick="exchangeUi.SetChartInterval('15min'); return false;">15min</a>
+                    <a id="interval1hour" class="link" href="#" onclick="exchangeUi.SetChartInterval('1hour'); return false;">hour</a>
+                    <a id="interval1day" class="link" href="#" onclick="exchangeUi.SetChartInterval('1day'); return false;">day</a>
+                    <a id="interval1week" class="link" href="#" onclick="exchangeUi.SetChartInterval('1week'); return false;">week</a>
+                </div>
             </div>
+
         </div>
 
         <div class="row">

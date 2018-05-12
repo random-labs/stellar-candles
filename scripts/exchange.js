@@ -4,6 +4,7 @@
 function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDownId, counterIssuerDropDownId) {
     this.BaseAsset = null;
     this.CounterAsset = null;
+    this.ChartInterval = 900000;    //15min candles by default
 
     var _this = this;
     var candlestickChart = new CandlestickChart();
@@ -42,6 +43,18 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                      currentUrl.substring(slashIndex+1) + "/" +
                      currentUrl.substring(hashIndex+1, slashIndex);
         window.location = newUrl;
+    };
+
+    this.SetChartInterval = function(intervalDesc) {
+        $("#marketChart").html("<br/><br/>Loading chart...");
+        this.ChartInterval = Utils.IntervalAsMilliseconds(intervalDesc);
+
+
+        //TODO
+
+        //Highlight correct interval link
+        $("div.intervalButtons>a").removeClass("selected");
+        $("a#interval" + intervalDesc).addClass("selected");
     };
 
     /*

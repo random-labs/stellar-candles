@@ -8,17 +8,30 @@ div#counterAssetAnchorDropDown-dd-placeholder {
     margin-left:4px;
 }
 
-div.swapButton {
+div.chartButton {
     float: left;
     font-size:1.2em;
-    font-weight: bold;
     /*Lots of hard-code here :-( */
     line-height: 38px;
+}
+
+div.swapButton {
+    font-weight: bold;
     width: 45px;
     text-align: center;
 }
 div.swapButton>a {
     text-decoration: none;
+}
+
+div.intervalButtons {
+    font-size: 1.1em;
+    width: 220px;
+    padding-left: 8px;
+}
+div.intervalButtons > a.selected {
+    font-weight: bold;
+    color: #4d81b0;
 }
 
 div.chartNoData {
