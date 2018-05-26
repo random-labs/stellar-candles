@@ -32,16 +32,8 @@
 </head>
 <body>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-12">
-                <a id="logo" class="link" href="overview.html" title="Stellar Candles">
-                <span class="homeLink">Stellar&nbsp;Candles</span>
-                </a>
-            </div>
-            <div class="col-lg-9 col-md-9 col-sm-12 headerLinks">
-                <a class="link" href="configuration.html" style="float: right;">Configuration</a>
-            </div>
-        </div>
+
+        <include src="components/header_row.html"></include>
 
         <div class="row">
             <div class="col-lg-2 col-md-12 col-sm-12" style="border: 1px solid blue;">
@@ -118,5 +110,9 @@
             </div>
         </div>
     </div>
+
+    <include src="components/footer.html"></include>
+
+    <script src="scripts/UIHelpers.js"></script>
 </body>
 </html>
