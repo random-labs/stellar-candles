@@ -49,8 +49,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         $("#marketChart").html("<br/><br/>Loading chart...");
         this.ChartInterval = Utils.IntervalAsMilliseconds(intervalDesc);
 
-
-        //TODO
+        Utils.SetUrlParameter(GETParams.INTERVAL, this.ChartInterval);
 
         //Highlight correct interval link
         $("div.intervalButtons>a").removeClass("selected");
@@ -76,12 +75,15 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         var baseAssetPart = urlPart.substring(0, index);
         _this.BaseAsset = Asset.ParseFromUrlParam(baseAssetPart);
         var counterAssetPart = urlPart.substring(index + 1);
+        if (counterAssetPart.indexOf('?') > -1) {
+            counterAssetPart = counterAssetPart.split('?')[0];
+        }
         _this.CounterAsset = Asset.ParseFromUrlParam(counterAssetPart);
     };
 
 
     var renderCandlestickChart = function() {
-        const dataRange = "&resolution=900000&limit=70";
+        const dataRange = "&resolution=" + _this.ChartInterval + "&limit=70";
         var url = Constants.API_URL + "/trade_aggregations?" + _this.BaseAsset.ToUrlParameters("base") + "&" + _this.CounterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
 
         $.getJSON(url, function(data) {
@@ -342,7 +344,10 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         }
 
         var currentUrl = window.location.href;
-        window.location = currentUrl.substring(0, currentUrl.indexOf("#")+1) + urlAssets;
+        //TODO: alright, I definitely need a separate module for URL tasks (maybe a 3rd party lib?)
+        var paramIndex = currentUrl.indexOf('?');
+        var paramsPart = paramIndex > -1 ? currentUrl.substring(paramIndex) : "";
+        window.location = currentUrl.substring(0, currentUrl.indexOf("#")+1) + urlAssets + paramsPart;
         _this.Initialize();
     };
 }

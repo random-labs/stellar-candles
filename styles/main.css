@@ -21,19 +21,12 @@ footer#footer {
     bottom: 0;
     height: 30px;
     width: 100%;
-    background-color: #afd9ee;
 }
 
 footer#footer > div {
     font-size: .75em;
     color: #AAAAAA;
     text-align: center;
-}
-
-a.footer-link {
-    color: #AAAAAA;
-    text-decoration: underline;
-    padding-left: 40px;
 }
 
 @font-face {
