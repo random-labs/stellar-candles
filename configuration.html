@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <title>Configuration</title>
+    <link rel="stylesheet" href="styles/main.css?v=20180325">
+    <link rel="stylesheet" href="styles/3rdParty/bootstrap.css?v=20180326">
 </head>
 <body>
     TODO: configure custom assets, issuers
@@ -17,7 +19,27 @@
     <button onclick="setCookie()">Set cookie</button>
     <button onclick="dumpCookie();">Show cookie</button>
     <br/>
-    <div id="debug" styl="width: 800px; height: 500px; border: 1px solid green">Hello World</div>
+    <div id="debug" style="width: 500px; height: 200px; border: 1px solid green;">Hello World</div>
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12" style="border: 1px solid blue;">
+            Custom asset symbols
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12" style="border: 1px solid magenta;">
+            Custom anchors
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12" style="border: 1px solid chocolate">
+            Custom assets
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12" style="border: 1px solid chocolate">
+            <div id="customAssetDropDown">customAssetDropDown</div>
+            <div id="customAnchorDropDown">customAnchorDropDown</div>
+            <button>Add</button>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="./scripts/configuration.js"> </script>
