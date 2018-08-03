@@ -19,6 +19,7 @@ var KnownAccounts = {
     "CryptoMoverA" : new Account("GBWZHAVWY23QKKDJW7TXLSIHY5EX4NIB37O4NMRKN2SKNWOSE5TEPCY3", "CryptoMover", "cryptomover.com"),
     "CryptoTari" : new Account("GD7UVDDJHJYKUXB4SJFIC6VJDQ4YADQCMRN3KLHJFV4H6NIUAEREVCO7", "CryptoTari", "cryptotari.io"),
     "eQuid" : new Account("GCGEQJR3E5BVMQYSNCHPO6NPP3KOT4VVZHIOLSRSNLE2GFY7EWVSLLTN", "eQuid", "equid.co"),
+    "Firefly" : new Account("GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY", "Firefly", "fchain.io"),
     "Golix" : new Account("GCYK67DDGBOANS6UODJ62QWGLEB2A7JQ3XUV25HCMLT7CI23PMMK3W6R", "Golix", "golix.io"),
     "IreneEnergy" : new Account("GBBRMEXJMS3L7Y3DZZ2AHBD545GZ72OAEHHEFKGZAHHASHGWMHK5P6PL", "IreneEnergy", "irene.energy"),
     "Liquido" : new Account("GD2RRX6BKVTORZ6RIMBLWFVUOAYOLTS2QFJQUQPXLI3PBHR3TMLQNGZX", "Liquido", "liquido.i-server.org"),

@@ -8,7 +8,7 @@ var Constants = {
     NATIVE_ASSET_TYPE: "native",
     DEFAULT_AMOUNT_DECIMALS: 4,
     DEFAULT_PRICE_DECIMALS: 4,
-    DefaultAssetCodes: ["XLM", "BCH", "BTC", "CNY", "ETH", "EURT", "KIN", "LTC", "MOBI", "PHP", "REP", "REPO", "RMT", "SLT", "TARI", "XIM", "XRP", "XYZ"]
+    DefaultAssetCodes: ["XLM", "BCH", "BTC", "CNY", "ETH", "EURT", "KIN", "LTC", "MOBI", "PHP", "REP", "REPO", "RMT", "SLT", "TARI", "XCN", "XRP", "XYZ"]
 };
 
 var Utils = {

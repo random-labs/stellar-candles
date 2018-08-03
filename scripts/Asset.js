@@ -90,6 +90,7 @@ var KnownAssets = {
     "TELLUS" : new Asset("TELLUS", "Irene.energy TELLUS", "credit_alphanum12", KnownAccounts.IreneEnergy),
     "USD-Golix" : new Asset("USD", "US dollar", "credit_alphanum4", KnownAccounts.Golix),
     "XA9" : new Asset("XA9", "Astral", "credit_alphanum4", KnownAccounts.Astral9),
+    "XCN" : new Asset("XCN", "Chinese Yuan", "credit_alphanum4", KnownAccounts.Firefly),
     "XEL" : new Asset("XEL", "NaoBTC XEL", "credit_alphanum4", KnownAccounts.NaoXEL),
     "XIM" : new Asset("XIM", "Ximcoin", "credit_alphanum4", KnownAccounts.XimCoin),
     "XIR" : new Asset("XIR", "Xirkle coin", "credit_alphanum4", KnownAccounts.Xirkle),
