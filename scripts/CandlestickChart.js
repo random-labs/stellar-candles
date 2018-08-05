@@ -1,7 +1,5 @@
 /**
  * UI model to candlestick chart of historical trades (used on the Exchange page). Uses ZingChart to draw SVG.
- * @param {string} baseAssetCode - base asset code (e.g. "XLM", "USD"...)
- * @param {string} counterAssetCode - counter asset code
  */
 function CandlestickChart() {
     //Setup ZingChart

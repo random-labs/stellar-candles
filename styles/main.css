@@ -70,3 +70,13 @@ th {
 .error {
     color: red;
 }
+
+div.exchange-link {
+    min-height: 300px;
+    height: 100%;
+    cursor: pointer;
+    border: 2px solid #8396a0;
+}
+div.exchange-link:hover {
+    border: 2px solid #4d81b0;
+}

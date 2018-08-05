@@ -7,8 +7,10 @@
 
     <title>Stellar Candles</title>
 
-    <link rel="stylesheet" href="styles/main.css?v=20180325">
+    <link rel="stylesheet" href="styles/main.css?v=20180805">
     <link rel="stylesheet" href="styles/3rdParty/bootstrap.css?v=20180326">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container-fluid">
@@ -42,6 +44,19 @@
                 from white-listed assets<br/>
                 in past 24 hours (w/o XLM).
             </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid black;">
+                <div id="biggestRiseChart" class="exchange-link" onclick="alert('debug: biggest rise chart');">
+                    <br/>Loading chart...
+                </div>
+                <script type="text/javascript">
+                    //TODO: make a WS call to figure out what assets should be used
+                    var biggestRiseChartUi;
+                    $(function() {
+                        biggestRiseChart = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets["BTC-NaoBTC"]);
+                        biggestRiseChart.Initialize("biggestRiseChart");
+                    });
+                </script>
+            </div>
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid yellow;">
                 ASDF<br /><br />
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit,<br />
@@ -69,14 +84,16 @@
                 TODO: unfortunately I'll need backend because evaluating the statistics in client
                 script would kill the browser (and user).
             </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid black; background-color: #b2dba1;">
-                <div id="highestXlmVolumeChart" style="min-height: 200px; height: 100%;">
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid black;">
+                <div id="highestXlmVolumeChart" class="exchange-link" onclick="alert('debug: highest XLM volume');">
                     <br/>Loading chart...
                 </div>
                 <script type="text/javascript">
-                    var highestXlmVolumeChartUi = new StatChart(KnownAssets.XLM, KnownAssets["BTC-NaoBTC"]);
+                    //TODO: make a WS call to figure out what assets should be used
+                    var highestXlmVolumeChartUi;
                     $(function() {
-                        highestXlmVolumeChartUi.Initialize();
+                        highestXlmVolumeChartUi = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets["BTC-NaoBTC"]);
+                        highestXlmVolumeChartUi.Initialize("highestXlmVolumeChart");
                     });
                 </script>
             </div>
@@ -88,12 +105,16 @@
 
     <include src="components/footer.html"></include>
 
-    <script type="text/javascript" src="scripts/StatChart.js?v=20180804"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+
     <script type="text/javascript" src="scripts/3rdParty/bootstrap.min.js?v=20180326"></script>
     <script src= "scripts/3rdParty/zingcharts/zingchart.min.js"></script>
     <script> zingchart.MODULESDIR = "scripts/3rdParty/zingcharts/modules/"; </script>
-    <script type="text/javascript" src="./scripts/3rdParty/jquery.ddslick.js" ></script>
     <script src="scripts/UIHelpers.js"></script>
+    <script type="text/javascript" src="scripts/Account.js?v=20180417"> </script>
+    <script type="text/javascript" src="scripts/Asset.js?v=20180412"> </script>
+    <script type="text/javascript" src="scripts/Common.js?v=20180325"> </script>
+    <script type="text/javascript" src="scripts/SmallLineChart.js?v=20180804"></script>
+    <script type="text/javascript" src="scripts/ExchangeThumbnail.js?v=20180804"></script>
 </body>
 </html>

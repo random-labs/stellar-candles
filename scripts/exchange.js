@@ -92,7 +92,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 return;
             }
 
-            $("#marketChart").empty();
+            $("#marketChart").empty();          //TODO: make the ID an input
             var chartConfig = candlestickChart.GetDefaultChartConfig();
             var minPrice = Number.MAX_VALUE;
             var maxPrice = -1.0;
@@ -135,7 +135,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             //Set volume chart range
             candlestickChart.SetVolumeScale(maxVolume);
 
-            candlestickChart.Render("marketChart", _this.CounterAsset.AssetCode);
+            candlestickChart.Render("marketChart", _this.CounterAsset.AssetCode);       //TODO: make the ID an input
         })
         .fail(function(xhr, textStatus, error) {
             $("#marketChart").html("<div class='error'>" + textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText + "</div>");
