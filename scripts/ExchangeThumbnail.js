@@ -25,6 +25,8 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
         //TODO: request Horizon
 
 
+        $("#"+placeHolderId).empty();
+
         lineChart.Render(placeHolderId);
 
     };

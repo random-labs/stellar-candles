@@ -45,17 +45,19 @@
                 in past 24 hours (w/o XLM).
             </div>
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid black;">
-                <div id="biggestRiseChart" class="exchange-link" onclick="alert('debug: biggest rise chart');">
-                    <br/>Loading chart...
+                <div class="exchange-link" onclick="alert('debug: biggest rise chart');">
+                    <div id="biggestRiseChart" class="exchange-link-chart">
+                        <br/>Loading chart...
+                    </div>
+                    <script type="text/javascript">
+                        //TODO: make a WS call to figure out what assets should be used
+                        var biggestRiseChartUi;
+                        $(function() {
+                            biggestRiseChart = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets["BTC-NaoBTC"]);
+                            biggestRiseChart.Initialize("biggestRiseChart");
+                        });
+                    </script>
                 </div>
-                <script type="text/javascript">
-                    //TODO: make a WS call to figure out what assets should be used
-                    var biggestRiseChartUi;
-                    $(function() {
-                        biggestRiseChart = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets["BTC-NaoBTC"]);
-                        biggestRiseChart.Initialize("biggestRiseChart");
-                    });
-                </script>
             </div>
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid yellow;">
                 ASDF<br /><br />
@@ -84,28 +86,36 @@
                 TODO: unfortunately I'll need backend because evaluating the statistics in client
                 script would kill the browser (and user).
             </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid black;">
-                <div id="highestXlmVolumeChart" class="exchange-link" onclick="alert('debug: highest XLM volume');">
-                    <br/>Loading chart...
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                <div class="exchange-link" onclick="alert('debug: highest XLM volume');">
+                    <div class="assetsDescription">
+                        <div class="lastPrice">3.14</div>
+                        <div class="baseAssetDesc">
+                            <span class="baseAssetCode">XLM</span><br/><span class="baseAssetIssuer"></span>
+                        </div>
+                        <span class="slash">/</span>
+                        <div class="counterAssetDesc">
+                            <span class="counterAssetCode">TELLUS</span><br/><span class="counterAssetIssuer">irene.energy</span>
+                        </div>
+                        <div class="dailyChangePercent green">+1.74%</div>
+                    </div>
+                    <div id="highestXlmVolumeChart" class="exchange-link-chart">
+                        <br/>Loading data...
+                    </div>
+                    <script type="text/javascript">
+                        //TODO: make a WS call to figure out what assets should be used
+                        var highestXlmVolumeChartUi;
+                        $(function() {
+                            highestXlmVolumeChartUi = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets["BTC-NaoBTC"]);
+                            highestXlmVolumeChartUi.Initialize("highestXlmVolumeChart");
+                        });
+                    </script>
                 </div>
-                <script type="text/javascript">
-                    //TODO: make a WS call to figure out what assets should be used
-                    var highestXlmVolumeChartUi;
-                    $(function() {
-                        highestXlmVolumeChartUi = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets["BTC-NaoBTC"]);
-                        highestXlmVolumeChartUi.Initialize("highestXlmVolumeChart");
-                    });
-                </script>
             </div>
         </div>
     </div>
 
-
-
-
     <include src="components/footer.html"></include>
-
-
 
     <script type="text/javascript" src="scripts/3rdParty/bootstrap.min.js?v=20180326"></script>
     <script src= "scripts/3rdParty/zingcharts/zingchart.min.js"></script>
