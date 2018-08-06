@@ -38,6 +38,22 @@ function SmallLineChart() {
         chartConfig["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" + step.toFixed(decimals);
     };
 
+    /**
+     * Set background color of this chart. Usually used to indicate raising/falling market.
+     * @param color - CSS style color name or color code
+     */
+    this.SetBackgroundColor = function(color) {
+        chartConfig["background-color"] = color;
+    };
+
+    /**
+     * Set line color. Usually used to emphasize rising/falling trend.
+     * @param color - CSS style color name of color code
+     */
+    this.SetLineColor = function(color) {
+        chartConfig.series[0]["line-color"] = color;
+    };
+
     this.ShowError = function(xhr, textStatus) {
         "<div class='error'>" + textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText + "</div>";
     };
@@ -58,14 +74,14 @@ function SmallLineChart() {
     var chartConfig =
     {
         "type": "line",
-        "background-color": "rgb(200, 232, 200)",       //TODO: light green for rise, carrot for fall. From constants of course.
-        "utc": true,
+//        "background-color": "gray",
+        "utc": false,
         "plotarea": {
             "margin": "dynamic 30 60 dynamic"
         },
         "scale-x": {
             "line-color": "#5B6A72",
-            "min-value": 1383292800000, //Dummy. Real value must be set before rendering
+            "min-value": 1383292800000, //Dummy. Real value is set before rendering
             "step": 900000,
             "transform": {
                 "type": "date",
@@ -75,7 +91,7 @@ function SmallLineChart() {
             "max-labels": 6         //In fact 'min'
         },
         "scale-y": {
-            "values": "0:400:50",
+            "values": "0:400:50",   //This must be input
             "line-color": "#5B6A72",
             "guide": {
                 "line-style": "dashed"
@@ -94,13 +110,15 @@ function SmallLineChart() {
         "series": [
             {
                 "values": [
-                    149.2, 174.3, 187.7, 147.1, 129.6, 189.6, 230, 164.5, 171.7, 163.4, 194.5,
-                    200.1, 193.4, 254.4, 287.8, 246, 199.9, 218.3, 244, 352.2, 284.5, 249.2,
-                    305.2, 286.1, 387.7, 278, 240.3, 212.4, 237.1, 253.2, 186.1, 153.6, 168.5,
-                    140.9, 86.9, 49.4, 24.7, 64.8, 114.4, 137.4
+                    /*e.g.                [1438592400000, 8.43], //08/03/15
+                     [1438678800000, 12.62], //08/04/15
+                     [1438765200000, 61.01], //08/05/15
+                     [1438851600000, 57.18], //08/06/15
+                     [1438938000000, 15.79], //08/07/15
+                     */
                 ],
-                "cursor": "pointer",
-                "line-color": "#46b446"
+                "cursor": "pointer"
+//                "line-color": "#46B446"
             }
         ]
     };

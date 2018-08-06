@@ -8,7 +8,13 @@ var Constants = {
     NATIVE_ASSET_TYPE: "native",
     DEFAULT_AMOUNT_DECIMALS: 4,
     DEFAULT_PRICE_DECIMALS: 4,
-    DefaultAssetCodes: ["XLM", "BCH", "BTC", "CNY", "ETH", "EURT", "KIN", "LTC", "MOBI", "PHP", "REP", "REPO", "RMT", "SLT", "TARI", "XCN", "XRP", "XYZ"]
+    DefaultAssetCodes: ["XLM", "BCH", "BTC", "CNY", "ETH", "EURT", "KIN", "MOBI", "PHP", "REP", "REPO", "RMT", "SLT", "TARI", "TERN", "XCN", "XRP", "XYZ"],
+    Style: {
+        GREEN: "#46B446",
+        RED: "#ED8117",
+        LIGHT_GREEN: "#C8E8C8",
+        LIGHT_RED: "#FAD9B9"
+    }
 };
 
 var Utils = {

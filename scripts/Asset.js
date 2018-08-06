@@ -15,6 +15,10 @@ function Asset(code, fullName, type, account) {
 
         return getParams;
     };
+
+    this.ToExchangeUrlParameter = function() {
+        return this.AssetCode + (this.AssetType == Constants.NATIVE_ASSET_TYPE ? "" : "-" + this.Issuer.Address);
+    };
 }
 
 /*static*/
@@ -88,6 +92,7 @@ var KnownAssets = {
     "STEM" : new Asset("STEM", "STEMchain", "credit_alphanum4", KnownAccounts.StemChain),
     "TARI" : new Asset("TARI", "CryptoTARI", "credit_alphanum4", KnownAccounts.CryptoTari),
     "TELLUS" : new Asset("TELLUS", "Irene.energy TELLUS", "credit_alphanum12", KnownAccounts.IreneEnergy),
+    "TERN" : new Asset("TERN", "Ternio.io TERN", "credit_alphanum4", KnownAccounts.Ternio),
     "USD-Golix" : new Asset("USD", "US dollar", "credit_alphanum4", KnownAccounts.Golix),
     "XA9" : new Asset("XA9", "Astral", "credit_alphanum4", KnownAccounts.Astral9),
     "XCN" : new Asset("XCN", "Chinese Yuan", "credit_alphanum4", KnownAccounts.Firefly),

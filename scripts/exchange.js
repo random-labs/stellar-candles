@@ -215,8 +215,8 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             });
 
             var maxCumulativeAmount = Math.max(sumBidsAmount, sumAsksAmount);
-            colorizeOrderBookVolume($("#orderBookBids"), "#c8e8c8", maxCumulativeAmount);
-            colorizeOrderBookVolume($("#orderBookAsks"), "#fad9b9", maxCumulativeAmount);
+            colorizeOrderBookVolume($("#orderBookBids"), Constants.Style.LIGHT_GREEN, maxCumulativeAmount);
+            colorizeOrderBookVolume($("#orderBookAsks"), Constants.Style.LIGHT_RED, maxCumulativeAmount);
         })
         .fail(function(xhr, textStatus, error) {
             $("#orderBookBids").empty();

@@ -19,101 +19,209 @@
         <div class="row">
             <div class="col-lg-12" style="border: 1px solid black;">
                 TODO: decide what<br />
-                could be here.
+                could be here.<br/>
+                (some stats in any case)
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid blue;">
-                Biggest volume<br/>
-                against XLM<br/>
-                in past 24 hours.
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid white;">
-                Biggest rise<br/>
-                against XLM<br/>
-                in past 24 hours.
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid darkred;">
-                Biggest drop<br/>
-                against XLM<br/>
-                in past 24 hours.
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid #66512c;">
-                Biggest volume<br/>
-                from white-listed assets<br/>
-                in past 24 hours (w/o XLM).
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid black;">
-                <div class="exchange-link" onclick="alert('debug: biggest rise chart');">
-                    <div id="biggestRiseChart" class="exchange-link-chart">
-                        <br/>Loading chart...
-                    </div>
-                    <script type="text/javascript">
-                        //TODO: make a WS call to figure out what assets should be used
-                        var biggestRiseChartUi;
-                        $(function() {
-                            biggestRiseChartUi = new ExchangeThumbnail(KnownAssets["LTC-Liquido"], KnownAssets.XCN);
-                            biggestRiseChartUi.Initialize("biggestRiseChart");
-                        });
-                    </script>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid yellow;">
-                ASDF<br /><br />
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit,<br />
-                sed do eiusmod tempor incididunt ut labore et dolore magna<br />
-                aliqua. Ut enim ad minim veniam, quis nostrud exercitation<br />
-                ullamco laboris nisi ut aliquip ex ea commodo consequat.<br />
-                Duis aute irure dolor in reprehenderit in voluptate velit<br />
-                esse cillum dolore eu fugiat nulla pariatur. Excepteur<br />
-                sint occaecat cupidatat non proident, sunt in culpa<br />
-                qui officia deserunt mollit anim id est laborum.
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid black;">
-                <div class="exchange-link" onclick="alert('debug: biggest rise chart');">
-                    <div id="asdfRiseChart" class="exchange-link-chart">
-                        <br/>Loading chart...
-                    </div>
-                    <script type="text/javascript">
-                        //TODO: make a WS call to figure out what assets should be used
-                        var asdfRiseChartUi;
-                        $(function() {
-                            asdfRiseChartUi = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets.EURT);
-                            asdfRiseChartUi.Initialize("asdfRiseChart");
-                        });
-                    </script>
-                </div>
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid green; color: red; font-weight: bold;">
-                TODO: unfortunately I'll need backend because evaluating the statistics in client
-                script would kill the browser (and user).
-            </div>
+        <div class="row exchanges-frame">
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-                <div class="exchange-link" onclick="alert('debug: highest XLM volume');">
+                <div class="exchange-link">
                     <div class="assetsDescription">
-                        <div class="lastPrice">3.14</div>
+                        <div class="lastPrice">0.00</div>
                         <div class="baseAssetDesc">
-                            <span class="baseAssetCode">XLM</span><br/><span class="baseAssetIssuer"></span>
+                            <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
                         </div>
                         <span class="slash">/</span>
                         <div class="counterAssetDesc">
-                            <span class="counterAssetCode">TELLUS</span><br/><span class="counterAssetIssuer">irene.energy</span>
+                            <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
                         </div>
-                        <div class="dailyChangePercent green">+1.74%</div>
+                        <div class="dailyChangePercent green">+0.00%</div>
                     </div>
-                    <div id="highestXlmVolumeChart" class="exchange-link-chart">
+                    <div id="highestXlmVolumeChart1" class="exchange-link-chart">
                         <br/>Loading data...
                     </div>
                     <script type="text/javascript">
                         //TODO: make a WS call to figure out what assets should be used
-                        var highestXlmVolumeChartUi;
+                        var highestXlmVolumeChart1Ui;
                         $(function() {
-                            highestXlmVolumeChartUi = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets["BTC-NaoBTC"]);
-                            highestXlmVolumeChartUi.Initialize("highestXlmVolumeChart");
+                            highestXlmVolumeChart1Ui = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets.MOBI);
+                            highestXlmVolumeChart1Ui.Initialize("highestXlmVolumeChart1");
                         });
                     </script>
                 </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                <div class="exchange-link">
+                    <div class="assetsDescription">
+                        <div class="lastPrice">0.00</div>
+                        <div class="baseAssetDesc">
+                            <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
+                        </div>
+                        <span class="slash">/</span>
+                        <div class="counterAssetDesc">
+                            <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
+                        </div>
+                        <div class="dailyChangePercent green">+0.00%</div>
+                    </div>
+                    <div id="highestXlmVolumeChart2" class="exchange-link-chart">
+                        <br/>Loading data...
+                    </div>
+                    <script type="text/javascript">
+                        //TODO: make a WS call to figure out what assets should be used
+                        var highestXlmVolumeChart2Ui;
+                        $(function() {
+                            highestXlmVolumeChart2Ui = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets["BTC-Stronghold"]);
+                            highestXlmVolumeChart2Ui.Initialize("highestXlmVolumeChart2");
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                <div class="exchange-link">
+                    <div class="assetsDescription">
+                        <div class="lastPrice">0.00</div>
+                        <div class="baseAssetDesc">
+                            <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
+                        </div>
+                        <span class="slash">/</span>
+                        <div class="counterAssetDesc">
+                            <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
+                        </div>
+                        <div class="dailyChangePercent green">+0.00%</div>
+                    </div>
+                    <div id="highestXlmVolumeChart3" class="exchange-link-chart">
+                        <br/>Loading data...
+                    </div>
+                    <script type="text/javascript">
+                        //TODO: make a WS call to figure out what assets should be used
+                        var highestXlmVolumeChart3Ui;
+                        $(function() {
+                            highestXlmVolumeChart3Ui = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets.REPO);
+                            highestXlmVolumeChart3Ui.Initialize("highestXlmVolumeChart3");
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                <div class="exchange-link">
+                    <div class="assetsDescription">
+                        <div class="lastPrice">0.00</div>
+                        <div class="baseAssetDesc">
+                            <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
+                        </div>
+                        <span class="slash">/</span>
+                        <div class="counterAssetDesc">
+                            <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
+                        </div>
+                        <div class="dailyChangePercent green">+0.00%</div>
+                    </div>
+                    <div id="highestXlmVolumeChart4" class="exchange-link-chart">
+                        <br/>Loading data...
+                    </div>
+                    <script type="text/javascript">
+                        //TODO: make a WS call to figure out what assets should be used
+                        var highestXlmVolumeChart4Ui;
+                        $(function() {
+                            highestXlmVolumeChart4Ui = new ExchangeThumbnail(KnownAssets.XLM, new Asset("HKDT", "HKDT coin", "credit_alphanum4",
+                                                                                                        new Account("GABSZVZBYEO5F4V5LZKV7GR4SAJ5IKJGGOF43BIN42FNDUG7QPH6IMRQ", "CryptoMover", "cryptomover.com")));
+                            highestXlmVolumeChart4Ui.Initialize("highestXlmVolumeChart4");
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                <div class="exchange-link">
+                    <div class="assetsDescription">
+                        <div class="lastPrice">0.00</div>
+                        <div class="baseAssetDesc">
+                            <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
+                        </div>
+                        <span class="slash">/</span>
+                        <div class="counterAssetDesc">
+                            <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
+                        </div>
+                        <div class="dailyChangePercent green">+0.00%</div>
+                    </div>
+                    <div id="highestXlmVolumeChart5" class="exchange-link-chart">
+                        <br/>Loading data...
+                    </div>
+                    <script type="text/javascript">
+                        //TODO: make a WS call to figure out what assets should be used
+                        var highestXlmVolumeChart5Ui;
+                        $(function() {
+                            highestXlmVolumeChart5Ui = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets.RMT);
+                            highestXlmVolumeChart5Ui.Initialize("highestXlmVolumeChart5");
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                <div class="exchange-link">
+                    <div class="assetsDescription">
+                        <div class="lastPrice">0.00</div>
+                        <div class="baseAssetDesc">
+                            <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
+                        </div>
+                        <span class="slash">/</span>
+                        <div class="counterAssetDesc">
+                            <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
+                        </div>
+                        <div class="dailyChangePercent green">+0.00%</div>
+                    </div>
+                    <div id="highestRiseInXlmChart" class="exchange-link-chart">
+                        <br/>Loading data...
+                    </div>
+                    <script type="text/javascript">
+                        //TODO: make a WS call to figure out what assets should be used
+                        var highestRiseInXlmChartUi;
+                        $(function() {
+                            var asset1 = KnownAssets.XLM;
+                            var asset2 = KnownAssets.EURT;
+                            highestRiseInXlmChartUi = new ExchangeThumbnail(asset1, asset2);
+                            highestRiseInXlmChartUi.Initialize("highestRiseInXlmChart");
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                <div class="exchange-link">
+                    <div class="assetsDescription">
+                        <div class="lastPrice">0.00</div>
+                        <div class="baseAssetDesc">
+                            <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
+                        </div>
+                        <span class="slash">/</span>
+                        <div class="counterAssetDesc">
+                            <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
+                        </div>
+                        <div class="dailyChangePercent green">+0.00%</div>
+                    </div>
+                    <div id="asdfChart" class="exchange-link-chart">
+                        <br/>Loading data...
+                    </div>
+                    <script type="text/javascript">
+                        //TODO: make a WS call to figure out what assets should be used
+                        var adsfChartUi;
+                        $(function() {
+                            var asset1 = KnownAssets.EQD;
+                            var asset2 = KnownAssets.EURT;
+                            asdfChartUi = new ExchangeThumbnail(asset1, asset2);
+                            asdfChartUi.Initialize("asdfChart");
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid green; color: red; font-weight: bold;">
+                TODO: unfortunately I'll need backend because evaluating the statistics in client
+                script would kill the browser (and user).
             </div>
         </div>
     </div>

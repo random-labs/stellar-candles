@@ -87,9 +87,15 @@ div.chartNoData {
 }
 
 /* Small exchange thumb. TODO: not sure if this is so general it should be here. Decide */
+div.exchanges-frame {
+    padding-left:40px;
+    padding-right:40px;
+}
+
 div.exchange-link {
     cursor: pointer;
     border: 2px solid #8396a0;
+    margin-top: 24px;
 }
 div.exchange-link:hover {
     border: 2px solid #4d81b0;
@@ -97,11 +103,11 @@ div.exchange-link:hover {
 div.exchange-link div.lastPrice {
     flex: 0 0 auto;
     padding-left: 10px;
-    font-size: 2.2em;
+    font-size: 1.7em;
     font-weight: bold;
 }
 div.exchange-link div.dailyChangePercent {
-    font-size: 2.2em;
+    font-size: 1.7em;
     padding-left: 10px;
     padding-right: 10px;
 }
@@ -124,7 +130,7 @@ div.exchange-link div.counterAssetDesc {
     padding-top: 10px;
 }
 div.exchange-link div.baseAssetDesc span.baseAssetCode, div.exchange-link div.counterAssetDesc span.counterAssetCode {
-    font-size: 2.2em;
+    font-size: 1.7em;
     font-weight: bold;
 }
 div.exchange-link div.baseAssetDesc span.baseAssetIssuer, div.exchange-link div.counterAssetDesc span.counterAssetIssuer {
