@@ -3,15 +3,17 @@
  */
 function SmallLineChart() {
 
-    this.GetDefaultChartConfig = function() {           //TODO: DELETE THIS WHEN ALL OPERATIONS ARE PROPERLY WRAPPED
-        myConfigCandleSticks.series[0].values = [];
-        myConfigCandleSticks.series[1].values = [];
-        return myConfigCandleSticks;
+    /**
+     * DEBUG!!!
+     */
+    this.CLEAR_DATA = function() {           //TODO: DELETE THIS
+        chartConfig.series[0].values = [];
     };
 
-    this.AddCandleData = function(candle, volume) {
-        myConfigCandleSticks.series[0].values.push(candle);
-        myConfigCandleSticks.series[1].values.push(volume);
+
+
+    this.AddPointData = function(point) {
+        chartConfig.series[0].values.push(point);
     };
 
     /**
@@ -19,26 +21,21 @@ function SmallLineChart() {
      * @param {number} timestamp - timestamp of the first candle in ticks
      */
     this.SetStartTime = function(timestamp) {
-        myConfigCandleSticks["scale-x"]["min-value"] = timestamp;
+        chartConfig["scale-x"]["min-value"] = timestamp;
     };
 
     /**
-     * Set scope of the Y axis, i.e. price. The axis will be divided into up to 7 equal segments for visual guidance.
+     * Set scope of the Y axis, i.e. price. The axis will be divided into up to 5 equal segments for visual guidance.
      * @param {number} minPrice - lower bound
      * @param {number} maxPrice - upper bound
      */
     this.SetPriceScale = function(minPrice, maxPrice, decimals) {
-        var step = (maxPrice - minPrice) / 7.0;
-        myConfigCandleSticks["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" + step.toFixed(decimals);
-    };
-
-    /**
-     * Set range of lower part of X axis (i.e. volume) by giving upper bound.
-     * @param {number} maxVolume
-     */
-    this.SetVolumeScale = function(maxVolume) {
-        var step = maxVolume / 3.0;
-        myConfigCandleSticks["scale-y-2"].values = "0:" + maxVolume.toFixed(2) + ":" + step.toFixed(2);
+        var step = (maxPrice - minPrice) / 5.0;
+        if (step < 0.00000100) {
+            //BUG: ZingChart fails to render with steps below 0.00000100
+            step = 0.00000100;
+        }
+        chartConfig["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" + step.toFixed(decimals);
     };
 
     this.ShowError = function(xhr, textStatus) {
@@ -58,19 +55,6 @@ function SmallLineChart() {
         });
     };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     var chartConfig =
     {
         "type": "line",
@@ -81,8 +65,8 @@ function SmallLineChart() {
         },
         "scale-x": {
             "line-color": "#5B6A72",
-            "min-value": 1383292800000,
-            "step": 3600000,
+            "min-value": 1383292800000, //Dummy. Real value must be set before rendering
+            "step": 900000,
             "transform": {
                 "type": "date",
                 "all": "%h %A"

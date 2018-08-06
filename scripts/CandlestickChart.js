@@ -31,6 +31,10 @@ function CandlestickChart() {
      */
     this.SetPriceScale = function(minPrice, maxPrice, decimals) {
         var step = (maxPrice - minPrice) / 7.0;
+        if (step < 0.00000100) {
+            //BUG: ZingChart fails to render properly with steps below 0.00000100
+            step = 0.00000100;
+        }
         myConfigCandleSticks["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" + step.toFixed(decimals);
     };
 

@@ -34,14 +34,6 @@ div.intervalButtons > a.selected {
     color: #4d81b0;
 }
 
-div.chartNoData {
-    height: 300px;
-    line-height: 300px;
-    background-color: white;
-    text-align: center;
-    font-size: 25px;
-}
-
 #tradeHistoryTable {
     border-right: 1px solid #5B6A72;
     border-left: 1px solid #5B6A72;

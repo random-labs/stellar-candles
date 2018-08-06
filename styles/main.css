@@ -78,6 +78,14 @@ th {
     color: red;
 }
 
+div.chartNoData {
+    height: 300px;
+    line-height: 300px;
+    background-color: white;
+    text-align: center;
+    font-size: 25px;
+}
+
 /* Small exchange thumb. TODO: not sure if this is so general it should be here. Decide */
 div.exchange-link {
     cursor: pointer;
@@ -90,6 +98,7 @@ div.exchange-link div.lastPrice {
     flex: 0 0 auto;
     padding-left: 10px;
     font-size: 2.2em;
+    font-weight: bold;
 }
 div.exchange-link div.dailyChangePercent {
     font-size: 2.2em;

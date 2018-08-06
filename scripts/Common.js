@@ -62,6 +62,9 @@ var Utils = {
     },
 
     IntervalAsMilliseconds: function(intervalDesc) {
+        if ("5min" === intervalDesc || "5m" === intervalDesc) {
+            return 300000;
+        }
         if ("15min" === intervalDesc || "15m" === intervalDesc) {
             return 900000;
         }
