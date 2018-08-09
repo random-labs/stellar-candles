@@ -4,7 +4,7 @@
 var AssetRepository = (function () {
     var _this = this;
     //TODO: KnownAssets should be moved here
-    this.CustomAssetCodes = new Array();
+    this.CustomAssetCodes = new Array();            //TODO: getters + private setters
     this.CustomAnchors = new Array();
     this.CustomAssets = new Array();
 
@@ -20,13 +20,32 @@ var AssetRepository = (function () {
             }
         }
         _this.CustomAssetCodes.push(assetCode);
+        serializeToCookie();
+    };
+
+    /**
+     * Add new issuer (a.k.a. anchor).
+     * @param address - Valid Stellar public key
+     * @param domain - optional domain or any name describing the anchor
+     * @returns {boolean} - true on success, false if an issuer with given address already exists
+     */
+    this.AddCustomAnchor = function(address, domain) {
+        //Don't add if it's already there
+        for (var i=0; i < _this.CustomAnchors.length; i++) {
+            if (_this.CustomAnchors[i].Address === address) {
+                return false;
+            }
+        }
+        _this.CustomAnchors.push(new Account(address, domain, domain));
+        serializeToCookie();
+        return true;
     };
 
     /**
      * Loads user's custom defined asset codes from cookie
      */
     var loadAssetCodes = function() {
-        var COOKIE_NAME = "CODES=";
+        var COOKIE_NAME = "aco=";
         var customCodes = new Array();
         var cookieText = document.cookie;
         if (cookieText.length <= 0) {
@@ -49,24 +68,24 @@ var AssetRepository = (function () {
 
     /**
      * Load and return user's custom anchor accounts (name+domain).
-     * @return Array of new Account instances
+     * @return Array of Account instances
      */
     var loadAnchors = function() {
-        const COOKIE_NAME = "ANCHORS=";
+        const COOKIE_NAME = "iss=";
         var customAnchors = new Array();
-        var cookieText = document.cookie;
+        const cookieText = document.cookie;
         if (cookieText.length <= 0) {
             return customAnchors;
         }
 
         var parts = cookieText.split(";");
         for (var i=0; i<parts.length; i++) {
-            var part = parts[i];
+            const part = parts[i].trim();
             if (part.indexOf(COOKIE_NAME) == 0) {
-                var anchors = part.substr(COOKIE_NAME.length).split("|");       //TODO: sanitize "|" in anchor name
+                var anchors = part.substr(COOKIE_NAME.length).split(",");       //TODO: sanitize "," in anchor name
                 for (var a=0; a<anchors.length; a++) {
-                    var anchorText = anchors[a];
-                    var dashIndex = anchorText.indexOf("-");                    //TODO: sanitize "-" and ";" in anchor name
+                    var anchorText = decodeURIComponent(anchors[a]);
+                    var dashIndex = anchorText.indexOf("/");                    //TODO: sanitize "/" and ";" in anchor name
                     var address = anchorText.substr(0, dashIndex);
                     var domain = anchorText.substr(dashIndex+1);
                     customAnchors.push(new Account(address, domain, domain));
@@ -88,7 +107,7 @@ var AssetRepository = (function () {
     };
 
     var serializeToCookie = function(){
-        var cookieText = "aco=";
+        var cookieText = "";
         //Asset codes
         var i = 0;
         for (i = 0; i<_this.CustomAssetCodes.length; i++) {
@@ -97,19 +116,21 @@ var AssetRepository = (function () {
             }
             cookieText += _this.CustomAssetCodes[i];
         }
+        setCookieValue("aco", cookieText);
 
         //Anchors
-        cookieText += ";iss=";
+        cookieText = "";
         for (i=0; i<_this.CustomAnchors.length; i++) {
             var anchor = _this.CustomAnchors[i];
             if (i>0) {
-                cookieText += "|"
+                cookieText += ","
             }
-            cookieText = anchor.Address + "-" + anchor.Domain;
+            cookieText += encodeURIComponent(anchor.Address + "/" + anchor.Domain);
         }
+        setCookieValue("iss", cookieText);
 
         //Assets
-        cookieText += ";ass=";
+        cookieText = "";
         for (i=0; i<_this.CustomAssets.length; i++) {
             var asset = _this.CustomAssets[i];
             if (i>0) {
@@ -118,9 +139,22 @@ var AssetRepository = (function () {
             //Format "asset_code"-"issuer_address"
             cookieText += asset.AssetCode + "-" + asset.Issuer.Address;
         }
+        setCookieValue("ass", cookieText);
+    };
+
+    var setCookieValue = function(key, value) {
+        if ((value || "").length <= 0) {
+            return;
+        }
+        var expiration = new Date();
+        expiration.setTime(expiration.getTime() + (1234*24*60*60*1000));  //Make it expire in 1234 days
+        document.cookie = key + "=" + value + ";expires=" + expiration.toUTCString();
     };
 
     loadAssetCodes();
-    loadAnchors();
+    this.CustomAnchors = loadAnchors();
     loadAssets();
+
+    //Return the actual singleton instance
+    return _this;
 })();

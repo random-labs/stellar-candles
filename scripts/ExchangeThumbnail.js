@@ -87,7 +87,7 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
 
             //Set price chart range
             minPrice = 0.97 * minPrice;
-            maxPrice = 1.03 * maxPrice;
+            maxPrice = 1.04 * maxPrice;
             var decimals = Utils.GetPrecisionDecimals(minPrice);
             _lineChart.SetPriceScale(minPrice, maxPrice, decimals);
 
