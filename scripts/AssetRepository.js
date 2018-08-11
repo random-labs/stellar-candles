@@ -41,6 +41,17 @@ var AssetRepository = (function () {
         return true;
     };
 
+    this.RemoveCustomAnchor = function(address) {
+        for (var i=0; i < _this.CustomAnchors.length; i++) {
+            if (_this.CustomAnchors[i].Address === address) {
+                _this.CustomAnchors.splice(i, 1);
+                serializeToCookie();
+                return true;
+            }
+        }
+        //No such anchor, nothing to remove
+        return false;
+    }
     /**
      * Loads user's custom defined asset codes from cookie
      */
@@ -84,6 +95,9 @@ var AssetRepository = (function () {
             if (part.indexOf(COOKIE_NAME) == 0) {
                 var anchors = part.substr(COOKIE_NAME.length).split(",");       //TODO: sanitize "," in anchor name
                 for (var a=0; a<anchors.length; a++) {
+                    if ((anchors[a] || "").length <= 0) {
+                        continue;
+                    }
                     var anchorText = decodeURIComponent(anchors[a]);
                     var dashIndex = anchorText.indexOf("/");                    //TODO: sanitize "/" and ";" in anchor name
                     var address = anchorText.substr(0, dashIndex);
@@ -143,9 +157,6 @@ var AssetRepository = (function () {
     };
 
     var setCookieValue = function(key, value) {
-        if ((value || "").length <= 0) {
-            return;
-        }
         var expiration = new Date();
         expiration.setTime(expiration.getTime() + (1234*24*60*60*1000));  //Make it expire in 1234 days
         document.cookie = key + "=" + value + ";expires=" + expiration.toUTCString();

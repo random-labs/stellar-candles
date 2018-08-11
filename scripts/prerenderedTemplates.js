@@ -77,3 +77,12 @@ var trimZeros = function(str) {
     return str.replace(/\.$/, '');      //Replace possible trailing dot (if the number was whole)
 };
 
+
+/*********************** Template for an item on the Configuration page, section Custom Anchors ***********************/
+var customAnchorItem = function(issuerDomain, issuerAddress) {
+    return "<div id='" + issuerAddress + "' class='customAnchorRow'>" +
+        issuerDomain + " - " + issuerAddress + " " +
+        "<span onclick='removeCustomAnchor(\"" + issuerAddress + "\");'> remove</span></div>";
+};
+
+/**********************************************************************************************************************/

@@ -5,6 +5,10 @@ input[type='text'] {
     color: black;
 }
 
+div#customAnchorsList {
+    margin-bottom: 30px;
+}
+
 input#newAnchorAddress {
     width: 500px;
 }
@@ -23,4 +27,20 @@ button {
     height: 25px;
     background-color: #23527c;
     color: white;
+}
+
+div.customAnchorRow {
+    margin-bottom: 8px;
+}
+@keyframes animateGreen {
+    from { background-color: #46B446; }
+    to { background-color: inherit; }
+}
+div.customAnchorRow.highlight {
+    animation: animateGreen 1s linear 1;
+}
+div.customAnchorRow > span {
+    cursor: pointer;
+    color: #ED8117;
+    font-weight: bold;
 }
