@@ -10,17 +10,31 @@ var AssetRepository = (function () {
 
     /**
      * Add new asset code (e.g. "USD", "BTC"...)
-     * @param {string} assetCode - up to 12 chars of new asset code
+     * @param {string} assetType - up to 12 chars of new asset code
+     * @returns {boolean} - true on success, false if given asset type already exists
      */
-    this.AddCustomAssetCode = function(assetCode) {
+    this.AddCustomAssetType = function(assetType) {
         //Don't add if it's already there
         for (var i=0; i<_this.CustomAssetCodes.length; i++) {
-            if (_this.CustomAssetCodes[i] === assetCode) {
-                return;
+            if (_this.CustomAssetCodes[i] === assetType) {
+                return false;
             }
         }
-        _this.CustomAssetCodes.push(assetCode);
+        _this.CustomAssetCodes.push(assetType);
         serializeToCookie();
+        return true;
+    };
+
+    this.RemoveCustomAssetType = function(assetType) {
+        for (var i=0; i < _this.CustomAssetCodes.length; i++) {
+            if (_this.CustomAssetCodes[i] === assetType) {
+                _this.CustomAssetCodes.splice(i, 1);
+                serializeToCookie();
+                return true;
+            }
+        }
+        //No such asset type, nothing to remove
+        return false;
     };
 
     /**
@@ -51,12 +65,13 @@ var AssetRepository = (function () {
         }
         //No such anchor, nothing to remove
         return false;
-    }
+    };
+
     /**
      * Loads user's custom defined asset codes from cookie
      */
     var loadAssetCodes = function() {
-        var COOKIE_NAME = "aco=";
+        var COOKIE_NAME = "aty=";
         var customCodes = new Array();
         var cookieText = document.cookie;
         if (cookieText.length <= 0) {
@@ -67,8 +82,11 @@ var AssetRepository = (function () {
         for (var i=0; i<parts.length; i++) {
             var part = parts[i];
             if (part.indexOf(COOKIE_NAME) == 0) {
-                var assetCodes = part.substr(COOKIE_NAME.length).split("|");       //TODO: sanitize "|" in anchor name
-                for (var a=0; a<assetCodes.length; a++) {      //"BTC", "USD"...
+                var assetCodes = part.substr(COOKIE_NAME.length).split(",");       //TODO: sanitize "," in asset type
+                for (var a=0; a<assetCodes.length; a++) {
+                    if ((assetCodes[a] || "").length <= 0) {
+                        continue;
+                    }
                     customCodes.push(assetCodes[a]);
                 }
             }
@@ -114,10 +132,17 @@ var AssetRepository = (function () {
      * Loads user's custom defined assets (code + anchor)
      */
     var loadAssets = function() {
-        var cookieText = document.cookie;
+        const COOKIE_NAME = "ass=";
+        const customAssets = new Array();
+        const cookieText = document.cookie;
         if (cookieText.length <= 0) {
             return;
         }
+
+
+
+
+        return customAssets;
     };
 
     var serializeToCookie = function(){
@@ -126,11 +151,11 @@ var AssetRepository = (function () {
         var i = 0;
         for (i = 0; i<_this.CustomAssetCodes.length; i++) {
             if (i>0) {
-                cookieText += "|";
+                cookieText += ",";
             }
             cookieText += _this.CustomAssetCodes[i];
         }
-        setCookieValue("aco", cookieText);
+        setCookieValue("aty", cookieText);
 
         //Anchors
         cookieText = "";
@@ -162,9 +187,9 @@ var AssetRepository = (function () {
         document.cookie = key + "=" + value + ";expires=" + expiration.toUTCString();
     };
 
-    loadAssetCodes();
+    this.CustomAssetCodes = loadAssetCodes();
     this.CustomAnchors = loadAnchors();
-    loadAssets();
+    this.CustomAssets = loadAssets();
 
     //Return the actual singleton instance
     return _this;

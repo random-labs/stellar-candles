@@ -80,9 +80,19 @@ var trimZeros = function(str) {
 
 /*********************** Template for an item on the Configuration page, section Custom Anchors ***********************/
 var customAnchorItem = function(issuerDomain, issuerAddress) {
-    return "<div id='" + issuerAddress + "' class='customAnchorRow'>" +
-        issuerDomain + " - " + issuerAddress + " " +
-        "<span onclick='removeCustomAnchor(\"" + issuerAddress + "\");'> remove</span></div>";
+    return "<div id='" + issuerAddress + "' class='customItemRow'><div class='itemTitle'>" +
+           issuerDomain + " - " + issuerAddress + " </div>" +
+           "<span onclick='removeCustomAnchor(\"" + issuerAddress + "\");'>remove</span></div>";
+};
+var noAnchorsMessage = function() {
+    return "<i>No custom issuers yet. Use the form below to add some.</i>";
 };
 
+var customAssetTypeItem = function(assetTypeCode) {
+    return "<div id='" + assetTypeCode + "' class='customItemRow'><div class='itemTitle'>" + assetTypeCode + " </div>" +
+           "<span onclick='removeAssetType(\"" + assetTypeCode + "\");'>remove</span></div>";
+};
+var noAssetTypesMessage = function() {
+    return "<i>No asset types yet. Use the form below to add some.</i>";
+};
 /**********************************************************************************************************************/

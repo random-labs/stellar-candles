@@ -1,3 +1,12 @@
+hr {
+    background-color: rgb(91, 106, 114);
+    height: 4px;
+}
+
+.paddedRow {
+    padding: 30px;
+}
+
 input[type='text'] {
     border: 1px solid black;
     margin-bottom: 4px;
@@ -5,7 +14,11 @@ input[type='text'] {
     color: black;
 }
 
-div#customAnchorsList {
+input#newAssetType, input#newAnchorAddress {
+    text-transform: uppercase;
+}
+
+div.valueList {
     margin-bottom: 30px;
 }
 
@@ -29,18 +42,31 @@ button {
     color: white;
 }
 
-div.customAnchorRow {
+div.customItemRow {
     margin-bottom: 8px;
+    border: 1px solid transparent;
+    cursor: default;
+}
+div.customItemRow:hover {
+    border: 1px solid #8396a0;
 }
 @keyframes animateGreen {
     from { background-color: #46B446; }
     to { background-color: inherit; }
 }
-div.customAnchorRow.highlight {
+div.customItemRow.highlight {
     animation: animateGreen 1s linear 1;
 }
-div.customAnchorRow > span {
+div.customItemRow > span {
     cursor: pointer;
     color: #ED8117;
     font-weight: bold;
+}
+div.customItemRow > div.itemTitle {
+    display: inline-block;
+    width: 82%;
+}
+
+div.customItemRow > span:hover {
+    text-decoration: underline;
 }

@@ -13,46 +13,55 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 </head>
 <body>
-    TODO: configure custom assets, issuers
-    </br>
-    (todo: process GET param selectAssetCode)
-    <br/><br>
-    <input type="text" id="txtDebug" placeholder="try..." style="width: 600px; border: 2px solid black;"/>
-    <br/>
-    <button onclick="setCookie()">Set cookie</button>
-    <button onclick="dumpCookie();">Show cookies</button>
-    <button onclick="eraseCookies();">Clear cookies</button>
-    <br/>
-    <div id="debug" style="width: 500px; height: 200px; border: 1px solid green;">Hello World</div>
-    <div class="row">
-        <div class="col-lg-6 col-md-6 col-sm-12" style="border: 1px solid blue;">
-            Custom asset symbols
-        </div>
-        <div class="col-lg-6 col-md-6 col-sm-12" style="border: 1px solid magenta;">
-            <h4>Custom anchors</h4>
-            <hr/>
-            <div id="customAnchorsList">
+    <div class="container-fluid">
+        <include src="components/header_row.html"></include>
+
+        </br>
+        (todo: process GET param selectAssetCode)
+        <br/><br>
+        <button onclick="dumpCookie();">Show cookies</button>
+        <button onclick="eraseCookies();">Clear cookies</button>
+        <br/>
+        <div id="debug" style="width: 500px; height: 200px; border: 1px solid green;">Hello World</div>
+        <h5>Manage custom assets to be used on the Exchange page.</h5>
+        <div class="row paddedRow">
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <h3>Custom asset types</h3>
+                <hr/>
+                <div id="customAssetTypesList" class="valueList"></div>
+
+                <label for="newAssetType">Asset type:</label>
+                <input type="text" id="newAssetType" placeholder="JPY, LTC..." maxlength="12"/>
+                <button id="addAssetTypeBtn">Add</button>
+                <br/><br/>
             </div>
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <h3>Custom anchors</h3>
+                <hr/>
+                <div id="customAnchorsList" class="valueList"> </div>
 
-            <label for="newAnchorAddress">Issuer address:</label>
-            <input type="text" id="newAnchorAddress" placeholder="GASJBQBTC4C5J7X..."/>
-            <br/>
-            <label for="newAnchorName">Issuer domain:</label>
-            <input type="text" id="newAnchorName" placeholder="example.com"/>
-            <button id="addAnchorBtn" >Add</button>
+                <label for="newAnchorAddress">Issuer address:</label>
+                <input type="text" id="newAnchorAddress" placeholder="GASJBQBTC4C5J7X..." maxlength="56"/>
+                <br/>
+                <label for="newAnchorName">Issuer domain:</label>
+                <input type="text" id="newAnchorName" placeholder="example.com"/>
+                <button id="addAnchorBtn" >Add</button>
 
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12" style="border: 1px solid chocolate">
-            Custom assets
+        <div class="row paddedRow">
+            <div class="col-lg-12" style="border: 1px solid chocolate">
+                <h3>Custom assets</h3>
+                <hr/>
+                <div id="customAssetsList" class="valueList"></div>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12" style="border: 1px solid chocolate">
-            <div id="customAssetDropDown">customAssetDropDown</div>
-            <div id="customAnchorDropDown">customAnchorDropDown</div>
-            <button>Add</button>
+        <div class="row">
+            <div class="col-lg-12" style="border: 1px solid chocolate">
+                <div id="customAssetDropDown">customAssetDropDown</div>
+                <div id="customAnchorDropDown">customAnchorDropDown</div>
+                <button>Add</button>
+            </div>
         </div>
     </div>
 
