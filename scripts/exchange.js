@@ -127,8 +127,12 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             chartConfig.series[1]["guide-label"].decimals = 2;  //TODO: chartConfig.setVolumeDecimals(__var__);
 
             //Set price chart range
-            minPrice = 0.95 * minPrice;
-            maxPrice = 1.05 * maxPrice;
+            var diff = maxPrice - minPrice;
+            if (diff === 0.0) {
+                diff = 0.01 * maxPrice;
+            }
+            minPrice = minPrice - 0.25*diff;
+            maxPrice = maxPrice + 0.25*diff;
             var decimals = Utils.GetPrecisionDecimals(minPrice);
             candlestickChart.SetPriceScale(minPrice, maxPrice, decimals);
 

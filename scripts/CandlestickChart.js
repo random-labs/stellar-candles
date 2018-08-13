@@ -196,8 +196,6 @@ function CandlestickChart() {
                 "type":"stock",
                 "scales": "scale-x,scale-y",
                 "guide-label": { //for crosshair plot labels
-                    "text": "open:%open  high:%high  low:%low  close: %close",
-                    "decimals": 2,
                     "visible": false
                 },
                 "trend-up":{

@@ -11,9 +11,19 @@ function SmallLineChart() {
     };
 
 
-
+    /**
+     * Add data for one point in the chart, i.e. timestamp and price
+     */
     this.AddPointData = function(point) {
         chartConfig.series[0].values.push(point);
+    };
+
+    /**
+     * Returns number of points to be rendered in this chart
+     * @returns {Number} number of points in this chart
+     */
+    this.DataPointCount = function() {
+        return chartConfig.series[0].values.length;
     };
 
     /**

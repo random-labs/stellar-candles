@@ -83,11 +83,23 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
                 _lineChart.SetStartTime(record.timestamp);
             });
 
+            //Special case: if we have only one point in the chart, use trick and add artificial starting point
+            //              with value equal to the existing point
+            if (_lineChart.DataPointCount() === 1) {
+                const artifPoint = [yesterday, startPrice];
+                _lineChart.AddPointData(artifPoint);
+                _lineChart.SetStartTime(yesterday);
+            }
+
             setPriceStatistics(placeHolderId, startPrice, lastPrice);
 
             //Set price chart range
-            minPrice = 0.97 * minPrice;
-            maxPrice = 1.04 * maxPrice;
+            var diff = maxPrice - minPrice;
+            if (diff === 0.0) {
+                diff = maxPrice;
+            }
+            minPrice = minPrice - 0.25*diff;
+            maxPrice = maxPrice + 0.3*diff;
             var decimals = Utils.GetPrecisionDecimals(minPrice);
             _lineChart.SetPriceScale(minPrice, maxPrice, decimals);
 
