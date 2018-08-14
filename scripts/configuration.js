@@ -1,4 +1,4 @@
-//Hookup button click handlers
+//TODO: refactor whole this into a class (Exchange.js-like style)
 $(function(){
     renderCustomAssetTypes();
     renderCustomAnchors();
@@ -8,6 +8,7 @@ $(function(){
     setupAssetTypeDropDown(assetType);
     setupAnchorDropDown();
 
+    //Hookup button click handlers
     $("#addAnchorBtn").click(function(){
         var issuerAddress = $("#newAnchorAddress").val();
         const issuerName = $("#newAnchorName").val();
@@ -28,12 +29,16 @@ $(function(){
         //TODO: validation
         if ((assetType || "").length > 0) {
             assetType = assetType.toUpperCase();
-            if (AssetRepository.AddCustomAssetType(assetType)) {
+            if (AssetRepository.AddCustomAssetCode(assetType)) {
                 $("#newAssetType").val("");
                 renderCustomAssetTypes();
                 highlightCustomItem(assetType);
             }
         }
+    });
+
+    $("#addAssetBtn").click(function(){
+        alert('TODO');
     });
 });
 
@@ -125,7 +130,14 @@ var renderCustomAnchors = function() {
 };
 
 var renderCustomAssets = function() {
-
+    var html = "";
+    for (var i=0; i < AssetRepository.CustomAssets.length; i++) {
+        html += customAssetItem(AssetRepository.CustomAssets[i].AssetCode, AssetRepository.CustomAssets[i].Issuer.Domain, AssetRepository.CustomAssets[i].Issuer.Address);
+    }
+    if (html.length <= 0) {
+        html = noAssetMessage();
+    }
+    $("#customAssetsList").html(html);
 };
 
 var removeCustomAnchor = function(anchorAddress) {
@@ -134,8 +146,8 @@ var removeCustomAnchor = function(anchorAddress) {
     }
 };
 
-var removeAssetType = function(assetType) {
-    if (AssetRepository.RemoveCustomAssetType(assetType)) {
+var removeAssetType = function(assetCode) {
+    if (AssetRepository.RemoveCustomAssetCode(assetCode)) {
         renderCustomAssetTypes();
     }
 };

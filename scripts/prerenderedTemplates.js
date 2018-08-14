@@ -88,11 +88,20 @@ var noAnchorsMessage = function() {
     return "<i>No custom issuers yet. Use the form below to add some.</i>";
 };
 
-var customAssetTypeItem = function(assetTypeCode) {
-    return "<div id='" + assetTypeCode + "' class='customItemRow'><div class='itemTitle'>" + assetTypeCode + " </div>" +
-           "<span onclick='removeAssetType(\"" + assetTypeCode + "\");'>remove</span></div>";
+var customAssetTypeItem = function(assetCode) {
+    return "<div id='" + assetCode + "' class='customItemRow'><div class='itemTitle'>" + assetCode + " </div>" +
+           "<span onclick='removeAssetType(\"" + assetCode + "\");'>remove</span></div>";
 };
 var noAssetTypesMessage = function() {
     return "<i>No asset types yet. Use the form below to add some.</i>";
+};
+
+var customAssetItem = function(assetCode, issuerDomain, issuerAddress) {
+    return "<div id='" + assetCode + "-" + issuerAddress + "' class='customItemRow'><div class='itemTitle'>" + assetCode + " </div>" +
+           "<span onclick='removeAsset(\"" + assetCode + "\", \"" + issuerAddress + "\");'>remove</span></div>";
+};
+
+var noAssetMessage = function() {
+    return "<i>No custom assets yet. Use the form below to add some.</i>";
 };
 /**********************************************************************************************************************/

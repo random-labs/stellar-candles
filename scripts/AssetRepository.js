@@ -10,24 +10,24 @@ var AssetRepository = (function () {
 
     /**
      * Add new asset code (e.g. "USD", "BTC"...)
-     * @param {string} assetType - up to 12 chars of new asset code
+     * @param {string} assetCode - up to 12 chars of new asset code
      * @returns {boolean} - true on success, false if given asset type already exists
      */
-    this.AddCustomAssetType = function(assetType) {
+    this.AddCustomAssetCode = function(assetCode) {
         //Don't add if it's already there
         for (var i=0; i<_this.CustomAssetCodes.length; i++) {
-            if (_this.CustomAssetCodes[i] === assetType) {
+            if (_this.CustomAssetCodes[i] === assetCode) {
                 return false;
             }
         }
-        _this.CustomAssetCodes.push(assetType);
+        _this.CustomAssetCodes.push(assetCode);
         serializeToCookie();
         return true;
     };
 
-    this.RemoveCustomAssetType = function(assetType) {
+    this.RemoveCustomAssetCode = function(assetCode) {
         for (var i=0; i < _this.CustomAssetCodes.length; i++) {
-            if (_this.CustomAssetCodes[i] === assetType) {
+            if (_this.CustomAssetCodes[i] === assetCode) {
                 _this.CustomAssetCodes.splice(i, 1);
                 serializeToCookie();
                 return true;
@@ -129,6 +129,21 @@ var AssetRepository = (function () {
     };
 
     /**
+     * Get issuer by their Stellar address
+     * @param issuerAddress - public key of an issuer
+     * @returns {Account} - first issuer with given address or NULL if no such is registered here
+     */
+    var findAnchorByAddress = function(issuerAddress) {
+        for (var i=0; i<_this.CustomAnchors.length; i++) {
+            if (issuerAddress === _this.CustomAnchors[i].Address) {
+                return _this.CustomAnchors[i];
+            }
+        }
+
+        return null;
+    };
+
+    /**
      * Loads user's custom defined assets (code + anchor)
      */
     var loadAssets = function() {
@@ -139,8 +154,26 @@ var AssetRepository = (function () {
             return;
         }
 
-
-
+        var parts = cookieText.split(";");
+        for (var i=0; i<parts.length; i++) {
+            const part = parts[i].trim();
+            if (part.indexOf(COOKIE_NAME) == 0) {
+                var assets = part.substr(COOKIE_NAME.length).split(",");
+                for (var a=0; a<assets.length; a++) {
+                    if ((assets[a] || "").length <= 0) {
+                        continue;
+                    }
+                    const assetText = decodeURIComponent(assets[a]);
+                    const dashIndex = assetText.indexOf("-");
+                    const assetCode = assetText.substr(0, dashIndex);
+                    const issuerAddress = assetText.substr(dashIndex+1);
+                    const issuer = findAnchorByAddress(issuerAddress);
+                    if (issuer != null) {   //User may have removed the issuer meanwhile
+                        customAssets.push(new Asset(assetCode, assetCode, null, issuer));
+                    }
+                }
+            }
+        }
 
         return customAssets;
     };
@@ -173,7 +206,7 @@ var AssetRepository = (function () {
         for (i=0; i<_this.CustomAssets.length; i++) {
             var asset = _this.CustomAssets[i];
             if (i>0) {
-                cookieText += "|";
+                cookieText += ",";
             }
             //Format "asset_code"-"issuer_address"
             cookieText += asset.AssetCode + "-" + asset.Issuer.Address;
