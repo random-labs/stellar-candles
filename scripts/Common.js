@@ -8,7 +8,8 @@ var Constants = {
     NATIVE_ASSET_TYPE: "native",
     DEFAULT_AMOUNT_DECIMALS: 4,
     DEFAULT_PRICE_DECIMALS: 4,
-    DefaultAssetCodes: ["XLM", "BCH", "BTC", "CNY", "ETH", "EURT", "KIN", "MOBI", "PHP", "REP", "REPO", "RMT", "SLT", "TARI", "TERN", "XCN", "XRP", "XYZ"],
+    //TODO: must contain only the really common ones (up to 10). Rename to CommonAssetTypes and move to the class AssetRepository
+    CommonAssetTypes: ["XLM", "BCH", "BTC", "CNY", "ETH", "EURT", "KIN", "MOBI", "PHP", "REP", "REPO", "RMT", "SLT", "TARI", "TERN", "XCN", "XRP", "XYZ"],
     Style: {
         GREEN: "#46B446",
         RED: "#ED8117",
@@ -38,7 +39,7 @@ var Utils = {
      */
     GetUrlParameter: function(paramName) {
         var paramValue = (window.location.search.split(paramName + '=')[1]||'').split('&')[0];
-        return paramValue;
+        return decodeURIComponent(paramValue);
     },
     /**
      * Assigns GET parameter in current URL and navigates.
@@ -90,5 +91,6 @@ var Utils = {
 }
 
 var GETParams = {
-    INTERVAL: "interval"
+    INTERVAL: "interval",
+    ASSET_TYPE: "assetType"
 }

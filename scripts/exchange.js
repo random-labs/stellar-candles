@@ -247,26 +247,27 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     initOrderBookStream();
     initChartStream();
 
-    var setupAssetCodesDropDown = function(dropDownId, selectedAssetCode) {
+    var setupAssetCodesDropDown = function(dropDownId, selectedAssetType) {
         //In case this is re-init, destroy previous instance
         $('div[id^="' + dropDownId + '"]').ddslick('destroy');
+
         var assetList = new Array();
-        Constants.DefaultAssetCodes.forEach(function(assetCode){
+        Constants.CommonAssetTypes.forEach(function(assetType){
             //Search for asset full name among know assets
             var assetFullName = " ";
             var assetImage = "unknown.png";
             for (var asset in KnownAssets) {
-                if (KnownAssets[asset].AssetCode === assetCode) {
+                if (KnownAssets[asset].AssetCode === assetType) {
                     assetFullName = KnownAssets[asset].FullName;
-                    assetImage = assetCode + ".png";
+                    assetImage = assetType + ".png";
                     break;
                 }
             }
 
             assetList.push({
-                text: assetCode,
-                value: assetCode,
-                selected: assetCode === selectedAssetCode,
+                text: assetType,
+                value: assetType,
+                selected: assetType === selectedAssetType,
                 description: assetFullName,
                 imageSrc: "./images/assets/" + assetImage
             });
@@ -318,7 +319,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             width: 250,
             onSelected: function (data) {
                 if ("ADD_CUSTOM"  === data.selectedData.value) {
-                    window.location.href = Constants.CONFIGURATION_URL + "?selectAssetCode=" + assetCode;
+                    window.location.href = Constants.CONFIGURATION_URL + "?" + GETParams.ASSET_TYPE + "=" + assetCode;
                 }
                 else {
                     changeAssets(true);

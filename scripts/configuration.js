@@ -2,6 +2,11 @@
 $(function(){
     renderCustomAssetTypes();
     renderCustomAnchors();
+    renderCustomAssets();
+
+    var assetType = Utils.GetUrlParameter(GETParams.ASSET_TYPE);
+    setupAssetTypeDropDown(assetType);
+    setupAnchorDropDown();
 
     $("#addAnchorBtn").click(function(){
         var issuerAddress = $("#newAnchorAddress").val();
@@ -32,6 +37,71 @@ $(function(){
     });
 });
 
+var setupAssetTypeDropDown = function(selectedAssetType) {
+    var assetTypesList = [{
+        text: "<i style='color: lightgray;'>asset type...</i>",
+        value: null
+    }];
+    Constants.CommonAssetTypes.forEach(function(assetType){     //TODO: + custom asset types
+        //Search for asset full name among know assets
+        var assetFullName = " ";
+        var assetImage = "unknown.png";
+        for (var asset in KnownAssets) {
+            if (KnownAssets[asset].AssetCode === assetType) {
+                assetFullName = KnownAssets[asset].FullName;
+                assetImage = assetType + ".png";
+                break;
+            }
+        }
+
+        assetTypesList.push({
+            text: assetType,
+            value: assetType,
+            selected: assetType === selectedAssetType,
+            description: assetFullName,
+            imageSrc: "./images/assets/" + assetImage
+        });
+    });
+
+    $("#assetTypesDropDown").ddslick({
+        data: assetTypesList,
+        width: 150,
+        onSelected: function (data) {
+            if (null === data.selectedData.value ) {
+                $('div[id^="anchorsDropDown"]').ddslick('select', {index: 0 });
+            }
+        }
+    });
+};
+
+
+var setupAnchorDropDown = function() {
+
+    var assetIssuersDdData = [{
+        text: "<i style='color: lightgray;'>asset issuer...</i>",
+        value: null
+    }];
+    for (var issuer in KnownAccounts) {         //TODO: This is wrong. Use default + custom anchors
+        const issuerAccount = KnownAccounts[issuer];
+        if (!issuerAccount.Address) {
+            continue;   //Skip members that are functions
+        }
+        assetIssuersDdData.push({
+            text: issuerAccount.Domain + " (" + issuerAccount.Address.substring(0, 16) + "...)",
+            description: issuerAccount.Domain,
+            value: issuerAccount.Address
+        });
+    }
+
+    $("#anchorsDropDown").ddslick({
+        data: assetIssuersDdData,
+        width: 400,
+        onSelected: function (data) {
+            alert("baf");
+        }
+    });
+};
+
 var renderCustomAssetTypes = function() {
     var html = "";
     for (var i=0; i < AssetRepository.CustomAssetCodes.length; i++) {
@@ -52,6 +122,10 @@ var renderCustomAnchors = function() {
         html = noAnchorsMessage();
     }
     $("#customAnchorsList").html(html);
+};
+
+var renderCustomAssets = function() {
+
 };
 
 var removeCustomAnchor = function(anchorAddress) {

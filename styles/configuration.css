@@ -42,6 +42,11 @@ button {
     color: white;
 }
 
+button.big-button {
+    height: 40px;
+    min-width: 80px;
+}
+
 div.customItemRow {
     margin-bottom: 8px;
     border: 1px solid transparent;
@@ -69,4 +74,12 @@ div.customItemRow > div.itemTitle {
 
 div.customItemRow > span:hover {
     text-decoration: underline;
+}
+
+div#assetTypesDropDown-dd-placeholder {
+    float: left;
+}
+div#anchorsDropDown-dd-placeholder {
+    float: left;
+    margin-left: 4px;
 }

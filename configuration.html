@@ -17,13 +17,13 @@
         <include src="components/header_row.html"></include>
 
         </br>
-        (todo: process GET param selectAssetCode)
+        (todo: process GET param selectAssetType)
         <br/><br>
         <button onclick="dumpCookie();">Show cookies</button>
         <button onclick="eraseCookies();">Clear cookies</button>
         <br/>
         <div id="debug" style="width: 500px; height: 200px; border: 1px solid green;">Hello World</div>
-        <h5>Manage custom assets to be used on the Exchange page.</h5>
+        <h5>Manage custom assets to be used on the Exchanges.</h5>
         <div class="row paddedRow">
             <div class="col-lg-4 col-md-4 col-sm-12">
                 <h3>Custom asset types</h3>
@@ -54,24 +54,24 @@
                 <h3>Custom assets</h3>
                 <hr/>
                 <div id="customAssetsList" class="valueList"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12" style="border: 1px solid chocolate">
-                <div id="customAssetDropDown">customAssetDropDown</div>
-                <div id="customAnchorDropDown">customAnchorDropDown</div>
-                <button>Add</button>
+                <br/>
+                <div style="width:600px; float: left;">
+                    <div id="assetTypesDropDown">assetTypesDropDown</div>
+                    <div id="anchorsDropDown">anchorsDropDown</div>
+                </div>
+                <button class="big-button">Add</button>
             </div>
         </div>
     </div>
 
     <include src="components/footer.html"></include>
 
-    <script type="text/javascript" src="scripts/3rdParty/bootstrap.min.js?v=20180326"></script>
-    <script src="scripts/UIHelpers.js"></script>
-    <script type="text/javascript" src="scripts/Account.js?v=20180417"> </script>
-    <script type="text/javascript" src="scripts/Asset.js?v=20180412"> </script>
-    <script type="text/javascript" src="scripts/Common.js?v=20180325"> </script>
+    <script type="text/javascript" src="./scripts/3rdParty/bootstrap.min.js?v=20180326"></script>
+    <script type="text/javascript" src="./scripts/3rdParty/jquery.ddslick.js" ></script>
+    <script type="text/javascript" src="./scripts/UIHelpers.js"></script>
+    <script type="text/javascript" src="./scripts/Account.js?v=20180417"> </script>
+    <script type="text/javascript" src="./scripts/Asset.js?v=20180412"> </script>
+    <script type="text/javascript" src="./scripts/Common.js?v=20180325"> </script>
     <script type="text/javascript" src="./scripts/AssetRepository.js?v=20180808"> </script>
     <script type="text/javascript" src="./scripts/prerenderedTemplates.js?v=20180810"></script>
     <script type="text/javascript" src="./scripts/configuration.js?v=20180808"> </script>

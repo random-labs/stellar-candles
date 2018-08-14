@@ -51,7 +51,7 @@ Asset.ParseFromUrlParam = function(assetUrlParam) {
 };
 
 
-var KnownAssets = {
+var KnownAssets = {     //TODO: move to the AssetRepository?
     "XLM" : new Asset("XLM", "Lumen", "native", {Address:null, ShortName:"(native)"}),
     "BAT" : new Asset("BAT", "Basic Attention Token", "credit_alphanum4", KnownAccounts.Papaya1),
     "BCH-Papaya" : new Asset("BCH", "Bitcoin Cash", "credit_alphanum4", KnownAccounts.Papaya4),
