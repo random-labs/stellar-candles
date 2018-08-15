@@ -120,7 +120,7 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
         //Set daily change as percentage
         var dailyChange = lastPrice / startPrice -1.0;
         dailyChange *= 100.0;
-        const changeAsString = (dailyChange < 0.0 ? "" : "+") +  dailyChange.toFixed(2) + "%";
+        const changeAsString = (dailyChange <= 0.0 ? "" : "+") +  dailyChange.toFixed(2) + "%";
         const cssClass = dailyChange < 0.0 ? "red" : "green";
         _lineChart.SetLineColor(dailyChange < 0.0 ? Constants.Style.RED : Constants.Style.GREEN);
         _lineChart.SetBackgroundColor(dailyChange < 0.0 ? Constants.Style.LIGHT_RED : Constants.Style.LIGHT_GREEN);

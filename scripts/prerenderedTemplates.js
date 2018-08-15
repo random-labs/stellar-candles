@@ -82,7 +82,7 @@ var trimZeros = function(str) {
 var customAnchorItem = function(issuerDomain, issuerAddress) {
     return "<div id='" + issuerAddress + "' class='customItemRow'><div class='itemTitle'>" +
            issuerDomain + " - " + issuerAddress + " </div>" +
-           "<span onclick='removeCustomAnchor(\"" + issuerAddress + "\");'>remove</span></div>";
+           "<span onclick='ConfigurationUi.RemoveCustomAnchor(\"" + issuerAddress + "\");'>remove</span></div>";
 };
 var noAnchorsMessage = function() {
     return "<i>No custom issuers yet. Use the form below to add some.</i>";
@@ -90,15 +90,16 @@ var noAnchorsMessage = function() {
 
 var customAssetTypeItem = function(assetCode) {
     return "<div id='" + assetCode + "' class='customItemRow'><div class='itemTitle'>" + assetCode + " </div>" +
-           "<span onclick='removeAssetType(\"" + assetCode + "\");'>remove</span></div>";
+           "<span onclick='ConfigurationUi.RemoveAssetType(\"" + assetCode + "\");'>remove</span></div>";
 };
 var noAssetTypesMessage = function() {
     return "<i>No asset types yet. Use the form below to add some.</i>";
 };
 
 var customAssetItem = function(assetCode, issuerDomain, issuerAddress) {
-    return "<div id='" + assetCode + "-" + issuerAddress + "' class='customItemRow'><div class='itemTitle'>" + assetCode + " </div>" +
-           "<span onclick='removeAsset(\"" + assetCode + "\", \"" + issuerAddress + "\");'>remove</span></div>";
+    return "<div id='" + assetCode + "-" + issuerAddress + "' class='customItemRow'>" +
+           "<div class='itemTitle'>" + assetCode + "-" + issuerDomain + " (" + issuerAddress + ")</div>" +
+           "<span onclick='ConfigurationUi.RemoveAsset(\"" + assetCode + "\", \"" + issuerAddress + "\");'>remove</span></div>";
 };
 
 var noAssetMessage = function() {

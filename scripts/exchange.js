@@ -1,5 +1,6 @@
+const exchangeUi = new Exchange("baseAssetCodeDropDown", "baseAssetAnchorDropDown", "counterAssetCodeDropDown", "counterAssetAnchorDropDown");
+
 $(function() {
-    var exchangeUi = new Exchange("baseAssetCodeDropDown", "baseAssetAnchorDropDown", "counterAssetCodeDropDown", "counterAssetAnchorDropDown");
     exchangeUi.Initialize();
 });
 
@@ -23,6 +24,10 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     $(window).bind('hashchange', function() {
         _this.Initialize();
     });
+    $("a#swapAssetsLink").on('click', function () {
+        swapAssets();
+        return false;
+    });
 
     this.Initialize = function() {
         parseAssetsFromUrl();
@@ -37,7 +42,11 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         renderCandlestickChart();
     };
 
-    this.SwapAssets = function() {
+    /**
+     * Switch base and counter asset on current exchange 
+     * @private
+     */
+    var swapAssets = function() {
         //Keep it simple - flip it through URL
         var currentUrl = window.location.href;
         var hashIndex = currentUrl.indexOf("#");

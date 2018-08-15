@@ -84,7 +84,6 @@ function SmallLineChart() {
     var chartConfig =
     {
         "type": "line",
-//        "background-color": "gray",
         "utc": false,
         "plotarea": {
             "margin": "dynamic 30 60 dynamic"
@@ -128,7 +127,6 @@ function SmallLineChart() {
                      */
                 ],
                 "cursor": "pointer"
-//                "line-color": "#46B446"
             }
         ]
     };

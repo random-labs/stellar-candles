@@ -1,6 +1,7 @@
+const ConfigurationUi = new Configuration();
+
 $(function(){
-    var config = new Configuration();
-    config.Initialize();
+    ConfigurationUi.Initialize();
 });
 
 
@@ -10,6 +11,8 @@ $(function(){
  */
 function Configuration() {
     var _this = this;
+    var _selectedAssetCode = null;
+    var _selectedIssuerAddress = null;
 
     this.Initialize = function() {
         renderCustomAssetCodes();
@@ -50,7 +53,13 @@ function Configuration() {
         });
 
         $("#addAssetBtn").click(function(){
-            alert('TODO');
+            if (null == _selectedAssetCode || null == _selectedIssuerAddress) {
+                return;
+            }
+            if (AssetRepository.AddCustomAsset(_selectedAssetCode, _selectedIssuerAddress)) {
+                renderCustomAssets();
+                highlightCustomItem(_selectedAssetCode + "-" + _selectedIssuerAddress);
+            }
         });
     };
 
@@ -90,6 +99,7 @@ function Configuration() {
                 if (null === data.selectedData.value ) {
                     $('div[id^="anchorsDropDown"]').ddslick('select', {index: 0 });
                 }
+                _selectedAssetCode = data.selectedData.value;
             }
         });
     };
@@ -116,7 +126,7 @@ function Configuration() {
             data: assetIssuersDdData,
             width: 400,
             onSelected: function (data) {
-                alert("baf");
+                _selectedIssuerAddress = data.selectedData.value
             }
         });
     };
@@ -154,15 +164,21 @@ function Configuration() {
         $("#customAssetsList").html(html);
     };
     
-    var removeCustomAnchor = function(anchorAddress) {
+    this.RemoveCustomAnchor = function(anchorAddress) {
         if (AssetRepository.RemoveCustomAnchor(anchorAddress)) {
             renderCustomAnchors();
         }
     };
     
-    var removeAssetType = function(assetCode) {
+    this.RemoveAssetType = function(assetCode) {
         if (AssetRepository.RemoveCustomAssetCode(assetCode)) {
             renderCustomAssetCodes();
+        }
+    };
+
+    this.RemoveAsset = function(assetCode, anchorAddress) {
+        if (AssetRepository.RemoveCustomAsset(assetCode, anchorAddress)) {
+            renderCustomAssets();
         }
     };
     

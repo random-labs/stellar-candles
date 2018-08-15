@@ -55,6 +55,10 @@ var AssetRepository = (function () {
         return true;
     };
 
+    /**
+     * Remove custom issuer by their address
+     * @param {string} address - anchor's issuing address
+     */
     this.RemoveCustomAnchor = function(address) {
         for (var i=0; i < _this.CustomAnchors.length; i++) {
             if (_this.CustomAnchors[i].Address === address) {
@@ -68,10 +72,64 @@ var AssetRepository = (function () {
     };
 
     /**
+     * Add new asset with given code and issuer's address
+     * @param {string} assetCode - existing asset code
+     * @param {string} issuerAddress - address of an anchor
+     * @returns {boolean} - true on success, false if given asset already exists
+     */
+    this.AddCustomAsset = function(assetCode, issuerAddress) {
+        //Don't add if it's already there
+        for (var i=0; i<_this.CustomAssets.length; i++) {
+            if (_this.CustomAssets[i].AssetCode === assetCode && _this.CustomAssets[i].Issuer.Address) {
+                return false;
+            }
+        }
+        //Try to match the address with known issuer.
+        var issuer = null;
+        for (var a=0; a<_this.CustomAnchors.length; a++) {
+            if (issuerAddress === _this.CustomAnchors[a].Address) {
+                issuer = _this.CustomAnchors[a];
+                break;
+            }
+        }
+
+        //Not a problem if issuer's not found (user might have delete anchor meanwhile), simply use short address
+        if (null === issuer) {
+            const issuerName = issuerAddress.substring(0, 10) + "...";
+            issuer = new Account(issuerAddress, issuerName, issuerName);
+        }
+
+        const newAsset = new Asset(assetCode, assetCode, null, issuer);
+        _this.CustomAssets.push(newAsset);
+        serializeToCookie();
+        return true;
+    };
+
+    /**
+     * Remove existing asset with given code and issuer's address
+     * @param {string} assetCode - asset code of a known asset
+     * @param {string} issuerAddress - address of an anchor
+     * @returns {boolean} - true on success, false if given asset is not registered here
+     */
+    this.RemoveCustomAsset = function(assetCode, issuerAddress) {
+        for (var i=0; i<_this.CustomAssets.length; i++) {
+            if (_this.CustomAssets[i].AssetCode === assetCode && _this.CustomAssets[i].Issuer.Address) {
+                _this.CustomAssets.splice(i, 1);
+                serializeToCookie();
+                return true;
+            }
+        }
+        //Asset isn't registered here
+        return false;
+    };
+
+
+    /**
      * Loads user's custom defined asset codes from cookie
+     * @private
      */
     var loadAssetCodes = function() {
-        var COOKIE_NAME = "aty=";
+        var COOKIE_NAME = "aco=";
         var customCodes = new Array();
         var cookieText = document.cookie;
         if (cookieText.length <= 0) {
@@ -80,7 +138,7 @@ var AssetRepository = (function () {
 
         var parts = cookieText.split(";");
         for (var i=0; i<parts.length; i++) {
-            var part = parts[i];
+            var part = parts[i].trim();
             if (part.indexOf(COOKIE_NAME) == 0) {
                 var assetCodes = part.substr(COOKIE_NAME.length).split(",");       //TODO: sanitize "," in asset type
                 for (var a=0; a<assetCodes.length; a++) {
@@ -133,18 +191,21 @@ var AssetRepository = (function () {
      * @param issuerAddress - public key of an issuer
      * @returns {Account} - first issuer with given address or NULL if no such is registered here
      */
-    var findAnchorByAddress = function(issuerAddress) {
+    var getAnchorByAddress = function(issuerAddress) {
         for (var i=0; i<_this.CustomAnchors.length; i++) {
             if (issuerAddress === _this.CustomAnchors[i].Address) {
                 return _this.CustomAnchors[i];
             }
         }
 
-        return null;
+        //Anchor not found among know issuers. Don't give up and create one
+        const shortname = issuerAddress.substring(0, 10) + "...";
+        return new Account(issuerAddress, shortname, shortname);
     };
 
     /**
      * Loads user's custom defined assets (code + anchor)
+     * @private
      */
     var loadAssets = function() {
         const COOKIE_NAME = "ass=";
@@ -167,10 +228,9 @@ var AssetRepository = (function () {
                     const dashIndex = assetText.indexOf("-");
                     const assetCode = assetText.substr(0, dashIndex);
                     const issuerAddress = assetText.substr(dashIndex+1);
-                    const issuer = findAnchorByAddress(issuerAddress);
-                    if (issuer != null) {   //User may have removed the issuer meanwhile
-                        customAssets.push(new Asset(assetCode, assetCode, null, issuer));
-                    }
+                    var issuerName = issuerAddress.substring(0, 10) + "...";
+                    const issuer = getAnchorByAddress(issuerAddress);
+                    customAssets.push(new Asset(assetCode, assetCode, null, issuer));
                 }
             }
         }
@@ -188,7 +248,7 @@ var AssetRepository = (function () {
             }
             cookieText += _this.CustomAssetCodes[i];
         }
-        setCookieValue("aty", cookieText);
+        setCookieValue("aco", cookieText);
 
         //Anchors
         cookieText = "";
@@ -216,7 +276,7 @@ var AssetRepository = (function () {
 
     var setCookieValue = function(key, value) {
         var expiration = new Date();
-        expiration.setTime(expiration.getTime() + (1234*24*60*60*1000));  //Make it expire in 1234 days
+        expiration.setTime(expiration.getTime() + (700*24*60*60*1000));  //Make it expire in 700 days
         document.cookie = key + "=" + value + ";expires=" + expiration.toUTCString();
     };
 

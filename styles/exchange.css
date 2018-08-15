@@ -10,7 +10,7 @@ div#counterAssetAnchorDropDown-dd-placeholder {
 
 div.chartButton {
     float: left;
-    font-size:1.2em;
+    font-size: 2em;
     /*Lots of hard-code here :-( */
     line-height: 38px;
 }
@@ -21,6 +21,7 @@ div.swapButton {
     text-align: center;
 }
 div.swapButton>a {
+    color: #355572;
     text-decoration: none;
 }
 
