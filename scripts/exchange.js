@@ -1,3 +1,9 @@
+$(function() {
+    var exchangeUi = new Exchange("baseAssetCodeDropDown", "baseAssetAnchorDropDown", "counterAssetCodeDropDown", "counterAssetAnchorDropDown");
+    exchangeUi.Initialize();
+});
+
+
 /**
  * UI model to the Exchange page
  */

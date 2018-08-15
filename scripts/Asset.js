@@ -4,7 +4,10 @@
 function Asset(code, fullName, type, account) {
     this.AssetCode = code || "XLM";
     this.FullName = fullName;
-    this.AssetType = type || code.length <= 4 ? "credit_alphanum4" : "credit_alphanum12";
+    this.AssetType = type;
+    if (null === type ) {
+        this.AssetType = code.length <= 4 ? "credit_alphanum4" : "credit_alphanum12";
+    }
     this.Issuer = account;
 
     this.ToUrlParameters = function(prefix) {
