@@ -68,7 +68,7 @@ function Configuration() {
      */
     var setupAssetCodeDropDown = function(selectedAssetType) {
         var assetTypesList = [{
-            text: "<i style='color: lightgray;'>asset type...</i>",
+            text: "<i style='color: gray;'>asset type...</i>",
             value: null
         }];
         Constants.CommonAssetTypes.forEach(function(assetType){     //TODO: + custom asset types
@@ -107,7 +107,7 @@ function Configuration() {
     var setupAnchorDropDown = function() {
 
         var assetIssuersDdData = [{
-            text: "<i style='color: lightgray;'>asset issuer...</i>",
+            text: "<i style='color: gray;'>asset issuer...</i>",
             value: null
         }];
         for (var issuer in KnownAccounts) {         //TODO: This is wrong. Use default + custom anchors

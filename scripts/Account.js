@@ -1,10 +1,24 @@
 /**
  * Account on Stellar ledger
+ * @constructor
  */
 function Account(address, shortName, domain) {
     this.Address = address;
     this.ShortName = shortName;
+    if (null === shortName && null != address) {
+        this.ShortName = address.substring(0, 16) + "...";
+    }
     this.Domain = domain;
+    if (null === domain) {
+        this.Domain = this.ShortName;
+    }
+
+    /**
+     * True for dummy issuer of XLM
+     */
+    this.IsNativeIssuer = function() {
+        return null === address;
+    };
 }
 
 var KnownAccounts = {
@@ -17,6 +31,7 @@ var KnownAccounts = {
     "CryptoMover10" : new Account("GDBCHKTHJUKDGSIQSTBUXFWVP3QVART5LED6KRZQ5X4Z5WLT4BGYXWCI", "CryptoMover", "cryptomover.com"),
     "CryptoMover3" : new Account("GDU2FEL6THGGOFDHHP4I5FHNWY4S2SXYUBCEDB5ZREMD6UFRT4SYWSW2", "CryptoMover", "cryptomover.com"),
     "CryptoMoverA" : new Account("GBWZHAVWY23QKKDJW7TXLSIHY5EX4NIB37O4NMRKN2SKNWOSE5TEPCY3", "CryptoMover", "cryptomover.com"),
+    "CryptoMoverH" : new Account("GABSZVZBYEO5F4V5LZKV7GR4SAJ5IKJGGOF43BIN42FNDUG7QPH6IMRQ", "CryptoMover", "cryptomover.com"),
     "CryptoTari" : new Account("GD7UVDDJHJYKUXB4SJFIC6VJDQ4YADQCMRN3KLHJFV4H6NIUAEREVCO7", "CryptoTari", "cryptotari.io"),
     "eQuid" : new Account("GCGEQJR3E5BVMQYSNCHPO6NPP3KOT4VVZHIOLSRSNLE2GFY7EWVSLLTN", "eQuid", "equid.co"),
     "Firefly" : new Account("GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY", "Firefly", "fchain.io"),

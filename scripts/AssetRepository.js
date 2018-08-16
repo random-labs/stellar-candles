@@ -95,8 +95,7 @@ var AssetRepository = (function () {
 
         //Not a problem if issuer's not found (user might have delete anchor meanwhile), simply use short address
         if (null === issuer) {
-            const issuerName = issuerAddress.substring(0, 10) + "...";
-            issuer = new Account(issuerAddress, issuerName, issuerName);
+            issuer = new Account(issuerAddress, null, null);
         }
 
         const newAsset = new Asset(assetCode, assetCode, null, issuer);
@@ -198,9 +197,8 @@ var AssetRepository = (function () {
             }
         }
 
-        //Anchor not found among know issuers. Don't give up and create one
-        const shortname = issuerAddress.substring(0, 10) + "...";
-        return new Account(issuerAddress, shortname, shortname);
+        //Anchor not found among know issuers. Don't give up and create a dummy one
+        return new Account(issuerAddress, null, null);
     };
 
     /**
@@ -228,7 +226,6 @@ var AssetRepository = (function () {
                     const dashIndex = assetText.indexOf("-");
                     const assetCode = assetText.substr(0, dashIndex);
                     const issuerAddress = assetText.substr(dashIndex+1);
-                    var issuerName = issuerAddress.substring(0, 10) + "...";
                     const issuer = getAnchorByAddress(issuerAddress);
                     customAssets.push(new Asset(assetCode, assetCode, null, issuer));
                 }

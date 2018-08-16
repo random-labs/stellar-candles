@@ -126,8 +126,7 @@
                         //TODO: make a WS call to figure out what assets should be used
                         var highestXlmVolumeChart4Ui;
                         $(function() {
-                            highestXlmVolumeChart4Ui = new ExchangeThumbnail(KnownAssets.XLM, new Asset("HKDT", "HKDT coin", "credit_alphanum4",
-                                                                                                        new Account("GABSZVZBYEO5F4V5LZKV7GR4SAJ5IKJGGOF43BIN42FNDUG7QPH6IMRQ", "CryptoMover", "cryptomover.com")));
+                            highestXlmVolumeChart4Ui = new ExchangeThumbnail(KnownAssets.CMA, KnownAssets.HKDT);
                             highestXlmVolumeChart4Ui.Initialize("highestXlmVolumeChart4");
                         });
                     </script>

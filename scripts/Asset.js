@@ -46,10 +46,6 @@ Asset.ParseFromUrlParam = function(assetUrlParam) {
         issuerAddress = assetUrlParam.substring(index + 1);
     }
 
-    if (!assetType) {
-        assetType = assetCode.length <= 4 ? "credit_alphanum4" : "credit_alphanum12";
-    }
-
     return new Asset(assetCode, null, assetType, new Account(issuerAddress, null, null));
 };
 
@@ -76,6 +72,7 @@ var KnownAssets = {     //TODO: move to the AssetRepository?
     "ETH-Stronghold" : new Asset("ETH", "Ethereum", "credit_alphanum4", KnownAccounts.Stronghold),
     "EUR-Moni" : new Asset("EUR", "Euro", "credit_alphanum4", KnownAccounts.Moni),
     "EURT" : new Asset("EURT", "Euro", "credit_alphanum4", KnownAccounts.Tempo),
+    "HKDT" : new Asset("HKDT", "Hong Kong Dollar", "credit_alphanum4", KnownAccounts.CryptoMoverH),
     "ICN" : new Asset("ICN", "Iconomi", "credit_alphanum4", KnownAccounts.Papaya1),
     "JPY" : new Asset("JPY", "Japanese Yen", "credit_alphanum4", KnownAccounts.VcBearJPY),
     "KIN-Papaya" : new Asset("KIN", "Kin token", "credit_alphanum4", KnownAccounts.Papaya1),

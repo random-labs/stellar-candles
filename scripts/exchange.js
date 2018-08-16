@@ -262,31 +262,45 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     initOrderBookStream();
     initChartStream();
 
-    var setupAssetCodesDropDown = function(dropDownId, selectedAssetType) {
+    var setupAssetCodesDropDown = function(dropDownId, selectedAssetCode) {
         //In case this is re-init, destroy previous instance
         $('div[id^="' + dropDownId + '"]').ddslick('destroy');
 
         var assetList = new Array();
-        Constants.CommonAssetTypes.forEach(function(assetType){
+        var found = false;
+        Constants.CommonAssetTypes.forEach(function(assetCode){
             //Search for asset full name among know assets
             var assetFullName = " ";
             var assetImage = "unknown.png";
             for (var asset in KnownAssets) {
-                if (KnownAssets[asset].AssetCode === assetType) {
+                if (KnownAssets[asset].AssetCode === assetCode) {
                     assetFullName = KnownAssets[asset].FullName;
-                    assetImage = assetType + ".png";
+                    assetImage = assetCode + ".png";
                     break;
                 }
             }
+            if (assetCode === selectedAssetCode) {
+                found = true;
+            }
 
             assetList.push({
-                text: assetType,
-                value: assetType,
-                selected: assetType === selectedAssetType,
+                text: assetCode,
+                value: assetCode,
+                selected: assetCode === selectedAssetCode,
                 description: assetFullName,
                 imageSrc: "./images/assets/" + assetImage
             });
         });
+
+        //Some unknown code
+        if (!found) {
+            assetList.splice(0, 0, {    //Insert at beginning
+                text: selectedAssetCode,
+                value: selectedAssetCode,
+                selected: true,
+                imageSrc: "./images/assets/unknown.png"
+            });
+        }
 
         assetList.push({
             text: "[+] Add",
@@ -314,12 +328,26 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         var issuersArray = KnownAssets.GetIssuersByAsset(assetCode);
         var issuerAccount = KnownAccounts.GetAccountByAddress(assetIssuer.Address);
         var assetIssuersDdData = new Array();
+        var found = assetIssuer.IsNativeIssuer();
         for (var i=0; i<issuersArray.length; i++) {
             assetIssuersDdData.push({
                 text: issuersArray[i].ShortName,
                 description: issuersArray[i].Domain,
                 value: issuersArray[i].Address,
                 selected: issuersArray[i] == issuerAccount
+            });
+            if (issuersArray[i] == issuerAccount) {
+                found = true;
+            }
+        }
+
+        //Some unknown address, probably from manual URL
+        if (!found) {
+            assetIssuersDdData.splice(0, 0, {    //Insert at beginning
+                text: assetIssuer.ShortName,
+                description: "unknown (" + assetIssuer.Address + ")",
+                value: assetIssuer.Address,
+                selected: true
             });
         }
 
