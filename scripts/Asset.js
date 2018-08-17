@@ -52,6 +52,7 @@ Asset.ParseFromUrlParam = function(assetUrlParam) {
 
 var KnownAssets = {     //TODO: move to the AssetRepository?
     "XLM" : new Asset("XLM", "Lumen", "native", {Address:null, ShortName:"(native)"}),
+    "ABDT" : new Asset("ABDT", "Atlantis Blue", null, KnownAccounts.AtlantisBlue),
     "BAT" : new Asset("BAT", "Basic Attention Token", "credit_alphanum4", KnownAccounts.Papaya1),
     "BCH-Papaya" : new Asset("BCH", "Bitcoin Cash", "credit_alphanum4", KnownAccounts.Papaya4),
     "BTC-Golix" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.Golix),
@@ -72,6 +73,7 @@ var KnownAssets = {     //TODO: move to the AssetRepository?
     "ETH-Stronghold" : new Asset("ETH", "Ethereum", "credit_alphanum4", KnownAccounts.Stronghold),
     "EUR-Moni" : new Asset("EUR", "Euro", "credit_alphanum4", KnownAccounts.Moni),
     "EURT" : new Asset("EURT", "Euro", "credit_alphanum4", KnownAccounts.Tempo),
+    "GTN" : new Asset("GTN", "Glitzkoin", null, new Account("GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46", "Glitzkoin.com", null)),
     "HKDT" : new Asset("HKDT", "Hong Kong Dollar", "credit_alphanum4", KnownAccounts.CryptoMoverH),
     "ICN" : new Asset("ICN", "Iconomi", "credit_alphanum4", KnownAccounts.Papaya1),
     "JPY" : new Asset("JPY", "Japanese Yen", "credit_alphanum4", KnownAccounts.VcBearJPY),

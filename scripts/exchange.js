@@ -1,6 +1,7 @@
-const exchangeUi = new Exchange("baseAssetCodeDropDown", "baseAssetAnchorDropDown", "counterAssetCodeDropDown", "counterAssetAnchorDropDown");
+var exchangeUi = null;
 
 $(function() {
+    exchangeUi = new Exchange("baseAssetCodeDropDown", "baseAssetAnchorDropDown", "counterAssetCodeDropDown", "counterAssetAnchorDropDown");
     exchangeUi.Initialize();
 });
 
@@ -24,9 +25,9 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     $(window).bind('hashchange', function() {
         _this.Initialize();
     });
-    $("a#swapAssetsLink").on('click', function () {
+    $("a#swapAssetsLink").on('click', function (ev) {
         swapAssets();
-        return false;
+        ev.preventDefault();
     });
 
     this.Initialize = function() {
@@ -147,6 +148,9 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 diff = 0.01 * maxPrice;
             }
             minPrice = minPrice - 0.25*diff;
+            if (minPrice < 0.0) {
+                minPrice = 0.0;
+            }
             maxPrice = maxPrice + 0.25*diff;
             var decimals = Utils.GetPrecisionDecimals(minPrice);
             candlestickChart.SetPriceScale(minPrice, maxPrice, decimals);
@@ -268,7 +272,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
 
         var assetList = new Array();
         var found = false;
-        Constants.CommonAssetTypes.forEach(function(assetCode){
+        AssetRepository.AvailableAssetCodes().forEach(function(assetCode){
             //Search for asset full name among know assets
             var assetFullName = " ";
             var assetImage = "unknown.png";
@@ -298,7 +302,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 text: selectedAssetCode,
                 value: selectedAssetCode,
                 selected: true,
-                imageSrc: "./images/assets/unknown.png"
+                imageSrc: "./images/assets/unknown.png"         //TODO: we still may have the icon even if it's not a common asset!
             });
         }
 

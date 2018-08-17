@@ -3,9 +3,17 @@
  */
 var AssetRepository = (function () {
     var _this = this;
-    //TODO: KnownAssets should be moved here
-    this.CustomAssetCodes = new Array();            //TODO: getters + private setters
-    this.CustomAnchors = new Array();
+    var _assetCodes = ["XLM", "BTC", "CNY", "ETH", "EURT", "HKDT", "LTC", "MOBI", "PHP", "REPO", "RMT", "SLT", "TERN", "USD"];
+
+    /**
+     * Get array of asset codes available to the user (i.e. basic ones + user's custom).
+     **/
+    this.AvailableAssetCodes = function() {
+        return _assetCodes.concat(this.CustomAssetCodes);   //TODO: consider performance. This is called way to many times
+    };
+
+    this.CustomAssetCodes = new Array();
+    this.CustomAnchors = new Array();            //TODO: getters + private setters
     this.CustomAssets = new Array();
 
     /**
@@ -277,7 +285,7 @@ var AssetRepository = (function () {
         document.cookie = key + "=" + value + ";expires=" + expiration.toUTCString();
     };
 
-    this.CustomAssetCodes = loadAssetCodes();
+    this.CustomAssetCodes = this.CustomAssetCodes.concat(loadAssetCodes());
     this.CustomAnchors = loadAnchors();
     this.CustomAssets = loadAssets();
 

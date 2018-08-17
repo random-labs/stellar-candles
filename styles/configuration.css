@@ -51,6 +51,10 @@ div.customItemRow {
     margin-bottom: 8px;
     border: 1px solid transparent;
     cursor: default;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
 }
 div.customItemRow:hover {
     border: 1px solid #8396a0;
@@ -63,13 +67,13 @@ div.customItemRow.highlight {
     animation: animateGreen 1s linear 1;
 }
 div.customItemRow > span {
+    padding-right: 10px;
     cursor: pointer;
     color: #ED8117;
     font-weight: bold;
 }
 div.customItemRow > div.itemTitle {
-    display: inline-block;
-    width: 82%;
+    flex: 1;
 }
 
 div.customItemRow > span:hover {

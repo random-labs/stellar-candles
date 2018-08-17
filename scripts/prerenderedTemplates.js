@@ -88,9 +88,9 @@ var noAnchorsMessage = function() {
     return "<i>No custom issuers yet. Use the form below to add some.</i>";
 };
 
-var customAssetTypeItem = function(assetCode) {
+var customAssetCodeItem = function(assetCode) {
     return "<div id='" + assetCode + "' class='customItemRow'><div class='itemTitle'>" + assetCode + " </div>" +
-           "<span onclick='ConfigurationUi.RemoveAssetType(\"" + assetCode + "\");'>remove</span></div>";
+           "<span onclick='ConfigurationUi.RemoveAssetCode(\"" + assetCode + "\");'>remove</span></div>";
 };
 var noAssetTypesMessage = function() {
     return "<i>No asset types yet. Use the form below to add some.</i>";

@@ -8,8 +8,6 @@ var Constants = {
     NATIVE_ASSET_TYPE: "native",
     DEFAULT_AMOUNT_DECIMALS: 4,
     DEFAULT_PRICE_DECIMALS: 4,
-    //TODO: must contain only the really common ones (up to 10). Rename to CommonAssetTypes and move to the class AssetRepository
-    CommonAssetTypes: ["XLM", "BCH", "BTC", "CNY", "ETH", "EURT", "KIN", "MOBI", "PHP", "REP", "REPO", "RMT", "SLT", "TARI", "TERN", "XCN", "XRP", "XYZ"],
     Style: {
         GREEN: "#46B446",
         RED: "#ED8117",
@@ -26,6 +24,9 @@ var Utils = {
      */
     GetPrecisionDecimals: function(value) {
         var decimals = 3;
+        if (value <= 0.0) {
+            return decimals;
+        }
         while (value < 1.0) {
             value *= 10;
             decimals++;
@@ -88,9 +89,9 @@ var Utils = {
         //Make it fail in a distinct way
         return -5050505;
     }
-}
+};
 
 var GETParams = {
     INTERVAL: "interval",
     ASSET_TYPE: "assetType"
-}
+};

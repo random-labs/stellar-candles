@@ -1,7 +1,8 @@
-const ConfigurationUi = new Configuration();
+var configurationUi = null;
 
-$(function(){
-    ConfigurationUi.Initialize();
+$(function() {
+    configurationUi = new Configuration();
+    configurationUi.Initialize();
 });
 
 
@@ -71,7 +72,7 @@ function Configuration() {
             text: "<i style='color: gray;'>asset type...</i>",
             value: null
         }];
-        Constants.CommonAssetTypes.forEach(function(assetType){     //TODO: + custom asset types
+        AssetRepository.AvailableAssetCodes().forEach(function(assetType){
             //Search for asset full name among know assets
             var assetFullName = " ";
             var assetImage = "unknown.png";
@@ -134,7 +135,7 @@ function Configuration() {
     var renderCustomAssetCodes = function() {
         var html = "";
         for (var i=0; i < AssetRepository.CustomAssetCodes.length; i++) {
-            html += customAssetTypeItem(AssetRepository.CustomAssetCodes[i]);
+            html += customAssetCodeItem(AssetRepository.CustomAssetCodes[i]);
         }
         if (html.length <= 0) {
             html = noAssetTypesMessage();
@@ -170,7 +171,7 @@ function Configuration() {
         }
     };
     
-    this.RemoveAssetType = function(assetCode) {
+    this.RemoveAssetCode = function(assetCode) {
         if (AssetRepository.RemoveCustomAssetCode(assetCode)) {
             renderCustomAssetCodes();
         }

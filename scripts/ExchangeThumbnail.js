@@ -99,6 +99,9 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
                 diff = maxPrice;
             }
             minPrice = minPrice - 0.25*diff;
+            if (minPrice < 0.0) {
+                minPrice = 0.0;
+            }
             maxPrice = maxPrice + 0.3*diff;
             var decimals = Utils.GetPrecisionDecimals(minPrice);
             _lineChart.SetPriceScale(minPrice, maxPrice, decimals);
