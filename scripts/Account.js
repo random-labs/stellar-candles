@@ -5,11 +5,11 @@
 function Account(address, shortName, domain) {
     this.Address = address;
     this.ShortName = shortName;
-    if (null === shortName && null != address) {
+    if ((shortName || "").length <= 0 && null != address) {
         this.ShortName = address.substring(0, 16) + "...";
     }
     this.Domain = domain;
-    if (null === domain) {
+    if ((domain || "").length <= 0) {
         this.Domain = this.ShortName;
     }
 

@@ -25,44 +25,85 @@ function Configuration() {
         setupAnchorDropDown();
 
         //Hookup button click handlers
-        $("#addAnchorBtn").click(function(){
-            var issuerAddress = $("#newAnchorAddress").val();
-            const issuerName = $("#newAnchorName").val();
-            //TODO: validation + default 'domain' if none is given
-            if ((issuerAddress || "").length > 0 && (issuerName || "").length > 0) {
-                issuerAddress = issuerAddress.toUpperCase();
-                if (AssetRepository.AddCustomAnchor(issuerAddress, issuerName)) {
-                    $("#newAnchorAddress").val("");
-                    $("#newAnchorName").val("");
-                    renderCustomAnchors();
-                    highlightCustomItem(issuerAddress);
-                }
+        $("#addAnchorBtn").click(function() {
+            if (validateInput("newAnchorAddress")) {
+                addAnchor();
             }
         });
-
-        $("#addAssetTypeBtn").click(function(){
-            var assetType = $("#newAssetType").val();
-            //TODO: validation
-            if ((assetType || "").length > 0) {
-                assetType = assetType.toUpperCase();
-                if (AssetRepository.AddCustomAssetCode(assetType)) {
-                    $("#newAssetType").val("");
-                    renderCustomAssetCodes();
-                    highlightCustomItem(assetType);
-                }
+        $("#addAssetCodeBtn").click(function() {
+            if (validateInput("newAssetCode")) {
+                addAssetCode();
             }
         });
+        $("#addAssetBtn").click(addAsset);
 
-        $("#addAssetBtn").click(function(){
-            if (null == _selectedAssetCode || null == _selectedIssuerAddress) {
-                return;
-            }
-            if (AssetRepository.AddCustomAsset(_selectedAssetCode, _selectedIssuerAddress)) {
-                renderCustomAssets();
-                highlightCustomItem(_selectedAssetCode + "-" + _selectedIssuerAddress);
-            }
+        $("input#newAssetCode").keydown(function(e){ handleKeyDown(e, addAssetCode) });
+        $("input#newAnchorAddress").keydown(function(e){ handleKeyDown(e, addAnchor) });
+        $("input#newAnchorName").keydown(function(e){
+            handleKeyDown({
+                target: $("input#newAnchorAddress"),    //This is unbelievably ugly
+                which: e.which
+            }, addAnchor)
         });
     };
+
+    this.RemoveCustomAnchor = function(anchorAddress) {
+        if (AssetRepository.RemoveCustomAnchor(anchorAddress)) {
+            renderCustomAnchors();
+        }
+    };
+    
+    this.RemoveAssetCode = function(assetCode) {
+        if (AssetRepository.RemoveCustomAssetCode(assetCode)) {
+            renderCustomAssetCodes();
+        }
+    };
+
+    this.RemoveAsset = function(assetCode, anchorAddress) {
+        if (AssetRepository.RemoveCustomAsset(assetCode, anchorAddress)) {
+            renderCustomAssets();
+        }
+    };
+
+    const handleKeyDown = function(event, okCallback){
+        const input = $(event.target);
+        if(event.which == 13/*Enter*/) {
+            if (validateInput(input.attr("id"))) {
+                okCallback();
+            }
+        }
+        else {
+            input.removeClass("invalid");
+        }
+    };
+
+    const validateInput = function(inputId) {
+        const input = $("input#" + inputId);
+        const value = $(input).val();
+        let valid = true;
+        if ("" == value) {
+            valid = false;
+        }
+        else {
+            //Get regex from attribute of the input and validate against it
+            const regexPattern = $(input).data("validation-regex");
+            const regex = new RegExp(regexPattern);
+            valid = regex.test(value);
+        }
+
+        if (!valid) {
+            $(input).addClass("invalid");
+            $("[data-hint-for='" + inputId + "']").show();
+        }
+        else {
+            $(input).removeClass("invalid");
+            $("[data-hint-for='" + inputId + "']").hide();
+        }
+
+        return valid;
+    };
+
+
 
     /** @private
      * Setup the drop-down with known asset codes
@@ -154,9 +195,9 @@ function Configuration() {
         $("#customAnchorsList").html(html);
     };
     
-    var renderCustomAssets = function() {
-        var html = "";
-        for (var i=0; i < AssetRepository.CustomAssets.length; i++) {
+    const renderCustomAssets = function() {
+        let html = "";
+        for (let i=0; i < AssetRepository.CustomAssets.length; i++) {
             html += customAssetItem(AssetRepository.CustomAssets[i].AssetCode, AssetRepository.CustomAssets[i].Issuer.Domain, AssetRepository.CustomAssets[i].Issuer.Address);
         }
         if (html.length <= 0) {
@@ -164,33 +205,57 @@ function Configuration() {
         }
         $("#customAssetsList").html(html);
     };
-    
-    this.RemoveCustomAnchor = function(anchorAddress) {
-        if (AssetRepository.RemoveCustomAnchor(anchorAddress)) {
+
+    /**
+     * Collect inputs and create new anchor with name and stellar address
+     * @private
+     */
+    const addAnchor = function(){
+        const issuerAddress = $("#newAnchorAddress").val().toUpperCase();
+        const issuerName = $("#newAnchorName").val();
+        if (AssetRepository.AddCustomAnchor(issuerAddress, issuerName)) {
+            $("#newAnchorAddress").val("");
+            $("#newAnchorName").val("");
             renderCustomAnchors();
-        }
-    };
-    
-    this.RemoveAssetCode = function(assetCode) {
-        if (AssetRepository.RemoveCustomAssetCode(assetCode)) {
-            renderCustomAssetCodes();
+            highlightCustomItem(issuerAddress);
         }
     };
 
-    this.RemoveAsset = function(assetCode, anchorAddress) {
-        if (AssetRepository.RemoveCustomAsset(assetCode, anchorAddress)) {
-            renderCustomAssets();
+    /**
+     * Add custom asset type code from the text input
+     * @private
+     */
+    const addAssetCode = function() {
+        const assetType = $("#newAssetCode").val().toUpperCase();
+        if (AssetRepository.AddCustomAssetCode(assetType)) {
+            $("#newAssetCode").val("");
+            renderCustomAssetCodes();
+            highlightCustomItem(assetType);
         }
     };
-    
-    var highlightCustomItem = function(itemId) {
+
+    /**
+     * Add custom asset
+     * @private
+     */
+    const addAsset = function(){
+        if (null == _selectedAssetCode || null == _selectedIssuerAddress) {
+            return;
+        }
+        if (AssetRepository.AddCustomAsset(_selectedAssetCode, _selectedIssuerAddress)) {
+            renderCustomAssets();
+            highlightCustomItem(_selectedAssetCode + "-" + _selectedIssuerAddress);
+        }
+    };
+
+    const highlightCustomItem = function(itemId) {
         $("#"+itemId).addClass("highlight");
     };
 }
 
 
 /********************************************* DEBUG *********************************************/
-var dumpCookie = function(){
+const dumpCookie = function(){
     const cookies = document.cookie.split(";");
     var text = "";
     for (var i=0; i<cookies.length; i++) {

@@ -10,11 +10,23 @@ hr {
 input[type='text'] {
     border: 1px solid black;
     margin-bottom: 4px;
-    height: 25px;
+    height: 28px;
     color: black;
 }
 
-input#newAssetType, input#newAnchorAddress {
+input.invalid {
+    border-color: #ED8117;
+    background-color: #FAD9B9;
+}
+
+div[data-hint-for] {
+    display: none;
+    margin-left: 125px;
+    margin-bottom: 5px;
+    color: #ED8117;
+}
+
+input#newAssetCode, input#newAnchorAddress {
     text-transform: uppercase;
 }
 
@@ -37,9 +49,14 @@ label {
 button {
     border: none;
     border-radius: 3px;
-    height: 25px;
+    height: 28px;
+    min-width: 50px;
     background-color: #23527c;
     color: white;
+}
+button:focus, button:hover {
+    background-color: #4d81b0;
+    font-weight: bold;
 }
 
 button.big-button {
