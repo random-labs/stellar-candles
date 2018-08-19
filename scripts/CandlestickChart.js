@@ -25,6 +25,14 @@ function CandlestickChart() {
     };
 
     /**
+     * Set resolution of X axis in milliseconds, i.e. how much time does one candle represent.
+     * @param {number} millisInCandle - number of miliseconds in one candle
+     */
+    this.SetCandleSize = function(millisInCandle) {
+        myConfigCandleSticks["scale-x"]["step"] = millisInCandle;
+    };
+
+    /**
      * Set scope of the Y axis, i.e. price. The axis will be divided into up to 7 equal segments for visual guidance.
      * @param {number} minPrice - lower bound
      * @param {number} maxPrice - upper bound
@@ -141,7 +149,7 @@ function CandlestickChart() {
         },
         "scale-x":{
             "min-value": 1438592400000,
-            "step": "day",
+            "step": "day",      //Candle size from input
             "transform": {
                 "type": "date",
                 "all": "%D,<br>%M %d"

@@ -48,9 +48,11 @@ var KnownAccounts = {
     "Papaya4" : new Account("GAEGOS7I6TYZSVHPSN76RSPIVL3SELATXZWLFO4DIAFYJF7MPAHFE7H4", "Papaya", "apay.io"),   //Does only BCH
     "RippleFox" : new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "RippleFox", "ripplefox.com"),
     "RepoCoin" : new Account("GCZNF24HPMYTV6NOEHI7Q5RJFFUI23JKUKY3H3XTQAFBQIBOHD5OXG3B", "RepoCoin", "repocoin.io"),
+    "SixNetwork" : new Account("GDMS6EECOH6MBMCP3FYRYEVRBIV3TQGLOFQIPVAITBRJUMTI6V7A2X6Z", "Six Network", "six.network"),
     "SmartLands": new Account("GCKA6K5PCQ6PNF5RQBF7PQDJWRHO6UOGFMRLK3DYHDOI244V47XKQ4GP", "SmartLands", "smartlands.io"),
     "StemChain" : new Account("GAFXX2VJE2EGLLY3EFA2BQXJADAZTNR7NC7IJ6LFYPSCLE7AI3AK3B3M", "StemChain", "stemchain.io"),
     "Stronghold" : new Account("GBSTRH4QOTWNSVA6E4HFERETX4ZLSR3CIUBLK7AXYII277PFJC4BBYOG", "Stronghold", "stronghold.co"),
+    "StrongholdU" : new Account("GBSTRUSD7IRX73RQZBL3RQUH6KS3O4NYFY3QCALDLZD77XMZOPWAVTUK", "Stronghold", "stronghold.co"),
     "SureRemit" : new Account("GDEGOXPCHXWFYY234D2YZSPEJ24BX42ESJNVHY5H7TWWQSYRN5ZKZE3N", "SureRemit", "sureremit.co"),
     "TaiChiChain" : new Account("GDVJQHR5JZIGW76WBQREFMTYZ3JAKLSX2JTNT2P6DI4M7JR7VHUCNODY", "Tai Chi Chain", "taichichain.org"),
     "Tempo" : new Account("GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S", "Tempo", "tempo.eu.com"),

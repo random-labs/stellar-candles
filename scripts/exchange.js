@@ -8,6 +8,7 @@ $(function() {
 
 /**
  * UI model to the Exchange page
+ * @constructor
  */
 function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDownId, counterIssuerDropDownId) {
     this.BaseAsset = null;
@@ -15,7 +16,6 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     this.ChartInterval = 900000;    //15min candles by default
 
     var _this = this;
-    var candlestickChart = new CandlestickChart();
     var baseAssetDdId = baseAssetDropDownId;
     var baseAnchorDdId = baseIssuerDropDownId;
     var counterAssetDdId = counterAssetDropDownId;
@@ -47,17 +47,17 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
      * Switch base and counter asset on current exchange 
      * @private
      */
-    var swapAssets = function() {
+    const swapAssets = function() {
         //Keep it simple - flip it through URL
-        var currentUrl = window.location.href;
-        var hashIndex = currentUrl.indexOf("#");
-        var slashIndex = currentUrl.lastIndexOf("/");
+        const currentUrl = window.location.href;
+        const hashIndex = currentUrl.indexOf("#");
+        const slashIndex = currentUrl.lastIndexOf("/");
         if (-1 === hashIndex || -1 === slashIndex || slashIndex<hashIndex) {
             return;
         }
-        var newUrl = currentUrl.substring(0, hashIndex+1) +
-                     currentUrl.substring(slashIndex+1) + "/" +
-                     currentUrl.substring(hashIndex+1, slashIndex);
+        const newUrl = currentUrl.substring(0, hashIndex+1) +
+                       currentUrl.substring(slashIndex+1) + "/" +
+                       currentUrl.substring(hashIndex+1, slashIndex);
         window.location = newUrl;
     };
 
@@ -88,9 +88,9 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             throw new Error("Invalid URL parameters (missing counter asset): " + urlPart);
         }
 
-        var baseAssetPart = urlPart.substring(0, index);
+        const baseAssetPart = urlPart.substring(0, index);
         _this.BaseAsset = Asset.ParseFromUrlParam(baseAssetPart);
-        var counterAssetPart = urlPart.substring(index + 1);
+        let counterAssetPart = urlPart.substring(index + 1);
         if (counterAssetPart.indexOf('?') > -1) {
             counterAssetPart = counterAssetPart.split('?')[0];
         }
@@ -98,9 +98,9 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     };
 
 
-    var renderCandlestickChart = function() {
+    const renderCandlestickChart = function() {
         const dataRange = "&resolution=" + _this.ChartInterval + "&limit=70";
-        var url = Constants.API_URL + "/trade_aggregations?" + _this.BaseAsset.ToUrlParameters("base") + "&" + _this.CounterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
+        const url = Constants.API_URL + "/trade_aggregations?" + _this.BaseAsset.ToUrlParameters("base") + "&" + _this.CounterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
 
         $.getJSON(url, function(data) {
             if (data._embedded.records.length == 0) {
@@ -108,42 +108,43 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 return;
             }
 
-            $("#marketChart").empty();          //TODO: make the ID an input
-            var chartConfig = candlestickChart.GetDefaultChartConfig();
-            var minPrice = Number.MAX_VALUE;
-            var maxPrice = -1.0;
-            var maxVolume = -1.0;
+            $("#marketChart").empty();
+            const candlestickChart = new CandlestickChart();
+            var chartConfig = candlestickChart.GetDefaultChartConfig();     //TODO: encapsulation
+            let minPrice = Number.MAX_VALUE;
+            let maxPrice = -1.0;
+            let maxVolume = -1.0;
 
             $.each(data._embedded.records, function(i, record) {
                 //Collect data for a single candle in the candlestick chart
-                var open = parseFloat(record.open);
-                var high = parseFloat(record.high);
+                const open = parseFloat(record.open);
+                const high = parseFloat(record.high);
                 if (high > maxPrice) {
                     maxPrice = high;
                 }
-                var low = parseFloat(record.low);
+                const low = parseFloat(record.low);
                 if (low < minPrice) {
                     minPrice = low;
                 }
-                var close = parseFloat(record.close);
-                var candle = [record.timestamp, [open, high, low, close]];      //BUG: ZingChart seems to have open and close messed
+                const close = parseFloat(record.close);
+                const candle = [record.timestamp, [open, high, low, close]];      //BUG: ZingChart seems to have open and close messed
 
                 //Collect data for bar chart with volume
-                var volume = parseFloat(record.base_volume);
+                const volume = parseFloat(record.base_volume);
                 if (volume > maxVolume) {
                     maxVolume = volume;
                 }
-                var volumeBar = [record.timestamp, volume];
+                const volumeBar = [record.timestamp, volume];
                 candlestickChart.AddCandleData(candle, volumeBar);
 
                 candlestickChart.SetStartTime(record.timestamp);
             });
 
-            chartConfig["scale-x"].step = "15minute";
+            candlestickChart.SetCandleSize(_this.ChartInterval);
             chartConfig.series[1]["guide-label"].decimals = 2;  //TODO: chartConfig.setVolumeDecimals(__var__);
 
             //Set price chart range
-            var diff = maxPrice - minPrice;
+            let diff = maxPrice - minPrice;
             if (diff === 0.0) {
                 diff = 0.01 * maxPrice;
             }
@@ -152,7 +153,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 minPrice = 0.0;
             }
             maxPrice = maxPrice + 0.25*diff;
-            var decimals = Utils.GetPrecisionDecimals(minPrice);
+            const decimals = Utils.GetPrecisionDecimals(minPrice);
             candlestickChart.SetPriceScale(minPrice, maxPrice, decimals);
 
             //Set volume chart range
@@ -216,14 +217,14 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             });
     };
 
-    var getOrderBook = function(baseAsset, counterAsset) {
-        var url = Constants.API_URL + "/order_book?" + baseAsset.ToUrlParameters("selling") + "&" + counterAsset.ToUrlParameters("buying") + "&limit=17";
+    const getOrderBook = function(baseAsset, counterAsset) {
+        const url = Constants.API_URL + "/order_book?" + baseAsset.ToUrlParameters("selling") + "&" + counterAsset.ToUrlParameters("buying") + "&limit=17";
 
         $.getJSON(url, function(data) {
             data = addAutobridgedOffers(data);
 
             $("#orderBookBids").empty();
-            var sumBidsAmount = 0.0;
+            let sumBidsAmount = 0.0;
             $.each(data.bids, function(i, bid) {
                 var amount = parseFloat(bid.amount) / parseFloat(bid.price);
                 sumBidsAmount += amount;
@@ -231,13 +232,13 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             });
 
             $("#orderBookAsks").empty();
-            var sumAsksAmount = 0.0;
+            let sumAsksAmount = 0.0;
             $.each(data.asks, function(i, ask) {
                 sumAsksAmount += parseFloat(ask.amount);
                 $(askOfferRow(ask, sumAsksAmount)).prependTo("#orderBookAsks");
             });
 
-            var maxCumulativeAmount = Math.max(sumBidsAmount, sumAsksAmount);
+            const maxCumulativeAmount = Math.max(sumBidsAmount, sumAsksAmount);
             colorizeOrderBookVolume($("#orderBookBids"), Constants.Style.LIGHT_GREEN, maxCumulativeAmount);
             colorizeOrderBookVolume($("#orderBookAsks"), Constants.Style.LIGHT_RED, maxCumulativeAmount);
         })
@@ -247,17 +248,17 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         });
     };
 
-    var colorizeOrderBookVolume = function(orderBookTable, bgColor, maxAmount) {
+    const colorizeOrderBookVolume = function(orderBookTable, bgColor, maxAmount) {
         $(orderBookTable).children("tr").each(function(index, tableRow){
-            var amount = $(tableRow).data("cumulative-amount");
-            var percentage = amount / maxAmount * 100.0;
+            const amount = $(tableRow).data("cumulative-amount");
+            let percentage = amount / maxAmount * 100.0;
             percentage = percentage.toFixed(1);
-            var bgStyle = "linear-gradient(to right, " + bgColor + " " + percentage + "%, rgba(255,255,255,0) " + percentage + "%)";
+            const bgStyle = "linear-gradient(to right, " + bgColor + " " + percentage + "%, rgba(255,255,255,0) " + percentage + "%)";
             $(tableRow).css("background", bgStyle);
         });
     };
 
-    var addAutobridgedOffers = function(orderBook) {
+    const addAutobridgedOffers = function(orderBook) {
         //TODO: check if one of the assets is XLM. If not, add auto-bridged offers through XLM
         return orderBook;
     };
@@ -266,12 +267,12 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     initOrderBookStream();
     initChartStream();
 
-    var setupAssetCodesDropDown = function(dropDownId, selectedAssetCode) {
+    const setupAssetCodesDropDown = function(dropDownId, selectedAssetCode) {
         //In case this is re-init, destroy previous instance
         $('div[id^="' + dropDownId + '"]').ddslick('destroy');
 
-        var assetList = new Array();
-        var found = false;
+        const assetList = new Array();
+        let found = false;
         AssetRepository.AvailableAssetCodes().forEach(function(assetCode){
             //Search for asset full name among know assets
             var assetFullName = " ";
