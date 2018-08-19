@@ -126,7 +126,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                     minPrice = low;
                 }
                 var close = parseFloat(record.close);
-                var candle = [record.timestamp, [open, high, low, close]];
+                var candle = [record.timestamp, [open, high, low, close]];      //BUG: ZingChart seems to have open and close messed
 
                 //Collect data for bar chart with volume
                 var volume = parseFloat(record.base_volume);
