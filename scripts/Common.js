@@ -16,14 +16,14 @@ var Constants = {
     }
 };
 
-var Utils = {
+const Utils = {
     /**
      * Get precision as number of decimal digits based on given amount or price
      * @param {number} value - amount or price to base the precision on
      * @returns {number}
      */
     GetPrecisionDecimals: function(value) {
-        var decimals = 3;
+        let decimals = 3;
         if (value <= 0.0) {
             return decimals;
         }
@@ -35,11 +35,12 @@ var Utils = {
     },
 
     /**
-     * Get value of given URL parameter (a.k.a. GET parameter)
+     * Get value of given URL parameter (a.k.a. GET parameter). It also supports "invalid" URLs with
+     * GET params after hash sign.
      * @param paramName - parameter name, case sensitive
      */
     GetUrlParameter: function(paramName) {
-        var paramValue = (window.location.search.split(paramName + '=')[1]||'').split('&')[0];
+        const paramValue = (window.location.href.split(paramName + '=')[1] || '').split('&')[0];
         return decodeURIComponent(paramValue);
     },
     /**
@@ -48,14 +49,14 @@ var Utils = {
      * @param value - parameter value
      */
     SetUrlParameter: function(paramName, value) {
-        var currentUri = window.location.href;          //TODO: time to handle dependencies with proper DI
-        var paramStartIndex = currentUri.indexOf(paramName);
+        const currentUri = window.location.href;          //TODO: time to handle dependencies with proper DI
+        const paramStartIndex = currentUri.indexOf(paramName);
 
         //Already there, we need to change the value
         if (paramStartIndex > -1) {
-            var newUri = currentUri.substring(0, paramStartIndex);                  //The part before
+            let newUri = currentUri.substring(0, paramStartIndex);                  //The part before
             newUri += paramName + "=" + value;
-            var paramEndIndex = currentUri.substring(paramStartIndex).indexOf("&");
+            const paramEndIndex = currentUri.substring(paramStartIndex).indexOf("&");
             if (paramEndIndex > -1) {
                 newUri += currentUri.substring(paramStartIndex + paramEndIndex);    //The part after
             }
@@ -63,35 +64,35 @@ var Utils = {
             window.location = newUri;
         }
         else {
-            var newUri = currentUri + (currentUri.indexOf("?") > -1 ? "&" : "?");
+            let newUri = currentUri + (currentUri.indexOf("?") > -1 ? "&" : "?");
             newUri += paramName + "=" + value;
             window.location = newUri;
         }
     },
 
     IntervalAsMilliseconds: function(intervalDesc) {
-        if ("5min" === intervalDesc || "5m" === intervalDesc) {
+        if ("300000" === intervalDesc || "5min" === intervalDesc || "5m" === intervalDesc) {
             return 300000;
         }
-        if ("15min" === intervalDesc || "15m" === intervalDesc) {
+        if ("900000" === intervalDesc || "15min" === intervalDesc || "15m" === intervalDesc) {
             return 900000;
         }
-        if ("hour" === intervalDesc || "1hour" === intervalDesc || "60min" === intervalDesc || "60m" === intervalDesc) {
+        if ("3600000" === intervalDesc || "hour" === intervalDesc || "1hour" === intervalDesc || "60min" === intervalDesc || "60m" === intervalDesc) {
             return 3600000;
         }
-        if ("day" === intervalDesc || "1day" === intervalDesc || "1d" === intervalDesc || intervalDesc.indexOf("24h") === 0) {
+        if ("86400000" === intervalDesc || "day" === intervalDesc || "1day" === intervalDesc || "1d" === intervalDesc || intervalDesc.indexOf("24h") === 0) {
             return 86400000;
         }
-        if ("week" == intervalDesc || "1week" === intervalDesc || "1w" === intervalDesc || intervalDesc.indexOf("7d") === 0) {
+        if ("604800000" === intervalDesc || "week" == intervalDesc || "1week" === intervalDesc || "1w" === intervalDesc || intervalDesc.indexOf("7d") === 0) {
             return 604800000;
         }
 
-        //Make it fail in a distinct way
-        return -5050505;
+        //Default to 15 minutes
+        return 900000;
     }
 };
 
-var GETParams = {
+const GETParams = {
     INTERVAL: "interval",
     ASSET_TYPE: "assetType"
 };

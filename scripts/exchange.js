@@ -31,7 +31,8 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     });
 
     this.Initialize = function() {
-        parseAssetsFromUrl();
+        parseUrl();
+        HighlightIntervalLink();
         $(".baseAssetCode").html(_this.BaseAsset.AssetCode);
         setupAssetCodesDropDown(baseAssetDdId, this.BaseAsset.AssetCode);
         setupAnchorDropDown(baseAnchorDdId, this.BaseAsset.AssetCode, this.BaseAsset.Issuer);
@@ -61,23 +62,21 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         window.location = newUrl;
     };
 
-    this.SetChartInterval = function(intervalDesc) {
+    this.SetChartInterval = function(intervalDesc) {            //TODO: maybe I could achieve this with direct link?
         $("#marketChart").html("<br/><br/>Loading chart...");
         this.ChartInterval = Utils.IntervalAsMilliseconds(intervalDesc);
 
         Utils.SetUrlParameter(GETParams.INTERVAL, this.ChartInterval);
 
-        //Highlight correct interval link
-        $("div.intervalButtons>a").removeClass("selected");
-        $("a#interval" + intervalDesc).addClass("selected");
+        HighlightIntervalLink();
     };
 
     /*
      * Parse assets from URL and load data lists and the candlestick chart
      */
-    var parseAssetsFromUrl = function() {
-        var urlPart = window.location.href;
-        var index = urlPart.indexOf("#");
+    const parseUrl = function() {
+        let urlPart = window.location.href;
+        let index = urlPart.indexOf("#");
         if (-1 === index) {
             throw new Error("Invalid URL parameters");
         }
@@ -95,8 +94,16 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             counterAssetPart = counterAssetPart.split('?')[0];
         }
         _this.CounterAsset = Asset.ParseFromUrlParam(counterAssetPart);
+
+        //Chart interval
+        const intervalArg = Utils.GetUrlParameter(GETParams.INTERVAL);
+        _this.ChartInterval = Utils.IntervalAsMilliseconds(intervalArg);
     };
 
+    const HighlightIntervalLink = function() {
+        $("div.intervalButtons>a").removeClass("selected");
+        $("a#interval" + _this.ChartInterval).addClass("selected");
+    };
 
     const renderCandlestickChart = function() {
         const dataRange = "&resolution=" + _this.ChartInterval + "&limit=70";
