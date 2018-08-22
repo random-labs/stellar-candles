@@ -117,7 +117,6 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
 
             $("#marketChart").empty();
             const candlestickChart = new CandlestickChart();
-            var chartConfig = candlestickChart.GetDefaultChartConfig();     //TODO: encapsulation
             let minPrice = Number.MAX_VALUE;
             let maxPrice = -1.0;
             let maxVolume = -1.0;
@@ -148,7 +147,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             });
 
             candlestickChart.SetCandleSize(_this.ChartInterval);
-            chartConfig.series[1]["guide-label"].decimals = 2;  //TODO: chartConfig.setVolumeDecimals(__var__);
+            candlestickChart.SetVolumeDecimals(maxVolume >= 10.0 ? 2 : 4/*Lame but working*/);
 
             //Set price chart range
             let diff = maxPrice - minPrice;
@@ -160,7 +159,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 minPrice = 0.0;
             }
             maxPrice = maxPrice + 0.25*diff;
-            const decimals = Utils.GetPrecisionDecimals(minPrice);
+            decimals = Utils.GetPrecisionDecimals(minPrice);
             candlestickChart.SetPriceScale(minPrice, maxPrice, decimals);
 
             //Set volume chart range

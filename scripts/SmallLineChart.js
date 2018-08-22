@@ -40,12 +40,9 @@ function SmallLineChart() {
      * @param {number} maxPrice - upper bound
      */
     this.SetPriceScale = function(minPrice, maxPrice, decimals) {
-        var step = (maxPrice - minPrice) / 5.0;
-        if (step < 0.00000100) {
-            //BUG: ZingChart fails to render with steps below 0.00000100
-            step = 0.00000100;
-        }
-        chartConfig["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" + step.toFixed(decimals);
+        const step = (maxPrice - minPrice) / 5.0;
+        chartConfig["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" +
+                                        step.toFixed(decimals > 7 ? 7 : decimals);      //BUG? ZingChart fails to render with too small steps
     };
 
     /**
@@ -81,7 +78,7 @@ function SmallLineChart() {
         });
     };
 
-    var chartConfig =
+    const chartConfig =
     {
         "type": "line",
         "utc": false,

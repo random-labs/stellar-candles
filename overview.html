@@ -173,6 +173,32 @@
                         </div>
                         <div class="dailyChangePercent green">+0.00%</div>
                     </div>
+                    <div id="debugChart" class="exchange-link-chart">
+                        <br/>Loading data...
+                    </div>
+                    <script type="text/javascript">
+                        //TODO: make a WS call to figure out what assets should be used
+                        $(function() {
+                            const asdfUi = new ExchangeThumbnail(KnownAssets["CNY-RippleFox"], KnownAssets.XCN);
+                            asdfUi.Initialize("debugChart");
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                <div class="exchange-link">
+                    <div class="assetsDescription">
+                        <div class="lastPrice">0.00</div>
+                        <div class="baseAssetDesc">
+                            <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
+                        </div>
+                        <span class="slash">/</span>
+                        <div class="counterAssetDesc">
+                            <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
+                        </div>
+                        <div class="dailyChangePercent green">+0.00%</div>
+                    </div>
                     <div id="highestRiseInXlmChart" class="exchange-link-chart">
                         <br/>Loading data...
                     </div>

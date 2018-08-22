@@ -5,12 +5,6 @@ function CandlestickChart() {
     //Setup ZingChart
     zingchart.THEME="classic";
 
-    this.GetDefaultChartConfig = function() {           //TODO: DELETE THIS WHEN ALL OPERATIONS ARE PROPERLY WRAPPED
-        myConfigCandleSticks.series[0].values = [];
-        myConfigCandleSticks.series[1].values = [];
-        return myConfigCandleSticks;
-    };
-
     this.AddCandleData = function(candle, volume) {
         myConfigCandleSticks.series[0].values.push(candle);
         myConfigCandleSticks.series[1].values.push(volume);
@@ -38,12 +32,20 @@ function CandlestickChart() {
      * @param {number} maxPrice - upper bound
      */
     this.SetPriceScale = function(minPrice, maxPrice, decimals) {
-        var step = (maxPrice - minPrice) / 7.0;
-        if (step < 0.00000100) {
-            //BUG: ZingChart fails to render properly with steps below 0.00000100
-            step = 0.00000100;
+        let step = (maxPrice - minPrice) / 7.0;
+        if (step < 0.000001) {
+            //BUG: ZingChart fails to render properly with steps below 0.000001
+            step = 0.000001;
         }
         myConfigCandleSticks["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" + step.toFixed(decimals);
+    };
+
+    /**
+     * Set precision of volume tooltips
+     * @param {number} decimals - number of digits to be shown after decimal separator
+     */
+    this.SetVolumeDecimals = function(decimals) {
+        myConfigCandleSticks.series[1]["guide-label"].decimals = decimals;
     };
 
     /**
@@ -51,8 +53,8 @@ function CandlestickChart() {
      * @param {number} maxVolume
      */
     this.SetVolumeScale = function(maxVolume) {
-        var step = maxVolume / 3.0;
-        myConfigCandleSticks["scale-y-2"].values = "0:" + maxVolume.toFixed(2) + ":" + step.toFixed(2);
+        const step = maxVolume / 3.0;
+        myConfigCandleSticks["scale-y-2"].values = "0:" + maxVolume.toFixed(3) + ":" + step.toFixed(3);
     };
 
     this.ShowError = function(xhr, textStatus) {
@@ -75,7 +77,7 @@ function CandlestickChart() {
     };
 
 
-    var myConfigCandleSticks = {
+    const myConfigCandleSticks = {
         "type": "mixed",
         "background-color": "none",
         "title":{
