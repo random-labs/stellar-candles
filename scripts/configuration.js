@@ -113,7 +113,7 @@ function Configuration() {
             text: "<i style='color: gray;'>asset type...</i>",
             value: null
         }];
-        AssetRepository.AvailableAssetCodes().forEach(function(assetType){
+        AssetRepository.getAllAssetCodes().forEach(function(assetType){
             //Search for asset full name among know assets
             var assetFullName = " ";
             var assetImage = "unknown.png";
@@ -147,7 +147,6 @@ function Configuration() {
     };
 
     var setupAnchorDropDown = function() {
-
         var assetIssuersDdData = [{
             text: "<i style='color: gray;'>asset issuer...</i>",
             value: null
@@ -174,9 +173,9 @@ function Configuration() {
     };
 
     var renderCustomAssetCodes = function() {
-        var html = "";
-        for (var i=0; i < AssetRepository.CustomAssetCodes.length; i++) {
-            html += customAssetCodeItem(AssetRepository.CustomAssetCodes[i]);
+        let html = "";
+        for (let i=0; i < AssetRepository.getCustomAssetCodes().length; i++) {
+            html += customAssetCodeItem(AssetRepository.getCustomAssetCodes()[i]);
         }
         if (html.length <= 0) {
             html = noAssetTypesMessage();
@@ -186,8 +185,8 @@ function Configuration() {
     
     var renderCustomAnchors = function() {
         var html = "";
-        for (var i = 0; i < AssetRepository.CustomAnchors.length; i++) {
-            html += customAnchorItem(AssetRepository.CustomAnchors[i].Domain, AssetRepository.CustomAnchors[i].Address);
+        for (var i = 0; i < AssetRepository.getCustomAnchors().length; i++) {
+            html += customAnchorItem(AssetRepository.getCustomAnchors()[i].Domain, AssetRepository.getCustomAnchors()[i].Address);
         }
         if (html.length <= 0) {
             html = noAnchorsMessage();

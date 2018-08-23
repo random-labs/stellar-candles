@@ -8,8 +8,9 @@ const AssetRepository = (function () {
 
     /**
      * Get array of asset codes available to the user (i.e. basic ones + from user's custom assets).
-     **/
-    this.AvailableAssetCodes = function() {
+     * @public
+     */
+    this.getAvailableAssetCodes = function() {
         const fromAssets = new Array();
         for (let i = 0; i < _this.CustomAssets.length; i++) {
             fromAssets.push(_this.CustomAssets[i].AssetCode)
@@ -17,9 +18,25 @@ const AssetRepository = (function () {
         return _commonAssetCodes.concat(fromAssets);   //TODO: consider performance. This is called way to many times
     };
 
-    this.CustomAssetCodes = new Array();
-    this.CustomAnchors = new Array();            //TODO: getters + private setters
-    this.CustomAssets = new Array();
+    /**
+     * User's custom defined asset codes
+     * @public
+     */
+    this.getCustomAssetCodes = function() { return _customAssetCodes; };
+
+    /**
+     * Get all asset codes, i.e. common ones + custom defined by the user
+     * @public
+     */
+    this.getAllAssetCodes = function() {
+        return _commonAssetCodes.concat(_customAssetCodes);
+    };
+
+    /**
+     * User's custom defined issuers
+     */
+    this.getCustomAnchors = function() { return _customAnchors; };
+    this.CustomAssets = new Array();            //TODO: getter + private setter
 
     /**
      * Add new asset code (e.g. "USD", "BTC"...)
@@ -28,20 +45,20 @@ const AssetRepository = (function () {
      */
     this.AddCustomAssetCode = function(assetCode) {
         //Don't add if it's already there
-        for (var i=0; i<_this.CustomAssetCodes.length; i++) {
-            if (_this.CustomAssetCodes[i] === assetCode) {
+        for (let i=0; i<_customAssetCodes.length; i++) {
+            if (_customAssetCodes[i] === assetCode) {
                 return false;
             }
         }
-        _this.CustomAssetCodes.push(assetCode);
+        _customAssetCodes.push(assetCode);
         serializeToCookie();
         return true;
     };
 
     this.RemoveCustomAssetCode = function(assetCode) {
-        for (var i=0; i < _this.CustomAssetCodes.length; i++) {
-            if (_this.CustomAssetCodes[i] === assetCode) {
-                _this.CustomAssetCodes.splice(i, 1);
+        for (let i=0; i < _customAssetCodes.length; i++) {
+            if (_customAssetCodes[i] === assetCode) {
+                _customAssetCodes.splice(i, 1);
                 serializeToCookie();
                 return true;
             }
@@ -58,12 +75,12 @@ const AssetRepository = (function () {
      */
     this.AddCustomAnchor = function(address, domain) {
         //Don't add if it's already there
-        for (var i=0; i < _this.CustomAnchors.length; i++) {
-            if (_this.CustomAnchors[i].Address === address) {
+        for (let i=0; i < _customAnchors.length; i++) {
+            if (_customAnchors[i].Address === address) {
                 return false;
             }
         }
-        _this.CustomAnchors.push(new Account(address, domain, domain));
+        _customAnchors.push(new Account(address, domain, domain));
         serializeToCookie();
         return true;
     };
@@ -73,9 +90,9 @@ const AssetRepository = (function () {
      * @param {string} address - anchor's issuing address
      */
     this.RemoveCustomAnchor = function(address) {
-        for (let i=0; i < _this.CustomAnchors.length; i++) {
-            if (_this.CustomAnchors[i].Address === address) {
-                _this.CustomAnchors.splice(i, 1);
+        for (let i=0; i < _customAnchors.length; i++) {
+            if (_customAnchors[i].Address === address) {
+                _customAnchors.splice(i, 1);
                 serializeToCookie();
                 return true;
             }
@@ -99,9 +116,9 @@ const AssetRepository = (function () {
         }
         //Try to match the address with known issuer.
         let issuer = null;
-        for (let a=0; a<_this.CustomAnchors.length; a++) {
-            if (issuerAddress === _this.CustomAnchors[a].Address) {
-                issuer = _this.CustomAnchors[a];
+        for (let a=0; a<_customAnchors.length; a++) {
+            if (issuerAddress === _customAnchors[a].Address) {
+                issuer = _customAnchors[a];
                 break;
             }
         }
@@ -204,9 +221,9 @@ const AssetRepository = (function () {
      * @returns {Account} - first issuer with given address or NULL if no such is registered here
      */
     const getAnchorByAddress = function(issuerAddress) {
-        for (let i=0; i<_this.CustomAnchors.length; i++) {
-            if (issuerAddress === _this.CustomAnchors[i].Address) {
-                return _this.CustomAnchors[i];
+        for (let i=0; i<_customAnchors.length; i++) {
+            if (issuerAddress === _customAnchors[i].Address) {
+                return _customAnchors[i];
             }
         }
 
@@ -252,18 +269,18 @@ const AssetRepository = (function () {
         let cookieText = "";
         //Asset codes
         var i = 0;
-        for (i = 0; i<_this.CustomAssetCodes.length; i++) {
+        for (i = 0; i<_customAssetCodes.length; i++) {
             if (i>0) {
                 cookieText += ",";
             }
-            cookieText += _this.CustomAssetCodes[i];
+            cookieText += _customAssetCodes[i];
         }
         setCookieValue("aco", cookieText);
 
         //Anchors
         cookieText = "";
-        for (i=0; i<_this.CustomAnchors.length; i++) {
-            const anchor = _this.CustomAnchors[i];
+        for (i=0; i<_customAnchors.length; i++) {
+            const anchor = _customAnchors[i];
             if (i>0) {
                 cookieText += ","
             }
@@ -290,10 +307,10 @@ const AssetRepository = (function () {
         document.cookie = key + "=" + value + ";expires=" + expiration.toUTCString();
     };
 
-    this.CustomAssetCodes = this.CustomAssetCodes.concat(loadAssetCodes());
-    this.CustomAnchors = loadAnchors();
+    const _customAssetCodes = loadAssetCodes();
+    const _customAnchors = loadAnchors();
     this.CustomAssets = loadAssets();
 
-    //Return the actual singleton instance
+    //Return the singleton instance
     return _this;
 })();

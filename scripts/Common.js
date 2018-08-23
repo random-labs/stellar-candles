@@ -70,6 +70,28 @@ const Utils = {
         }
     },
 
+    /**
+     * Switch base and counter assets in URL, preserving other GET parameters
+     * @public
+     */
+    SwapExchangeAssetsInUrl: function(originalUrl) {
+        const hashIndex = originalUrl.indexOf("#");
+        const slashIndex = originalUrl.lastIndexOf("/");
+        if (-1 === hashIndex || -1 === slashIndex || slashIndex<hashIndex) {
+            return originalUrl;
+        }
+        const qmarkIndex = originalUrl.indexOf("?");
+
+        const baseAsset = originalUrl.substring(hashIndex+1, slashIndex);
+        const counterAsset = qmarkIndex > -1 ? originalUrl.substring(slashIndex+1, qmarkIndex) : originalUrl.substring(slashIndex+1);
+        const parameters = qmarkIndex > -1 ? originalUrl.substring(qmarkIndex) : "";   
+
+        const newUrl = originalUrl.substring(0, hashIndex+1) +      //Including #
+                       counterAsset + "/" + baseAsset + parameters;
+
+        return newUrl;
+    },
+
     IntervalAsMilliseconds: function(intervalDesc) {
         if ("300000" === intervalDesc || "5min" === intervalDesc || "5m" === intervalDesc) {
             return 300000;

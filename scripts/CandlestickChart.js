@@ -6,8 +6,8 @@ function CandlestickChart() {
     zingchart.THEME="classic";
 
     this.AddCandleData = function(candle, volume) {
-        myConfigCandleSticks.series[0].values.push(candle);
-        myConfigCandleSticks.series[1].values.push(volume);
+        _configCandleSticks.series[0].values.push(candle);
+        _configCandleSticks.series[1].values.push(volume);
     };
 
     /**
@@ -15,7 +15,7 @@ function CandlestickChart() {
      * @param {number} timestamp - timestamp of the first candle in ticks
      */
     this.SetStartTime = function(timestamp) {
-        myConfigCandleSticks["scale-x"]["min-value"] = timestamp;
+        _configCandleSticks["scale-x"]["min-value"] = timestamp;
     };
 
     /**
@@ -23,7 +23,7 @@ function CandlestickChart() {
      * @param {number} millisInCandle - number of miliseconds in one candle
      */
     this.SetCandleSize = function(millisInCandle) {
-        myConfigCandleSticks["scale-x"]["step"] = millisInCandle;
+        _configCandleSticks["scale-x"]["step"] = millisInCandle;
     };
 
     /**
@@ -37,7 +37,7 @@ function CandlestickChart() {
             //BUG: ZingChart fails to render properly with steps below 0.000001
             step = 0.000001;
         }
-        myConfigCandleSticks["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" + step.toFixed(decimals);
+        _configCandleSticks["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" + step.toFixed(decimals);
     };
 
     /**
@@ -45,7 +45,7 @@ function CandlestickChart() {
      * @param {number} decimals - number of digits to be shown after decimal separator
      */
     this.SetVolumeDecimals = function(decimals) {
-        myConfigCandleSticks.series[1]["guide-label"].decimals = decimals;
+        _configCandleSticks.series[1]["guide-label"].decimals = decimals;
     };
 
     /**
@@ -54,7 +54,7 @@ function CandlestickChart() {
      */
     this.SetVolumeScale = function(maxVolume) {
         const step = maxVolume / 3.0;
-        myConfigCandleSticks["scale-y-2"].values = "0:" + maxVolume.toFixed(3) + ":" + step.toFixed(3);
+        _configCandleSticks["scale-y-2"].values = "0:" + maxVolume.toFixed(3) + ":" + step.toFixed(3);
     };
 
     this.ShowError = function(xhr, textStatus) {
@@ -67,17 +67,17 @@ function CandlestickChart() {
      * @param {string} counterAssetCode - counter asset code (to be shown on y axis label)
      */
     this.Render = function (placeholderId, counterAssetCode) {
-        myConfigCandleSticks["scale-y"].label.text = "Price (" + counterAssetCode + ")";
+        _configCandleSticks["scale-y"].label.text = "Price (" + counterAssetCode + ")";
         zingchart.render({
             id : placeholderId,
-            data : myConfigCandleSticks,
+            data : _configCandleSticks,
             height: "100%",
             width: "100%"
         });
     };
 
 
-    const myConfigCandleSticks = {
+    const _configCandleSticks = {
         "type": "mixed",
         "background-color": "none",
         "title":{

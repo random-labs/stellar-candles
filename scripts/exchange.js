@@ -15,11 +15,11 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     this.CounterAsset = null;
     this.ChartInterval = 900000;    //15min candles by default
 
-    var _this = this;
-    var baseAssetDdId = baseAssetDropDownId;
-    var baseAnchorDdId = baseIssuerDropDownId;
-    var counterAssetDdId = counterAssetDropDownId;
-    var counterAnchorDdId = counterIssuerDropDownId;
+    const _this = this;
+    const baseAssetDdId = baseAssetDropDownId;
+    const baseAnchorDdId = baseIssuerDropDownId;
+    const counterAssetDdId = counterAssetDropDownId;
+    const counterAnchorDdId = counterIssuerDropDownId;
 
     //If user changes the URL parameters manually, re-initialize
     $(window).bind('hashchange', function() {
@@ -32,7 +32,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
 
     this.Initialize = function() {
         parseUrl();
-        HighlightIntervalLink();
+        highlightIntervalLink();
         $(".baseAssetCode").html(_this.BaseAsset.AssetCode);
         setupAssetCodesDropDown(baseAssetDdId, this.BaseAsset.AssetCode);
         setupAnchorDropDown(baseAnchorDdId, this.BaseAsset.AssetCode, this.BaseAsset.Issuer);
@@ -50,15 +50,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
      */
     const swapAssets = function() {
         //Keep it simple - flip it through URL
-        const currentUrl = window.location.href;
-        const hashIndex = currentUrl.indexOf("#");
-        const slashIndex = currentUrl.lastIndexOf("/");
-        if (-1 === hashIndex || -1 === slashIndex || slashIndex<hashIndex) {
-            return;
-        }
-        const newUrl = currentUrl.substring(0, hashIndex+1) +
-                       currentUrl.substring(slashIndex+1) + "/" +
-                       currentUrl.substring(hashIndex+1, slashIndex);
+        const newUrl = Utils.SwapExchangeAssetsInUrl(window.location.href);
         window.location = newUrl;
     };
 
@@ -68,7 +60,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
 
         Utils.SetUrlParameter(GETParams.INTERVAL, this.ChartInterval);
 
-        HighlightIntervalLink();
+        highlightIntervalLink();
     };
 
     /*
@@ -100,7 +92,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         _this.ChartInterval = Utils.IntervalAsMilliseconds(intervalArg);
     };
 
-    const HighlightIntervalLink = function() {
+    const highlightIntervalLink = function() {
         $("div.intervalButtons>a").removeClass("selected");
         $("a#interval" + _this.ChartInterval).addClass("selected");
     };
@@ -161,7 +153,6 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             maxPrice = maxPrice + 0.25*diff;
             decimals = Utils.GetPrecisionDecimals(minPrice);
             candlestickChart.SetPriceScale(minPrice, maxPrice, decimals);
-
             //Set volume chart range
             candlestickChart.SetVolumeScale(maxVolume);
 
@@ -172,7 +163,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         });
     };
 
-    var initPastTradesStream = function() {
+    const initPastTradesStream = function() {
         if (_this.BaseAsset != null && _this.CounterAsset) {    //We might not be done initializing
             getPastTrades(_this.BaseAsset, _this.CounterAsset);
         }
@@ -181,7 +172,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         }, Constants.PAST_TRADES_INTERVAL);
     };
 
-    var initOrderBookStream = function() {
+    const initOrderBookStream = function() {
         if (_this.BaseAsset != null && _this.CounterAsset) {    //We might not be done initializing
             getOrderBook(_this.BaseAsset, _this.CounterAsset);
         }
@@ -190,7 +181,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         }, Constants.ORDERBOOK_INTERVAL);
     };
 
-    var initChartStream = function() {
+    const initChartStream = function() {
         if (_this.BaseAsset != null && _this.CounterAsset) {    //We might not be done initializing
             renderCandlestickChart();
         }
@@ -199,8 +190,8 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         }, Constants.CHART_INTERVAL);
     };
 
-    var getPastTrades = function(baseAsset, counterAsset) {
-        var url = Constants.API_URL + "/trades?" + baseAsset.ToUrlParameters("base") + "&" + counterAsset.ToUrlParameters("counter") + "&order=desc&limit=40";
+    const getPastTrades = function(baseAsset, counterAsset) {
+        const url = Constants.API_URL + "/trades?" + baseAsset.ToUrlParameters("base") + "&" + counterAsset.ToUrlParameters("counter") + "&order=desc&limit=40";
 
         $.getJSON(url, function(data) {
             $("#tradeHistoryData").empty();
@@ -232,7 +223,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             $("#orderBookBids").empty();
             let sumBidsAmount = 0.0;
             $.each(data.bids, function(i, bid) {
-                var amount = parseFloat(bid.amount) / parseFloat(bid.price);
+                const amount = parseFloat(bid.amount) / parseFloat(bid.price);
                 sumBidsAmount += amount;
                 $(bidOfferRow(bid, amount, sumBidsAmount)).appendTo("#orderBookBids");
             });
@@ -279,11 +270,11 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
 
         const assetList = new Array();
         let found = false;
-        AssetRepository.AvailableAssetCodes().forEach(function(assetCode){
+        AssetRepository.getAvailableAssetCodes().forEach(function(assetCode){
             //Search for asset full name among know assets
-            var assetFullName = " ";
-            var assetImage = "unknown.png";
-            for (var asset in KnownAssets) {
+            let assetFullName = " ";
+            let assetImage = "unknown.png";
+            for (let asset in KnownAssets) {
                 if (KnownAssets[asset].AssetCode === assetCode) {
                     assetFullName = KnownAssets[asset].FullName;
                     assetImage = assetCode + ".png";
@@ -333,14 +324,14 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         });
     };
 
-    var setupAnchorDropDown = function(dropDownId, assetCode, assetIssuer) {
+    const setupAnchorDropDown = function(dropDownId, assetCode, assetIssuer) {
         //In case this is re-init, destroy previous instance
         $('div[id^="' + dropDownId + '"]').ddslick('destroy');
-        var issuersArray = KnownAssets.GetIssuersByAsset(assetCode);
-        var issuerAccount = KnownAccounts.GetAccountByAddress(assetIssuer.Address);
-        var assetIssuersDdData = new Array();
-        var found = assetIssuer.IsNativeIssuer();
-        for (var i=0; i<issuersArray.length; i++) {
+        const issuersArray = KnownAssets.GetIssuersByAsset(assetCode);
+        const issuerAccount = KnownAccounts.GetAccountByAddress(assetIssuer.Address);
+        const assetIssuersDdData = new Array();
+        let found = assetIssuer.IsNativeIssuer();
+        for (let i=0; i<issuersArray.length; i++) {
             assetIssuersDdData.push({
                 text: issuersArray[i].ShortName,
                 description: issuersArray[i].Domain,
@@ -385,10 +376,10 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     /**
      * Collect base and counter assets from inputs and navigate to new market URL by that.
      */
-    var changeAssets = function(selectingAnchor) {
-        var urlAssets = $('div[id^="' + baseAssetDdId + '"]').data('ddslick').selectedData.value;
+    const changeAssets = function(selectingAnchor) {
+        let urlAssets = $('div[id^="' + baseAssetDdId + '"]').data('ddslick').selectedData.value;
         if (selectingAnchor) {
-            var baseIssuer = $('div[id^="' + baseAnchorDdId + '"]').data('ddslick').selectedData.value;
+            const baseIssuer = $('div[id^="' + baseAnchorDdId + '"]').data('ddslick').selectedData.value;
             if (baseIssuer != null) {
                 urlAssets += "-" + baseIssuer;
             }
@@ -396,16 +387,16 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
 
         urlAssets += "/" + $('div[id^="' + counterAssetDdId + '"]').data('ddslick').selectedData.value;
         if (selectingAnchor) {
-            var counterIssuer = $('div[id^="' + counterAnchorDdId + '"]').data('ddslick').selectedData.value;
+            const counterIssuer = $('div[id^="' + counterAnchorDdId + '"]').data('ddslick').selectedData.value;
             if (counterIssuer != null) {
                 urlAssets += "-" + counterIssuer;
             }
         }
 
-        var currentUrl = window.location.href;
+        const currentUrl = window.location.href;
         //TODO: alright, I definitely need a separate module for URL tasks (maybe a 3rd party lib?)
-        var paramIndex = currentUrl.indexOf('?');
-        var paramsPart = paramIndex > -1 ? currentUrl.substring(paramIndex) : "";
+        const paramIndex = currentUrl.indexOf('?');
+        const paramsPart = paramIndex > -1 ? currentUrl.substring(paramIndex) : "";
         window.location = currentUrl.substring(0, currentUrl.indexOf("#")+1) + urlAssets + paramsPart;
         _this.Initialize();
     };
