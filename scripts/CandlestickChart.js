@@ -31,13 +31,25 @@ function CandlestickChart() {
      * @param {number} minPrice - lower bound
      * @param {number} maxPrice - upper bound
      */
-    this.SetPriceScale = function(minPrice, maxPrice, decimals) {
+    this.SetPriceScale = function(minPrice, maxPrice) {
+        let diff = maxPrice - minPrice;
+        if (diff === 0.0) {
+            //One price throughout the whole chart - stretch it a bit
+            diff = 0.01 * maxPrice;
+        }
+        minPrice = minPrice - 0.25*diff;    //Small space below the deepest candle
+        if (minPrice < 0.0) {
+            minPrice = 0.0;
+        }
+        maxPrice = maxPrice + 0.25*diff;    //Small space above the tallest candle
+        const decimals = Utils.GetPrecisionDecimals(minPrice);
+
         let step = (maxPrice - minPrice) / 7.0;
         if (step < 0.000001) {
             //BUG: ZingChart fails to render properly with steps below 0.000001
-            step = 0.000001;
+//            step = 0.000001;
         }
-        _configCandleSticks["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" + step.toFixed(decimals);
+        _configCandleSticks["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" + step.toFixed(decimals > 7 ? 7 : decimals);
     };
 
     /**
@@ -176,7 +188,7 @@ function CandlestickChart() {
         },
         "scale-y":{
             "offset-start": "30%", //to adjust scale offsets.
-            "values": "0:100:25",
+//todo?            "values": "0:100:25",       //Set from input
             "format": "%v",
             "label": {
                 "text": "Price (TODO)"

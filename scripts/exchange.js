@@ -140,19 +140,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
 
             candlestickChart.SetCandleSize(_this.ChartInterval);
             candlestickChart.SetVolumeDecimals(maxVolume >= 10.0 ? 2 : 4/*Lame but working*/);
-
-            //Set price chart range
-            let diff = maxPrice - minPrice;
-            if (diff === 0.0) {
-                diff = 0.01 * maxPrice;
-            }
-            minPrice = minPrice - 0.25*diff;
-            if (minPrice < 0.0) {
-                minPrice = 0.0;
-            }
-            maxPrice = maxPrice + 0.25*diff;
-            decimals = Utils.GetPrecisionDecimals(minPrice);
-            candlestickChart.SetPriceScale(minPrice, maxPrice, decimals);
+            candlestickChart.SetPriceScale(minPrice, maxPrice);
             //Set volume chart range
             candlestickChart.SetVolumeScale(maxVolume);
 
