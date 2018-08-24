@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <script src= "https://cdn.zingchart.com/zingchart.min.js"></script>
+        <script> zingchart.MODULESDIR = "https://cdn.zingchart.com/modules/";
+        ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9","ee6b7db5b51705a13dc2339db3edaf6d"];</script></head>
+    <body>
+        <div id='myChart' style="border: 1px solid blue; width: 600px;"> </div>
+    </body>
+    
+
+    <script type="text/javascript">
+var myConfig = {
+  tooltip: { visible: false },
+    type: "mixed",
+    utc:true,
+    backgroundColor:"lightgreen",
+    plotarea: { "margin": "dynamic 30 60 dynamic" },
+    scaleY:{
+        "min-value": 0.00003273699,
+        "max-value": 0.000033624591,
+        step: 0.000004932571111,        //BUG: SETTING THIS BREAKS EVERYTHING!
+        decimals:8
+    },
+    scaleX:{
+//not needed       minValue:15350760000000,
+       step: 900000,
+       transform:{
+            type:"date",
+            all:"%m/%d/%y"
+       }
+     },
+    series : [
+        {
+            type:"line",
+            values: [, [1535074200000, 0.0000332], [1535076000000, 0.0000332], [1535077800000, 0.0000332], [1535078700000, 0.0000333]],
+            lineWidth:4,
+            shadow:false,
+            lineColor:"orange",
+            marker:{ visible:false }
+        }
+    ]
+};
+
+zingchart.render({ 
+    id : 'myChart', 
+    data : myConfig, 
+    height: 500, 
+    width: "100%" 
+});
+    </script>
+</html>

@@ -39,10 +39,14 @@ function SmallLineChart() {
      * @param {number} minPrice - lower bound
      * @param {number} maxPrice - upper bound
      */
-    this.SetPriceScale = function(minPrice, maxPrice, decimals) {
+    this.SetPriceScale = function(minPrice, maxPrice) {
+        const diff = maxPrice - minPrice;
+        minPrice = minPrice - 0.1*diff;     //10% bottom offset so it doesn't sit on X axis
+
         const step = (maxPrice - minPrice) / 5.0;
-        chartConfig["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" +
-                                        step.toFixed(decimals > 7 ? 7 : decimals);      //BUG? ZingChart fails to render with too small steps
+        chartConfig["scale-y"]["min-value"] = minPrice;
+        chartConfig["scale-y"]["max-value"] = maxPrice;
+        //NOTE: we don't set "step" here and leave ZingChart figure it out. Doing it ourselves led to the chart randomly shift vertically (ZingChart bug?)
     };
 
     /**
@@ -88,7 +92,7 @@ function SmallLineChart() {
         "scale-x": {
             "line-color": "#5B6A72",
             "min-value": 1383292800000, //Dummy. Real value is set before rendering
-            "step": 900000,
+            "step": 900000,     //constant 15min interval
             "transform": {
                 "type": "date",
                 "all": "%h %A"
@@ -97,7 +101,6 @@ function SmallLineChart() {
             "max-labels": 6         //In fact 'min'
         },
         "scale-y": {
-            "values": "0:400:50",   //This must be input
             "line-color": "#5B6A72",
             "guide": {
                 "line-style": "dashed"

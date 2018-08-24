@@ -62,10 +62,8 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
                     return false;    //'break' at first value older than 24hrs
                 }
 
-                //Collect value for a single point in the chart as average of open/close
-                var open = parseFloat(record.open);
-                var close = parseFloat(record.close);
-                var avgValue = (open + close) / 2.0;
+                //Collect value for a single point in the chart as average
+                const avgValue = parseFloat(record.avg);
                 if (lastPrice === -999999) {
                     lastPrice = avgValue;
                 }
@@ -92,20 +90,7 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
             }
 
             setPriceStatistics(placeHolderId, startPrice, lastPrice);
-
-            //Set price chart range
-            var diff = maxPrice - minPrice;
-            if (diff === 0.0) {
-                diff = maxPrice;
-            }
-            minPrice = minPrice - 0.25*diff;
-            if (minPrice < 0.0) {
-                minPrice = 0.0;
-            }
-            maxPrice = maxPrice + 0.3*diff;
-            var decimals = Utils.GetPrecisionDecimals(minPrice);
-            _lineChart.SetPriceScale(minPrice, maxPrice, decimals);
-
+            _lineChart.SetPriceScale(minPrice, maxPrice);
             _lineChart.Render(placeHolderId);
         })
         .fail(function(xhr, textStatus, error) {

@@ -42,14 +42,11 @@ function CandlestickChart() {
             minPrice = 0.0;
         }
         maxPrice = maxPrice + 0.25*diff;    //Small space above the tallest candle
-        const decimals = Utils.GetPrecisionDecimals(minPrice);
 
-        let step = (maxPrice - minPrice) / 7.0;
-        if (step < 0.000001) {
-            //BUG: ZingChart fails to render properly with steps below 0.000001
-//            step = 0.000001;
-        }
-        _configCandleSticks["scale-y"].values = "" + minPrice.toFixed(decimals) + ":" + maxPrice.toFixed(decimals) + ":" + step.toFixed(decimals > 7 ? 7 : decimals);
+        const step = (maxPrice - minPrice) / 7.0;
+        _configCandleSticks["scale-y"]["min-value"] = minPrice;
+        _configCandleSticks["scale-y"]["max-value"] = maxPrice;
+        _configCandleSticks["scale-y"]["step"] = step;
     };
 
     /**
@@ -188,7 +185,6 @@ function CandlestickChart() {
         },
         "scale-y":{
             "offset-start": "30%", //to adjust scale offsets.
-//todo?            "values": "0:100:25",       //Set from input
             "format": "%v",
             "label": {
                 "text": "Price (TODO)"
