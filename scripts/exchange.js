@@ -63,8 +63,9 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         highlightIntervalLink();
     };
 
-    /*
+    /**
      * Parse assets from URL and load data lists and the candlestick chart
+     * @private
      */
     const parseUrl = function() {
         let urlPart = window.location.href;
@@ -196,10 +197,10 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 });
             }
         })
-            .fail(function(xhr, textStatus, error) {
-                $("#tradeHistoryData").empty();
-                $(getErrorRow(xhr, textStatus, error)).appendTo("#tradeHistoryData");
-            });
+        .fail(function(xhr, textStatus, error) {
+            $("#tradeHistoryData").empty();
+            $(getErrorRow(xhr, textStatus, error)).appendTo("#tradeHistoryData");
+        });
     };
 
     const getOrderBook = function(baseAsset, counterAsset) {
@@ -258,7 +259,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
 
         const assetList = new Array();
         let found = false;
-        AssetRepository.getAvailableAssetCodes().forEach(function(assetCode){
+        AssetRepository.getAssetCodesForExchange().forEach(function(assetCode){
             //Search for asset full name among know assets
             let assetFullName = " ";
             let assetImage = "unknown.png";
@@ -315,8 +316,8 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     const setupAnchorDropDown = function(dropDownId, assetCode, assetIssuer) {
         //In case this is re-init, destroy previous instance
         $('div[id^="' + dropDownId + '"]').ddslick('destroy');
-        const issuersArray = KnownAssets.GetIssuersByAsset(assetCode);
-        const issuerAccount = KnownAccounts.GetAccountByAddress(assetIssuer.Address);
+        const issuersArray = AssetRepository.GetIssuersByAssetCode(assetCode);
+        const issuerAccount = AssetRepository.GetIssuerByAddress(assetIssuer.Address);
         const assetIssuersDdData = new Array();
         let found = assetIssuer.IsNativeIssuer();
         for (let i=0; i<issuersArray.length; i++) {

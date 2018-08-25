@@ -11,16 +11,19 @@ $(function() {
  * @constructor
  */
 function Configuration() {
-    var _this = this;
-    var _selectedAssetCode = null;
-    var _selectedIssuerAddress = null;
+    const _this = this;
+    let _selectedAssetCode = null;
+    let _selectedIssuerAddress = null;
 
     this.Initialize = function() {
         renderCustomAssetCodes();
         renderCustomAnchors();
         renderCustomAssets();
         //If this is redirect from the Exchange page and asset code was selected, it's in the URL parameter
-        var assetType = Utils.GetUrlParameter(GETParams.ASSET_TYPE);
+        const assetType = Utils.GetUrlParameter(GETParams.ASSET_TYPE);
+        if ((assetType || "").length > 0) {
+            _selectedAssetCode = assetType;
+        }
         setupAssetCodeDropDown(assetType);
         setupAnchorDropDown();
 
@@ -105,18 +108,19 @@ function Configuration() {
 
 
 
-    /** @private
+    /**
      * Setup the drop-down with known asset codes
+     * @private
      */
-    var setupAssetCodeDropDown = function(selectedAssetType) {
-        var assetTypesList = [{
+    const setupAssetCodeDropDown = function(selectedAssetType) {
+        const assetTypesList = [{
             text: "<i style='color: gray;'>asset type...</i>",
             value: null
         }];
         AssetRepository.getAllAssetCodes().forEach(function(assetType){
             //Search for asset full name among know assets
-            var assetFullName = " ";
-            var assetImage = "unknown.png";
+            let assetFullName = " ";
+            let assetImage = "unknown.png";
             for (var asset in KnownAssets) {
                 if (KnownAssets[asset].AssetCode === assetType) {
                     assetFullName = KnownAssets[asset].FullName;
@@ -146,19 +150,20 @@ function Configuration() {
         });
     };
 
-    var setupAnchorDropDown = function() {
-        var assetIssuersDdData = [{
+    const setupAnchorDropDown = function() {
+        const assetIssuersDdData = [{
             text: "<i style='color: gray;'>asset issuer...</i>",
             value: null
         }];
-        for (var issuer in KnownAccounts) {         //TODO: This is wrong. Use default + custom anchors
-            const issuerAccount = KnownAccounts[issuer];
-            if (!issuerAccount.Address) {
-                continue;   //Skip members that are functions
+        const anchors = AssetRepository.getAllAnchors();
+        for (let i=0; i<anchors.length; i++) {
+            const issuerAccount = anchors[i];
+            if (issuerAccount.IsNativeIssuer()) {
+                continue;
             }
             assetIssuersDdData.push({
-                text: issuerAccount.Domain + " (" + issuerAccount.Address.substring(0, 16) + "...)",
-                description: issuerAccount.Domain,
+                text: issuerAccount.Domain + " (" + issuerAccount.Address.substring(0, 22) + "...)",
+                description: issuerAccount.Address,
                 value: issuerAccount.Address
             });
         }
@@ -172,7 +177,7 @@ function Configuration() {
         });
     };
 
-    var renderCustomAssetCodes = function() {
+    const renderCustomAssetCodes = function() {
         let html = "";
         for (let i=0; i < AssetRepository.getCustomAssetCodes().length; i++) {
             html += customAssetCodeItem(AssetRepository.getCustomAssetCodes()[i]);
@@ -183,10 +188,11 @@ function Configuration() {
         $("#customAssetTypesList").html(html);
     };
     
-    var renderCustomAnchors = function() {
-        var html = "";
-        for (var i = 0; i < AssetRepository.getCustomAnchors().length; i++) {
-            html += customAnchorItem(AssetRepository.getCustomAnchors()[i].Domain, AssetRepository.getCustomAnchors()[i].Address);
+    const renderCustomAnchors = function() {
+        let html = "";
+        const anchors = AssetRepository.getCustomAnchors();
+        for (let i = 0; i < anchors.length; i++) {
+            html += customAnchorItem(anchors[i].Domain, anchors[i].Address);
         }
         if (html.length <= 0) {
             html = noAnchorsMessage();
@@ -196,8 +202,9 @@ function Configuration() {
     
     const renderCustomAssets = function() {
         let html = "";
-        for (let i=0; i < AssetRepository.CustomAssets.length; i++) {
-            html += customAssetItem(AssetRepository.CustomAssets[i].AssetCode, AssetRepository.CustomAssets[i].Issuer.Domain, AssetRepository.CustomAssets[i].Issuer.Address);
+        const customAssets = AssetRepository.getCustomAssets();
+        for (let i=0; i < customAssets.length; i++) {
+            html += customAssetItem(customAssets[i].AssetCode, customAssets[i].Issuer.Domain, customAssets[i].Issuer.Address);
         }
         if (html.length <= 0) {
             html = noAssetMessage();

@@ -34,7 +34,7 @@ Asset.ParseFromUrlParam = function(assetUrlParam) {
         assetCode = assetUrlParam;
         if (assetUrlParam != Constants.NATIVE_ASSET_CODE) {
             //Try to find issuers of that asset among known accounts
-            issuerAddress = KnownAssets.GetFirstIssuerAddress(assetUrlParam);
+            issuerAddress = AssetRepository.GetFirstIssuerAddress(assetUrlParam);
             if (!issuerAddress) {
                 throw new Error("Invalid URL parameters (missing issuer): " + assetUrlParam);
             }
@@ -49,9 +49,12 @@ Asset.ParseFromUrlParam = function(assetUrlParam) {
     return new Asset(assetCode, null, assetType, new Account(issuerAddress, null, null));
 };
 
-
-const KnownAssets = {     //TODO: move to the AssetRepository?
-    "XLM" : new Asset("XLM", "Lumen", "native", {Address:null, ShortName:"(native)"}),
+/**
+ * "Database" of currently knwon assets on the Stellar network. Subject to change anytime.
+ * @public
+ */
+const KnownAssets = {
+    "XLM" : new Asset("XLM", "Lumen", "native", new Account(null, "(native)", null)),
     "ABDT" : new Asset("ABDT", "Atlantis Blue", null, KnownAccounts.AtlantisBlue),
     "BAT" : new Asset("BAT", "Basic Attention Token", "credit_alphanum4", KnownAccounts.Papaya1),
     "BCH-Papaya" : new Asset("BCH", "Bitcoin Cash", "credit_alphanum4", KnownAccounts.Papaya4),
@@ -107,26 +110,5 @@ const KnownAssets = {     //TODO: move to the AssetRepository?
     "XLQ" : new Asset("XLQ", "Liquido", "credit_alphanum4", KnownAccounts.Liquido),
     "XRP" : new Asset("XRP", "Ripple", "credit_alphanum4", KnownAccounts.VcBearXRP),
     "XTC" : new Asset("XTC", "Tai Chi Chain", "credit_alphanum4", KnownAccounts.TaiChiChain),
-    "ZRX" : new Asset("ZRX", "0x token", "credit_alphanum4", KnownAccounts.Papaya1),
-
-    GetIssuersByAsset : function (assetCode) {
-        const issuers = new Array();
-        for (var asset in KnownAssets) {
-            if (KnownAssets[asset].AssetCode === assetCode) {
-                issuers.push(KnownAssets[asset].Issuer);
-            }
-        }
-
-        return issuers;
-    },
-
-    GetFirstIssuerAddress : function(assetCode) {
-        for (var asset in KnownAssets) {
-            if (KnownAssets[asset].AssetCode === assetCode) {
-                return KnownAssets[asset].Issuer.Address;
-            }
-        }
-
-        return null;
-    }
+    "ZRX" : new Asset("ZRX", "0x token", "credit_alphanum4", KnownAccounts.Papaya1)
 };

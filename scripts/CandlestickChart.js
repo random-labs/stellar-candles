@@ -44,9 +44,11 @@ function CandlestickChart() {
         maxPrice = maxPrice + 0.25*diff;    //Small space above the tallest candle
 
         const step = (maxPrice - minPrice) / 7.0;
+        const decimals = Utils.GetPrecisionDecimals(minPrice);
         _configCandleSticks["scale-y"]["min-value"] = minPrice;
         _configCandleSticks["scale-y"]["max-value"] = maxPrice;
         _configCandleSticks["scale-y"]["step"] = step;
+        _configCandleSticks["scale-y"].decimals = decimals;
     };
 
     /**

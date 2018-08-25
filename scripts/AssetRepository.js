@@ -4,19 +4,44 @@
  */
 const AssetRepository = (function () {
     const _this = this;
-    const _commonAssetCodes = ["XLM", "BTC", "CNY", "ETH", "EURT", "HKDT", "LTC", "MOBI", "PHP", "REPO", "RMT", "SLT", "TERN", "USD"];
+    const _commonAssets = [
+        KnownAssets.XLM,
+        KnownAssets["BTC-NaoBTC"],
+        KnownAssets["BTC-Papaya"],
+        KnownAssets["BTC-Stronghold"],
+        KnownAssets["BTC-vcbear"],
+        KnownAssets["CNY-RippleFox"],
+        KnownAssets["ETH-Papaya"],
+        KnownAssets["ETH-Stronghold"],
+        KnownAssets.EURT,
+        KnownAssets.HKDT,
+        KnownAssets["LTC-Papaya"],
+        KnownAssets.MOBI,
+        KnownAssets.NGNT,
+        KnownAssets.PHP,
+        KnownAssets.REPO,
+        KnownAssets.RMT,
+        KnownAssets.SLT,
+        KnownAssets["USD-Golix"],
+        KnownAssets["USD-Stonghold"]
+    ];
+    const _commonAssetCodes = new Array();
+    const _commonAnchors = new Array();
 
-    /**
-     * Get array of asset codes available to the user (i.e. basic ones + from user's custom assets).
-     * @public
-     */
-    this.getAvailableAssetCodes = function() {
-        const fromAssets = new Array();
-        for (let i = 0; i < _this.CustomAssets.length; i++) {
-            fromAssets.push(_this.CustomAssets[i].AssetCode)
+    //Derive common asset codes and anchors from assets
+    for (let i=0; i<_commonAssets.length; i++) {
+        //Take asset codes from the common assets
+        const assetCode = _commonAssets[i].AssetCode;
+        if (-1 === _commonAssetCodes.indexOf(assetCode)) {
+            _commonAssetCodes.push(assetCode);
         }
-        return _commonAssetCodes.concat(fromAssets);   //TODO: consider performance. This is called way to many times
-    };
+        //Take anchors from the common assets
+        const anchor = _commonAssets[i].Issuer;
+        if (-1 === _commonAnchors.indexOf(anchor)) {
+            _commonAnchors.push(anchor);
+        }
+    }
+
 
     /**
      * User's custom defined asset codes
@@ -33,10 +58,109 @@ const AssetRepository = (function () {
     };
 
     /**
-     * User's custom defined issuers
+     * Get array of asset codes available to the user (i.e. basic ones + from user's custom assets).
+     * @public
      */
-    this.getCustomAnchors = function() { return _customAnchors; };
-    this.CustomAssets = new Array();            //TODO: getter + private setter
+    this.getAssetCodesForExchange = function() {
+        const codes = _commonAssetCodes.slice();
+        for (let i = 0; i < _customAssets.length; i++) {
+            //Filter out overlaps
+            if (-1 === codes.indexOf(_customAssets[i].AssetCode)) {
+                codes.push(_customAssets[i].AssetCode);
+            }
+        }
+
+        return codes;
+    };
+
+    /**
+     * Custom anchors defined by the user
+     * @public
+     */
+    this.getCustomAnchors = function() { return _customAnchors; }
+
+    /**
+     * All anchors, i.e. common + user defined (even if they aren't used in a custom asset)
+     * @public
+     */
+    this.getAllAnchors = function() {
+        return _commonAnchors.concat(_customAnchors);
+    };
+
+    /**
+     * Get array of issuers available to the user (i.e. basic + custom)
+     */
+    this.getAvailableAnchors = function() {
+        const anchors = _commonAnchors.slice();
+        for (let i=0; i<_customAssets.length; i++) {
+            //Filter out overlaps
+            if (-1 === anchors.indexOf(_customAssets[i].Issuer)) {
+                anchors.push(_customAssets[i].Issuer);
+            }
+        }
+
+        return anchors;
+    };
+
+    /**
+     * User's custom defined assets
+     * @public
+     */
+    this.getCustomAssets = function() { return _customAssets; }
+
+    /**
+     * Get array of assets available to the user (i.e. common assets + user's custom assets)
+     * @private
+     */
+    const getAvailableAssets = function() {
+        return _commonAssets.concat(_customAssets);
+    };
+
+    /**
+     * Returns all available anchors issuing given asset code.
+     * @param {string} assetCode - Asset code, ideally one from available assets
+     */
+    this.GetIssuersByAssetCode = function (assetCode) {
+        const issuers = new Array();
+        const assets = getAvailableAssets();
+        for (let i=0; i<assets.length; i++) {
+            if (assetCode === assets[i].AssetCode) {
+                issuers.push(assets[i].Issuer);
+            }
+        }
+
+        return issuers;
+    };
+
+    /**
+     * Return first anchor from that issues given asset code or NULL if there's no such among available anchors
+     * @param {string} assetCode - Asset code
+     */
+    this.GetFirstIssuerAddress = function(assetCode) {
+        const assets = getAvailableAssets();
+        for (let i=0; i<assets.length; i++) {
+            if (assetCode === assets[i].AssetCode) {
+                return assets[i].Issuer.Address;
+            }
+        }
+
+        return null;
+    };
+
+    /**
+     * Return anchor with given address or NULL if there's no such among available anchors
+     * @param {string} address 
+     */
+    this.GetIssuerByAddress = function(address) {
+        const anchors = _this.getAva
+        for (var account in KnownAccounts) {
+            if (KnownAccounts[account].Address === address) {
+                return KnownAccounts[account];
+            }
+        }
+
+        return null;
+    };
 
     /**
      * Add new asset code (e.g. "USD", "BTC"...)
@@ -109,27 +233,28 @@ const AssetRepository = (function () {
      */
     this.AddCustomAsset = function(assetCode, issuerAddress) {
         //Don't add if it's already there
-        for (let i=0; i<_this.CustomAssets.length; i++) {
-            if (_this.CustomAssets[i].AssetCode === assetCode && _this.CustomAssets[i].Issuer.Address) {
+        for (let i=0; i<_customAssets.length; i++) {
+            if (_customAssets[i].AssetCode === assetCode && _customAssets[i].Issuer.Address) {
                 return false;
             }
         }
         //Try to match the address with known issuer.
         let issuer = null;
-        for (let a=0; a<_customAnchors.length; a++) {
-            if (issuerAddress === _customAnchors[a].Address) {
-                issuer = _customAnchors[a];
+        var anchors = _this.getAvailableAnchors();
+        for (let a=0; a<anchors.length; a++) {
+            if (issuerAddress === anchors[a].Address) {
+                issuer = anchors[a];
                 break;
             }
         }
 
-        //Not a problem if issuer's not found (user might have delete anchor meanwhile), simply use short address
+        //Not a problem if issuer's not found (user might have deleted anchor meanwhile), simply crate a dummy
         if (null === issuer) {
             issuer = new Account(issuerAddress, null, null);
         }
 
         const newAsset = new Asset(assetCode, assetCode, null, issuer);
-        _this.CustomAssets.push(newAsset);
+        _customAssets.push(newAsset);
         serializeToCookie();
         return true;
     };
@@ -141,9 +266,9 @@ const AssetRepository = (function () {
      * @returns {boolean} - true on success, false if given asset is not registered here
      */
     this.RemoveCustomAsset = function(assetCode, issuerAddress) {
-        for (var i=0; i<_this.CustomAssets.length; i++) {
-            if (_this.CustomAssets[i].AssetCode === assetCode && _this.CustomAssets[i].Issuer.Address) {
-                _this.CustomAssets.splice(i, 1);
+        for (var i=0; i<_customAssets.length; i++) {
+            if (_customAssets[i].AssetCode === assetCode && _customAssets[i].Issuer.Address) {
+                _customAssets.splice(i, 1);
                 serializeToCookie();
                 return true;
             }
@@ -290,8 +415,8 @@ const AssetRepository = (function () {
 
         //Assets
         cookieText = "";
-        for (i=0; i<_this.CustomAssets.length; i++) {
-            const asset = _this.CustomAssets[i];
+        for (i=0; i<_customAssets.length; i++) {
+            const asset = _customAssets[i];
             if (i>0) {
                 cookieText += ",";
             }
@@ -309,7 +434,7 @@ const AssetRepository = (function () {
 
     const _customAssetCodes = loadAssetCodes();
     const _customAnchors = loadAnchors();
-    this.CustomAssets = loadAssets();
+    const _customAssets = loadAssets();
 
     //Return the singleton instance
     return _this;
