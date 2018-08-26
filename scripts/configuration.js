@@ -53,12 +53,14 @@ function Configuration() {
     this.RemoveCustomAnchor = function(anchorAddress) {
         if (AssetRepository.RemoveCustomAnchor(anchorAddress)) {
             renderCustomAnchors();
+            setupAnchorDropDown();
         }
     };
     
     this.RemoveAssetCode = function(assetCode) {
         if (AssetRepository.RemoveCustomAssetCode(assetCode)) {
             renderCustomAssetCodes();
+            setupAssetCodeDropDown(_selectedAssetCode);
         }
     };
 
@@ -113,6 +115,9 @@ function Configuration() {
      * @private
      */
     const setupAssetCodeDropDown = function(selectedAssetType) {
+        //In case this is re-init, destroy previous instance
+        $('div[id^="assetTypesDropDown"]').ddslick('destroy');
+
         const assetTypesList = [{
             text: "<i style='color: gray;'>asset type...</i>",
             value: null
@@ -149,6 +154,9 @@ function Configuration() {
     };
 
     const setupAnchorDropDown = function() {
+        //In case this is re-init, destroy previous instance
+        $('div[id^="anchorsDropDown"]').ddslick('destroy');
+
         const assetIssuersDdData = [{
             text: "<i style='color: gray;'>asset issuer...</i>",
             value: null
@@ -162,6 +170,7 @@ function Configuration() {
             assetIssuersDdData.push({
                 text: issuerAccount.Domain + " (" + issuerAccount.Address.substring(0, 22) + "...)",
                 description: issuerAccount.Address,
+                selected: _selectedIssuerAddress === issuerAccount.Address,
                 value: issuerAccount.Address
             });
         }
@@ -222,6 +231,7 @@ function Configuration() {
             $("#newAnchorName").val("");
             renderCustomAnchors();
             highlightCustomItem(issuerAddress);
+            setupAnchorDropDown();
         }
     };
 
@@ -235,6 +245,7 @@ function Configuration() {
             $("#newAssetCode").val("");
             renderCustomAssetCodes();
             highlightCustomItem(assetType);
+            setupAssetCodeDropDown(_selectedAssetCode);
         }
     };
 

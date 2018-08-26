@@ -3,8 +3,8 @@
 var tradeRow = function(record) {
     var sellAccount = record.base_account;
     var sellPrice = record.price.n / record.price.d;
-    var toolTipText = "seller:" + sellAccount.substring(0, 6) + "..." + sellAccount.substring(50) + " " +
-                      "&#13;&#10;buyer:" + record.counter_account.substring(0, 6) + "..." + record.counter_account.substring(50);
+    var toolTipText = "seller:" + sellAccount.substring(0, 8) + "..." + sellAccount.substring(48) + " " +
+                      "&#13;&#10;buyer:" + record.counter_account.substring(0, 8) + "..." + record.counter_account.substring(48);
     var templateText = "<tr title='" + toolTipText + "'>" +
                             "<td>" + new Date(record.ledger_close_time).toLocaleTimeString() + "</td>" +
                             "<td class='" + (record.base_is_seller ? "buy" : "sell") + "'>" + formatPrice(sellPrice) + "</td>" +
