@@ -117,24 +117,22 @@ function Configuration() {
             text: "<i style='color: gray;'>asset type...</i>",
             value: null
         }];
-        AssetRepository.getAllAssetCodes().forEach(function(assetType){
+        AssetRepository.getAllAssetCodes().forEach(function(assetCode) {
             //Search for asset full name among know assets
-            let assetFullName = " ";
-            let assetImage = "unknown.png";
+            let assetFullName = assetCode + " (custom)";
             for (var asset in KnownAssets) {
-                if (KnownAssets[asset].AssetCode === assetType) {
+                if (KnownAssets[asset].AssetCode === assetCode) {
                     assetFullName = KnownAssets[asset].FullName;
-                    assetImage = assetType + ".png";
                     break;
                 }
             }
     
             assetTypesList.push({
-                text: assetType,
-                value: assetType,
-                selected: assetType === selectedAssetType,
+                text: assetCode,
+                value: assetCode,
+                selected: assetCode === selectedAssetType,
                 description: assetFullName,
-                imageSrc: "./images/assets/" + assetImage
+                imageSrc: "./images/assets/" + assetCode + ".png"
             });
         });
     

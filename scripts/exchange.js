@@ -261,12 +261,10 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         let found = false;
         AssetRepository.getAssetCodesForExchange().forEach(function(assetCode){
             //Search for asset full name among know assets
-            let assetFullName = " ";
-            let assetImage = "unknown.png";
+            let assetFullName = assetCode + " (custom)";
             for (let asset in KnownAssets) {
                 if (KnownAssets[asset].AssetCode === assetCode) {
                     assetFullName = KnownAssets[asset].FullName;
-                    assetImage = assetCode + ".png";
                     break;
                 }
             }
@@ -279,7 +277,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 value: assetCode,
                 selected: assetCode === selectedAssetCode,
                 description: assetFullName,
-                imageSrc: "./images/assets/" + assetImage
+                imageSrc: "./images/assets/" + assetCode + ".png"
             });
         });
 
@@ -289,7 +287,8 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 text: selectedAssetCode,
                 value: selectedAssetCode,
                 selected: true,
-                imageSrc: "./images/assets/unknown.png"         //TODO: we still may have the icon even if it's not a common asset!
+                description: selectedAssetCode + " (custom)",
+                imageSrc: "./images/assets/" + selectedAssetCode + ".png"       //In case we don't have it, web serice is configured to return unknown.png as 404
             });
         }
 
