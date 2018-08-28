@@ -6,35 +6,39 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
     this.CounterAsset = counterAsset;
     this.ChartInterval = 900000;    //15min candles by default
 
-    var _this = this;
-    var _lineChart = new SmallLineChart();
+    const _this = this;
+    const _lineChart = new SmallLineChart();
+    let _placeHolderId = null;
 
     this.Initialize = function(placeHolderId) {
+        _placeHolderId = placeHolderId;
         //Fill the header with asset names
-        const assetsDescDIV = $("#"+placeHolderId).siblings(".assetsDescription");
+        const assetsDescDIV = $("#"+_placeHolderId).siblings(".assetsDescription");
         $(assetsDescDIV).find(".baseAssetCode").text(this.BaseAsset.AssetCode);
         $(assetsDescDIV).find(".baseAssetIssuer").text(this.BaseAsset.Issuer.Domain || "");
         $(assetsDescDIV).find(".counterAssetCode").text(this.CounterAsset.AssetCode);
         $(assetsDescDIV).find(".counterAssetIssuer").text(this.CounterAsset.Issuer.Domain || "");
 
         //Activate the link so it navigates to correct exchange
-        var chartLink = $("#"+placeHolderId).parent("div.exchange-link");
-        $(chartLink).on("click", function() {
+        const chartLink = $("#"+_placeHolderId).parent("div.exchange-link");
             const url = "exchange.html#" + _this.BaseAsset.ToExchangeUrlParameter() + "/" + _this.CounterAsset.ToExchangeUrlParameter();
+        $(chartLink).attr("title", url).on("click", function() {
             window.location = url;
         });
 
-        renderLineChart(placeHolderId);
+        _lineChart.ContextMenuLink(url);
+        renderLineChart();
     };
 
-    var renderLineChart = function(placeHolderId) {
+    const renderLineChart = function() {
         //We always request 15min candles because with smaller interval we couldn't get 1 day worth of data in single request
         const dataRange = "&resolution=" + _this.ChartInterval + "&limit=96";
-        var url = Constants.API_URL + "/trade_aggregations?" + _this.BaseAsset.ToUrlParameters("base") + "&" + _this.CounterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
+        const url = Constants.API_URL + "/trade_aggregations?" + _this.BaseAsset.ToUrlParameters("base") + "&" + _this.CounterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
 
         $.getJSON(url, function(data) {
+            $("#"+_placeHolderId).empty();
             if (data._embedded.records.length == 0) {
-                $("#"+placeHolderId).html("<div class='chartNoData'>No trades in last 24 hours</div>");
+                $("#"+_placeHolderId).html("<div class='chartNoData'>No trades in last 24 hours</div>");
                 return;
             }
             //Check age of last trade
@@ -44,14 +48,14 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
             const firstTimestamp = new Date(data._embedded.records[0].timestamp).getTime();
             if (firstTimestamp < yesterday) {
                 //Last trade is older than 24hrs => we have no data
-                $("#"+placeHolderId).html("<div class='chartNoData'>No trades in last 24 hours</div>");
+                $("#"+_placeHolderId).html("<div class='chartNoData'>No trades in last 24 hours</div>");
                 return;
             }
 
             _lineChart.CLEAR_DATA();         //TODO: delete this now!
 
 
-            $("#"+placeHolderId).empty();
+            $("#"+_placeHolderId).empty();
             var minPrice = Number.MAX_VALUE;
             var maxPrice = -1.0;
             var lastPrice = -999999;
@@ -89,24 +93,24 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
                 _lineChart.SetStartTime(yesterday);
             }
 
-            setPriceStatistics(placeHolderId, startPrice, lastPrice);
+            setPriceStatistics(startPrice, lastPrice);
             _lineChart.SetPriceScale(minPrice, maxPrice);
-            _lineChart.Render(placeHolderId);
+            _lineChart.Render(_placeHolderId);
         })
         .fail(function(xhr, textStatus, error) {
             $("#marketChart").html("<div class='error'>" + textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText + "</div>");
         });
     };
 
-    var setPriceStatistics = function(chartId, startPrice, lastPrice) {
+    const setPriceStatistics = function(startPrice, lastPrice) {
         //Set last price
         const decimals = Utils.GetPrecisionDecimals(lastPrice);
         const priceAsString = lastPrice.toFixed(decimals);
-        const assetsDescDIV = $("#"+chartId).siblings(".assetsDescription");
+        const assetsDescDIV = $("#"+_placeHolderId).siblings(".assetsDescription");
         $(assetsDescDIV).find(".lastPrice").text(priceAsString);
 
         //Set daily change as percentage
-        var dailyChange = lastPrice / startPrice -1.0;
+        let dailyChange = lastPrice / startPrice -1.0;
         dailyChange *= 100.0;
         const changeAsString = (dailyChange <= 0.0 ? "" : "+") +  dailyChange.toFixed(2) + "%";
         const cssClass = dailyChange < 0.0 ? "red" : "green";
@@ -117,5 +121,17 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
         $(aDiv).removeClass("red").removeClass("green").addClass(cssClass).text(changeAsString);
     };
 
-    //TODO: setup stream, i.e. refresh every 15 minutes
+    /**
+     * Reload the chart every 8 minutes
+     * @private
+     */
+    const initChartStream = function() {
+        if (_this.BaseAsset != null && _this.CounterAsset) {    //We might not be done initializing
+            renderLineChart();
+        }
+        setTimeout(function() {
+            initChartStream();
+        }, Constants.CHART_INTERVAL);
+    };
+    initChartStream();
 }

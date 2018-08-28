@@ -92,7 +92,7 @@ function CandlestickChart() {
         "type": "mixed",
         "background-color": "none",
         "title":{
-            "text": "Interval: 15min (TODO)",
+            "text": "Interval: 15min (TODO)",           //TODO
             "font-family": 'consolas,"Liberation Mono",courier,monospace',          //TODO: from variable
             "color": "#5B6A72",
             "background-color": "none",
@@ -103,9 +103,13 @@ function CandlestickChart() {
                 {id:'ViewSource', enabled:'none'},
                 {id:'Reload', enabled:'none'},
                 {id:'SaveAsImage', enabled:'none'},
+                {id:'DownloadPDF', enabled:'none'},
                 {id:'DownloadSVG', enabled:'none'},
+                {id:'DownloadXLS', enabled:'none'},
+                {id:'Print', enabled:'none'},
                 {id:'ViewSource', enabled:'none'},
-                {id:'HideGuide', enabled:'none'}        //TODO? All their docs say 'GuideHide'. Warn them maybe.
+                {id:'ViewDataTable', enabled:'none'},
+                {id:'HideGuide', enabled:'none'}
             ]
         },
         "labels":[

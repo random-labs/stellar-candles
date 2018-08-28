@@ -82,9 +82,39 @@ function SmallLineChart() {
         });
     };
 
+    /**
+     * URL to be opened when user clicks the context menu item "Open in new tab"
+     * @param {string} url 
+     */
+    this.ContextMenuLink = function(url) {
+        chartConfig.gui.contextMenu.customItems[0]["function"] = "openChartInNewTab('" + url + "')";
+    };
+
     const chartConfig =
     {
         "type": "line",
+        gui: {
+            behaviors: [        //NOTE: the "About ZingChart" item cannot be removed until I buy their license
+                {id:'ViewSource', enabled:'none'},
+                {id:'Reload', enabled:'none'},
+                {id:'SaveAsImage', enabled:'none'},
+                {id:'DownloadPDF', enabled:'none'},
+                {id:'DownloadSVG', enabled:'none'},
+                {id:'DownloadXLS', enabled:'none'},
+                {id:'Print', enabled:'none'},
+                {id:'ViewSource', enabled:'none'},
+                {id:'ViewDataTable', enabled:'none'},
+                {id:'HideGuide', enabled:'none'}
+            ],
+            contextMenu: {
+                customItems:[
+                    {
+                      text:"Open in new tab",
+                      "function": "todo"
+                    }
+                  ]
+              }
+        },
         "utc": false,
         "plotarea": {
             "margin": "dynamic 30 60 dynamic"
@@ -131,3 +161,13 @@ function SmallLineChart() {
         ]
     };
 }
+
+
+/**
+ * Open given URL in new browser tab
+ * @param {Object} data - the weird data container that is passed from ZingChart menu item when clicked 
+ */
+window.openChartInNewTab = function(data) {
+    const url = data.arguments[0];
+    window.open(url, "_blank");
+};
