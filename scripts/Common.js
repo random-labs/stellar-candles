@@ -9,10 +9,12 @@ const Constants = {
     DEFAULT_AMOUNT_DECIMALS: 4,
     DEFAULT_PRICE_DECIMALS: 4,
     Style: {
+        FONT: 'consolas,"Liberation Mono",courier,monospace',
         GREEN: "#46B446",
         RED: "#ED8117",
         LIGHT_GREEN: "#C8E8C8",
-        LIGHT_RED: "#FAD9B9"
+        LIGHT_RED: "#FAD9B9",
+        GRAY: "#5B6A72"
     }
 };
 

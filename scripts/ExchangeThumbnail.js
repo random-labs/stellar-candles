@@ -21,8 +21,8 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
 
         //Activate the link so it navigates to correct exchange
         const chartLink = $("#"+_placeHolderId).parent("div.exchange-link");
-            const url = "exchange.html#" + _this.BaseAsset.ToExchangeUrlParameter() + "/" + _this.CounterAsset.ToExchangeUrlParameter();
-        $(chartLink).attr("title", url).on("click", function() {
+        const url = "exchange.html#" + _this.BaseAsset.ToExchangeUrlParameter() + "/" + _this.CounterAsset.ToExchangeUrlParameter();
+        $(chartLink).on("click", function() {
             window.location = url;
         });
 

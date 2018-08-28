@@ -92,9 +92,8 @@ function CandlestickChart() {
         "type": "mixed",
         "background-color": "none",
         "title":{
-            "text": "Interval: 15min (TODO)",           //TODO
-            "font-family": 'consolas,"Liberation Mono",courier,monospace',          //TODO: from variable
-            "color": "#5B6A72",
+            "font-family": Constants.Style.FONT,
+            "color":  Constants.Style.GRAY,
             "background-color": "none",
             "align": "left"
         },
@@ -115,48 +114,48 @@ function CandlestickChart() {
         "labels":[
             {
                 "text":"open: %plot-0-value-0",
-                "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
+                "font-family": Constants.Style.FONT,
                 "font-size": "13.5px",
-                "color": "#5B6A72",                                                     //TODO: from variable
+                "color": Constants.Style.GRAY,
                 "x":"5",
                 "y":"25"
             },
             {
                 "text":"high: %plot-0-value-1",
-                "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
+                "font-family": Constants.Style.FONT,
                 "font-size": "13.5px",
-                "color": "#46B446",                                                      //TODO: of course, variable
+                "color":  Constants.Style.GREEN,
                 "x":"150",
                 "y":"25"
             },
             {
                 "text":"low: %plot-0-value-2",
-                "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
+                "font-family": Constants.Style.FONT,
                 "font-size": "13.5px",
-                "color": "#ED8117",                                                     //TODO: of course, variable
+                "color":  Constants.Style.RED,
                 "x":"295",
                 "y":"25"
             },
             {
                 "text":"close: %plot-0-value-3",
-                "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
+                "font-family": Constants.Style.FONT,
                 "font-size": "13.5px",
-                "color": "#5B6A72",                                                     //TODO: from variable
+                "color": Constants.Style.GRAY,
                 "x":"435",
                 "y":"25"
             },
             {
                 "text":"volume: %plot-1-value",
-                "font-family":'consolas,"Liberation Mono",courier,monospace',           //TODO: from variable
-                "font-size": "13.5px",                                                  //TODO: from variable
-                "color": "#5B6A72",                                                     //TODO: from variable
+                "font-family": Constants.Style.FONT,
+                "font-size": "13.5px",
+                "color": Constants.Style.GRAY,
                 "x":"590",
                 "y":"25"
             }
         ],
         "plot":{
             "aspect":"candlestick",
-            "bar-width": "70%", //"50%",
+            "bar-width": "70%",
             "tooltip":{
                 "visible":false
             }
@@ -186,14 +185,14 @@ function CandlestickChart() {
                     "type":"date",
                     "all":"%H:%i<br>%D, %M %d, %Y"
                 },
-                "background-color": "#5B6A72"
+                "background-color": Constants.Style.GRAY
             }
         },
         "scale-y":{
             "offset-start": "30%", //to adjust scale offsets.
             "format": "%v",
             "label": {
-                "text": "Price (TODO)"
+                "text": "Price (ASDF)"
             },
             "guide":{
                 "line-style":"solid"
@@ -204,8 +203,8 @@ function CandlestickChart() {
         },
         "scale-y-2":{
             "placement": "default", //to move scale to default (left) side.
-            "blended": true, //to bind the scale to "scale-y".
-            "offset-end": "85%", //to adjust scale offsets.
+            "blended": true,        //to bind the scale to "scale-y".
+            "offset-end": "85%",    //to adjust scale offsets.
             "values": "0:100:20",
             "format": "%v",
             "guide":{
@@ -219,18 +218,18 @@ function CandlestickChart() {
             {
                 "type":"stock",
                 "scales": "scale-x,scale-y",
-                "guide-label": { //for crosshair plot labels
+                "guide-label": {    //for crosshair plot labels
                     "visible": false
                 },
                 "trend-up":{
-                    "line-color":"#46b446",
-                    "border-color":"#46b446",
-                    "background-color":"#46b446"
+                    "line-color": Constants.Style.GREEN,
+                    "border-color": Constants.Style.GREEN,
+                    "background-color": Constants.Style.GREEN
                 },
                 "trend-down":{
-                    "line-color":"#ed8117",
-                    "border-color":"#ed8117",
-                    "background-color":"#ed8117"
+                    "line-color": Constants.Style.RED,
+                    "border-color": Constants.Style.RED,
+                    "background-color": Constants.Style.RED
                 },
                 "values":[
                     /*e.g.                [1438592400000, [120.8800,	121.7300,	120.1700,	121.1200]], //08/03/15
@@ -244,13 +243,13 @@ function CandlestickChart() {
             {
                 "type":"bar",
                 "scales": "scale-x,scale-y-2",
-                "guide-label": { //for crosshair plot labels
+                "guide-label": {    //for crosshair plot labels
                     "text": "Volume: %v",
                     "decimals": Constants.DEFAULT_AMOUNT_DECIMALS,
-                    "background-color": "#5B6A72",
+                    "background-color": Constants.Style.GRAY,
                     "color": "#FFFFFF"
                 },
-                "background-color": "#5B6A72", //"#00cc99",
+                "background-color": Constants.Style.GRAY,
                 "values":[
                     /*e.g.                [1438592400000, 8.43], //08/03/15
                      [1438678800000, 12.62], //08/04/15
