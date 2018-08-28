@@ -103,12 +103,12 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         const url = Constants.API_URL + "/trade_aggregations?" + _this.BaseAsset.ToUrlParameters("base") + "&" + _this.CounterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
 
         $.getJSON(url, function(data) {
+            $("#marketChart").empty();
             if (data._embedded.records.length == 0) {
                 $("#marketChart").html("<div class='chartNoData'>No data</div>");
                 return;
             }
 
-            $("#marketChart").empty();
             const candlestickChart = new CandlestickChart();
             let minPrice = Number.MAX_VALUE;
             let maxPrice = -1.0;
@@ -324,9 +324,9 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 text: issuersArray[i].ShortName,
                 description: issuersArray[i].Domain,
                 value: issuersArray[i].Address,
-                selected: issuersArray[i] == issuerAccount
+                selected: null != issuerAccount && issuersArray[i].Address === issuerAccount.Address
             });
-            if (issuersArray[i] == issuerAccount) {
+            if (null != issuerAccount && issuersArray[i].Address === issuerAccount.Address) {
                 found = true;
             }
         }

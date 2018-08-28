@@ -88,21 +88,6 @@ const AssetRepository = (function () {
     };
 
     /**
-     * Get array of issuers available to the user (i.e. basic + custom)
-     */
-    this.getAvailableAnchors = function() {
-        const anchors = _commonAnchors.slice();
-        for (let i=0; i<_customAssets.length; i++) {
-            //Filter out overlaps
-            if (-1 === anchors.indexOf(_customAssets[i].Issuer)) {
-                anchors.push(_customAssets[i].Issuer);
-            }
-        }
-
-        return anchors;
-    };
-
-    /**
      * User's custom defined assets
      * @public
      */
@@ -152,10 +137,11 @@ const AssetRepository = (function () {
      * @param {string} address 
      */
     this.GetIssuerByAddress = function(address) {
-        const anchors = _this.getAva
-        for (var account in KnownAccounts) {
-            if (KnownAccounts[account].Address === address) {
-                return KnownAccounts[account];
+        //NOTE: user can register a known anchor. In that case first mathing address is returned
+        const anchors = _this.getAllAnchors();          
+        for (let i=0; i<anchors.length; i++) {
+            if (address === anchors[i].Address) {
+                return anchors[i];
             }
         }
 
@@ -234,13 +220,13 @@ const AssetRepository = (function () {
     this.AddCustomAsset = function(assetCode, issuerAddress) {
         //Don't add if it's already there
         for (let i=0; i<_customAssets.length; i++) {
-            if (_customAssets[i].AssetCode === assetCode && _customAssets[i].Issuer.Address) {
+            if (assetCode === _customAssets[i].AssetCode && issuerAddress === _customAssets[i].Issuer.Address) {
                 return false;
             }
         }
         //Try to match the address with known issuer.
         let issuer = null;
-        var anchors = _this.getAvailableAnchors();
+        var anchors = _this.getAllAnchors();
         for (let a=0; a<anchors.length; a++) {
             if (issuerAddress === anchors[a].Address) {
                 issuer = anchors[a];
@@ -294,7 +280,7 @@ const AssetRepository = (function () {
         for (var i=0; i<parts.length; i++) {
             var part = parts[i].trim();
             if (part.indexOf(COOKIE_NAME) == 0) {
-                var assetCodes = part.substr(COOKIE_NAME.length).split(",");       //TODO: sanitize "," in asset type
+                var assetCodes = part.substr(COOKIE_NAME.length).split(",");
                 for (var a=0; a<assetCodes.length; a++) {
                     if ((assetCodes[a] || "").length <= 0) {
                         continue;
@@ -323,13 +309,13 @@ const AssetRepository = (function () {
         for (let i=0; i<parts.length; i++) {
             const part = parts[i].trim();
             if (part.indexOf(COOKIE_NAME) == 0) {
-                const anchors = part.substr(COOKIE_NAME.length).split(",");       //TODO: sanitize "," in anchor name
+                const anchors = part.substr(COOKIE_NAME.length).split(",");
                 for (let a=0; a<anchors.length; a++) {
                     if ((anchors[a] || "").length <= 0) {
                         continue;
                     }
                     const anchorText = decodeURIComponent(anchors[a]);
-                    const dashIndex = anchorText.indexOf("/");                    //TODO: sanitize "/" and ";" in anchor name
+                    const dashIndex = anchorText.indexOf("/");
                     const address = anchorText.substr(0, dashIndex);
                     const domain = anchorText.substr(dashIndex+1);
                     customAnchors.push(new Account(address, domain, domain));
@@ -369,11 +355,11 @@ const AssetRepository = (function () {
         }
 
         const parts = cookieText.split(";");
-        for (var i=0; i<parts.length; i++) {
+        for (let i=0; i<parts.length; i++) {
             const part = parts[i].trim();
             if (part.indexOf(COOKIE_NAME) == 0) {
-                var assets = part.substr(COOKIE_NAME.length).split(",");
-                for (var a=0; a<assets.length; a++) {
+                const assets = part.substr(COOKIE_NAME.length).split(",");
+                for (let a=0; a<assets.length; a++) {
                     if ((assets[a] || "").length <= 0) {
                         continue;
                     }
