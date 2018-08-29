@@ -43,18 +43,15 @@ const AssetRepository = (function () {
     }
 
 
-    /**
-     * User's custom defined asset codes
-     * @public
-     */
+    /** @public User's custom defined asset codes */
     this.getCustomAssetCodes = function() { return _customAssetCodes; };
 
     /**
-     * Get all asset codes, i.e. common ones + custom defined by the user
+     * Get all asset codes (i.e. common ones + custom defined by the user) excluding native XLM
      * @public
      */
     this.getAllAssetCodes = function() {
-        return _commonAssetCodes.concat(_customAssetCodes);
+        return _commonAssetCodes.concat(_customAssetCodes).slice(1);   //Exclude XLM
     };
 
     /**
@@ -73,10 +70,7 @@ const AssetRepository = (function () {
         return codes;
     };
 
-    /**
-     * Custom anchors defined by the user
-     * @public
-     */
+    /** @public Custom anchors defined by the user */
     this.getCustomAnchors = function() { return _customAnchors; }
 
     /**
@@ -87,10 +81,7 @@ const AssetRepository = (function () {
         return _commonAnchors.concat(_customAnchors);
     };
 
-    /**
-     * User's custom defined assets
-     * @public
-     */
+    /** @public User's custom defined assets */
     this.getCustomAssets = function() { return _customAssets; }
 
     /**
@@ -100,6 +91,9 @@ const AssetRepository = (function () {
     const getAvailableAssets = function() {
         return _commonAssets.concat(_customAssets);
     };
+
+    /** @public Return custom exchanges defined by the user */
+    this.getCustomExchanges = function() { return _customExchanges; }
 
     /**
      * Returns all available anchors issuing given asset code.
@@ -179,8 +173,9 @@ const AssetRepository = (function () {
 
     /**
      * Add new issuer (a.k.a. anchor).
-     * @param address - Valid Stellar public key
-     * @param domain - optional domain or any name describing the anchor
+     * @public
+     * @param {string} address - Valid Stellar public key
+     * @param {string} domain - optional domain or any name describing the anchor
      * @returns {boolean} - true on success, false if an issuer with given address already exists
      */
     this.AddCustomAnchor = function(address, domain) {
@@ -197,6 +192,7 @@ const AssetRepository = (function () {
 
     /**
      * Remove custom issuer by their address
+     * @public
      * @param {string} address - anchor's issuing address
      */
     this.RemoveCustomAnchor = function(address) {
@@ -226,7 +222,7 @@ const AssetRepository = (function () {
         }
         //Try to match the address with known issuer.
         let issuer = null;
-        var anchors = _this.getAllAnchors();
+        const anchors = _this.getAllAnchors();
         for (let a=0; a<anchors.length; a++) {
             if (issuerAddress === anchors[a].Address) {
                 issuer = anchors[a];
@@ -263,25 +259,56 @@ const AssetRepository = (function () {
         return false;
     };
 
+    /** @public Add to custom exchange */
+    this.AddCustomExchange = function(baseAssetCode, baseIssuerAddress, counterAssetCode, counterIssuerAddress) {
+        //NOTE: adding the same exchange many times is not a problem. If a user wishes that, why not...
+        const baseAnchor = getAnchorByAddress(baseIssuerAddress);
+        const counterAnchor = getAnchorByAddress(counterIssuerAddress);
+        const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseAnchor);
+        const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterAnchor);
 
-    /**
-     * Loads user's custom defined asset codes from cookie
-     * @private
-     */
-    var loadAssetCodes = function() {
-        var COOKIE_NAME = "aco=";
-        var customCodes = new Array();
-        var cookieText = document.cookie;
+        _customExchanges.push(new CustomExchange(baseAsset, counterAsset));
+        serializeToCookie();
+    };
+
+    /** @public Change custom exchange on given index */
+    this.UpdateCustomExchange = function(index, baseAssetCode, baseIssuerAddress, counterAssetCode, counterIssuerAddress) {
+        if (index < _customExchanges) {
+            const baseAnchor = getAnchorByAddress(baseIssuerAddress);
+            const counterAnchor = getAnchorByAddress(counterIssuerAddress);
+            const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseAnchor);
+            const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterAnchor);
+
+            _customExchanges[index] = new CustomExchange(baseAsset, counterAsset);
+        }
+    };
+
+    /** @public Delete exchange by its index in the array of custom exchanges */
+    this.RemoveCustomExchange = function(index) {        //TODO: custom exchange being clicked by the user needs to know its index
+        if (index < _customExchanges.length) {
+            _customExchanges = _customExchanges.splice(index, 1);
+            serializeToCookie();
+            return true;
+        }
+
+        return false;
+    };
+
+    /** @private Loads user's custom defined asset codes from cookie */
+    const loadAssetCodes = function() {
+        const COOKIE_NAME = "aco=";
+        const customCodes = new Array();
+        const cookieText = document.cookie;
         if (cookieText.length <= 0) {
             return customCodes;
         }
 
-        var parts = cookieText.split(";");
-        for (var i=0; i<parts.length; i++) {
-            var part = parts[i].trim();
+        const parts = cookieText.split(";");
+        for (let i=0; i<parts.length; i++) {
+            const part = parts[i].trim();
             if (part.indexOf(COOKIE_NAME) == 0) {
-                var assetCodes = part.substr(COOKIE_NAME.length).split(",");
-                for (var a=0; a<assetCodes.length; a++) {
+                const assetCodes = part.substr(COOKIE_NAME.length).split(",");
+                for (let a=0; a<assetCodes.length; a++) {
                     if ((assetCodes[a] || "").length <= 0) {
                         continue;
                     }
@@ -295,6 +322,7 @@ const AssetRepository = (function () {
 
     /**
      * Load and return user's custom anchor accounts (name+domain).
+     * @private
      * @return Array of Account instances
      */
     const loadAnchors = function() {
@@ -328,10 +356,16 @@ const AssetRepository = (function () {
 
     /**
      * Get issuer by their Stellar address
+     * @private
      * @param issuerAddress - public key of an issuer
      * @returns {Account} - first issuer with given address or NULL if no such is registered here
      */
     const getAnchorByAddress = function(issuerAddress) {
+        if ((issuerAddress || "").length <= 0) {
+            //Probably native issuer
+            return null;
+        }
+
         for (let i=0; i<_customAnchors.length; i++) {
             if (issuerAddress === _customAnchors[i].Address) {
                 return _customAnchors[i];
@@ -376,6 +410,54 @@ const AssetRepository = (function () {
         return customAssets;
     };
 
+    /**
+     * Load user's custom exchanges
+     * @private
+     * @returns {Array} array of CustomExchange instances
+     */
+    const loadExchanges = function() {
+        const COOKIE_NAME = "exc=";
+        const userExchanges = new Array();
+        const cookieText = document.cookie;
+        if (cookieText.length <= 0) {
+            return;
+        }
+
+        const parts = cookieText.split(";");
+        for (let i=0; i<parts.length; i++) {
+            const part = parts[i].trim();
+            if (part.indexOf(COOKIE_NAME) == 0) {
+                const exchanges = part.substr(COOKIE_NAME.length).split(",");
+                for (let e=0; e<exchanges.length; e++) {
+                    if ((exchanges[e] || "").length <= 0) {
+                        continue;
+                    }
+                    const exchangeText = decodeURIComponent(exchanges[e]);      //Format: USD-GABCDEFGH/XYZ-GBGBGBGBGBGBGBGB
+                    const slashIndex = exchangeText.indexOf("/");
+                    //Base asset
+                    const baseAssetText = exchangeText.substr(0, slashIndex);
+                    let dashIndex = baseAssetText.indexOf("-");
+                    const baseAssetCode = baseAssetText.substr(0, dashIndex);
+                    const baseIssuerAddress = baseAssetText.substr(dashIndex+1);
+                    const baseIssuer = getAnchorByAddress(baseIssuerAddress);           //BUG: what if the user removed the issuer on Configuration? TODO
+                    const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseIssuer);
+                    //Counter asset
+                    const counterAssetText = exchangeText.substr(slashIndex+1);
+                    dashIndex = counterAssetText.indexOf("-");
+                    const counterAssetCode = counterAssetText.substr(0, dashIndex);
+                    const counterIssuerAddress = counterAssetText.substr(dashIndex+1);
+                    const counterIssuer = getAnchorByAddress(counterIssuerAddress);     //BUG: what if the user removed the issuer on Configuration? TODO
+                    const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterIssuer);
+
+                    userExchanges.push(new CustomExchange(baseAsset, counterAsset));
+                }
+            }
+        }
+
+        return userExchanges;
+    };
+
+    /** @private Dump all the custom data into browser cookie */
     const serializeToCookie = function(){
         let cookieText = "";
         //Asset codes
@@ -410,6 +492,17 @@ const AssetRepository = (function () {
             cookieText += asset.AssetCode + "-" + asset.Issuer.Address;
         }
         setCookieValue("ass", cookieText);
+
+        cookieText = "";
+        for (let e=0; e<_customExchanges.length; e++) {
+            const exchange = _customExchanges[e];
+            if (e>0) {
+                cookieText += ",";
+            }
+            //Format ABC-GGGGGGGGGG/XYZ-GA2222222222222222
+            cookieText += exchange.getBaseAsset().AssetCode + "-" + exchange.getBaseAsset().Issuer.Address + "/" +
+                          exchange.getCounterAsset().AssetCode + "-" + exchange.getCounterAsset().Issuer.Address;
+        }
     };
 
     const setCookieValue = function(key, value) {
@@ -421,6 +514,7 @@ const AssetRepository = (function () {
     const _customAssetCodes = loadAssetCodes();
     const _customAnchors = loadAnchors();
     const _customAssets = loadAssets();
+    const _customExchanges = loadExchanges();
 
     //Return the singleton instance
     return _this;

@@ -1,51 +1,86 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <script src= "https://cdn.zingchart.com/zingchart.min.js"></script>
-        <script> zingchart.MODULESDIR = "https://cdn.zingchart.com/modules/";
-        ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9","ee6b7db5b51705a13dc2339db3edaf6d"];</script></head>
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>My Exchanges</title>
+
+    <link rel="stylesheet" href="styles/main.css?v=20180805">
+    <link rel="stylesheet" href="styles/3rdParty/bootstrap.css?v=20180326">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+</head>
     <body>
-        <div id='myChart' style="border: 1px solid blue; width: 600px;"> </div>
-    </body>
+        <div class="container-fluid">
+            <include src="components/header_row.html"></include>
     
+            <div class="row">
+                <div class="col-lg-12" style="border: 1px solid black;">
+                    TODO: highlight the link "My Exchanges" in header (and do the same on the Configuration page)
+                </div>
+            </div>
+    
+            <div class="row exchanges-frame">
+                Dynamically loaded here...
 
-    <script type="text/javascript">
-var myConfig = {
-  tooltip: { visible: false },
-    type: "mixed",
-    utc:true,
-    backgroundColor:"lightgreen",
-    plotarea: { "margin": "dynamic 30 60 dynamic" },
-    scaleY:{
-        "min-value": 0.00003273699,
-        "max-value": 0.000033624591,
-        step: 0.000004932571111,        //BUG: SETTING THIS BREAKS EVERYTHING!
-        decimals:8
-    },
-    scaleX:{
-//not needed       minValue:15350760000000,
-       step: 900000,
-       transform:{
-            type:"date",
-            all:"%m/%d/%y"
-       }
-     },
-    series : [
-        {
-            type:"line",
-            values: [, [1535074200000, 0.0000332], [1535076000000, 0.0000332], [1535077800000, 0.0000332], [1535078700000, 0.0000333]],
-            lineWidth:4,
-            shadow:false,
-            lineColor:"orange",
-            marker:{ visible:false }
-        }
-    ]
-};
+                
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid blue;">
+                    <div class="exchange-link">
+                        <div class="assetsSelection" style="position: relative;">
+                            <div style="position: absolute; top: -15px; right: -15px; width: 30px; height: 30px; border-radius: 50%; text-align: center; color: white; background-color: #ff6666; font-size: 1.8em; cursor: pointer;"
+                                 onclick="alert('gonna delete this');">X</div>
+                            <select>
+                                <option>ASF</option>
+                                <option>Beefcoin</option>
+                            </select>
+                        </div>
+                        <div class="assetsDescription">
+                            <div class="lastPrice">0.00</div>
+                            <div class="baseAssetDesc">
+                                <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
+                            </div>
+                            <span class="slash">/</span>
+                            <div class="counterAssetDesc">
+                                <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
+                            </div>
+                            <div class="dailyChangePercent green">+0.00%</div>
+                        </div>
+                        <div id="highestXlmVolumeChart1" class="exchange-link-chart">
+                            <br/>Loading data...
+                        </div>
+                        <script type="text/javascript">
+                            var highestXlmVolumeChart1Ui;
+                            $(function() {
+                                highestXlmVolumeChart1Ui = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets.MOBI);
+                                highestXlmVolumeChart1Ui.Initialize("highestXlmVolumeChart1");
 
-zingchart.render({ 
-    id : 'myChart', 
-    data : myConfig, 
-    height: 500, 
-    width: "100%" 
-});
-    </script>
+                                $(".assetsSelection").click(function(ev){ ev.preventDefault(); return false;});
+                            });
+                        </script>
+                    </div>
+
+                </div>
+            
+
+
+            </div>
+        </div>
+
+
+        <include src="components/footer.html"></include>
+    
+        <script type="text/javascript" src="scripts/3rdParty/bootstrap.min.js?v=20180326"></script>
+        <script src= "scripts/3rdParty/zingcharts/zingchart.min.js"></script>
+        <script> zingchart.MODULESDIR = "scripts/3rdParty/zingcharts/modules/"; </script>
+        <script src="scripts/UIHelpers.js"></script>
+        <script type="text/javascript" src="scripts/Account.js?v=20180417"> </script>
+        <script type="text/javascript" src="scripts/Asset.js?v=20180412"> </script>
+        <script type="text/javascript" src="scripts/Common.js?v=20180325"> </script>
+        <script type="text/javascript" src="scripts/SmallLineChart.js?v=20180804"></script>
+        <script type="text/javascript" src="scripts/ExchangeThumbnail.js?v=20180804"></script>
+        <script type="text/javascript" src="scripts/CustomExchange.js?v=20180828"></script>
+        <script type="text/javascript" src="scripts/myExchanges.js?v=20180828"></script>
+    </body>
 </html>

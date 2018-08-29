@@ -1,5 +1,6 @@
 /**
- * Asset on Stellar ledger
+ * Asset on the Stellar ledger
+ * @constructor
  */
 function Asset(code, fullName, type, account) {
     this.AssetCode = code || "XLM";
