@@ -6,7 +6,7 @@
  * @param {Asset} baseAsset 
  * @param {Asset} counterAsset 
  */
-function CustomExchange(baseAsset, counterAsset) {
+function ExchangePair(baseAsset, counterAsset) {
     const _baseAsset = baseAsset;
     const _counterAsset = counterAsset;
 

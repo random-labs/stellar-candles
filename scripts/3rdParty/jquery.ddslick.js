@@ -117,8 +117,8 @@
                     ddOptions = obj.find('.dd-options');
 
                 //Set widths
-                ddOptions.css({ width: options.width });
-                ddSelect.css({ width: options.width, background: options.background });
+                ddOptions.css({ width: "100%" });
+                ddSelect.css({ background: options.background });
                 obj.css({ width: options.width });
 
                 //Set height

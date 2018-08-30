@@ -92,7 +92,7 @@ const AssetRepository = (function () {
         return _commonAssets.concat(_customAssets);
     };
 
-    /** @public Return custom exchanges defined by the user */
+    /** @public Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
     this.getCustomExchanges = function() { return _customExchanges; }
 
     /**

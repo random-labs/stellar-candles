@@ -1,5 +1,6 @@
 /**
- * UI model to the small exchange charts on the Overview page. Always shows 24hr history.
+ * UI model to the small exchange charts (e.g. on Overview, My Exchanges). Always shows 24hr history.
+ * @constructor
  */
 function ExchangeThumbnail(baseAsset, counterAsset) {
     this.BaseAsset = baseAsset;
