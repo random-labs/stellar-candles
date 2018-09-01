@@ -106,3 +106,31 @@ var noAssetMessage = function() {
     return "<i>No custom assets yet. Use the form below to add some.</i>";
 };
 /**********************************************************************************************************************/
+
+/********************************** Template for a custom exchange (myExchages.html) **********************************/
+
+var customExchangeContainer = function(id) {
+    return  '<div id="customExchange' + id + '" class="col-xl-3 col-lg-4 col-md-6 col-sm-12">' +
+            '    <div class="exchange-link">' +
+            '        <div class="assetsSelection">' +
+            '            <div class="removeExchButton">X</div>' +
+            '            <div class="assetDropDowns">' +
+            '                <div class="baseAssetCodeDropDown" style="width: 100px;">Asset code drop-down here</div>' +
+            '                <div class="baseAssetAnchorDropDown">Anchor drop-down here</div>' +
+            '                <div class="counterAssetCodeDropDown" style="width: 100px;">Asset code drop-down here</div>' +
+            '                <div class="counterAssetAnchorDropDown">Anchor drop-down here</div>' +
+            '            </div>' +
+            '        </div>' +
+            '        <div class="assetsDescription">' +
+            '            <div class="lastPrice">0.00</div>' +
+            '            <div class="baseAssetDesc"> </div>' +
+            '            <div class="counterAssetDesc"> </div>' +
+            '            <div class="dailyChangePercent green">+0.00%</div>' +
+            '        </div>' +
+            '        <div id="customExchangeChart' + id + '" class="exchange-link-chart">' +
+            '            <div class="chartWarning">Loading data...</div>' +
+            '        </div>' +
+            '    </div>' +
+            '</div>';
+}
+/**********************************************************************************************************************/

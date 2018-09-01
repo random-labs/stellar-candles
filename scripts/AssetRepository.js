@@ -259,36 +259,40 @@ const AssetRepository = (function () {
         return false;
     };
 
-    /** @public Add to custom exchange */
-    this.AddCustomExchange = function(baseAssetCode, baseIssuerAddress, counterAssetCode, counterIssuerAddress) {
-        //NOTE: adding the same exchange many times is not a problem. If a user wishes that, why not...
-        const baseAnchor = getAnchorByAddress(baseIssuerAddress);
-        const counterAnchor = getAnchorByAddress(counterIssuerAddress);
-        const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseAnchor);
-        const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterAnchor);
-
-        _customExchanges.push(new CustomExchange(baseAsset, counterAsset));
+    /** @public Add dummy pair (XLM/XLM) to custom exchanges, return the instance. */
+    this.CreateCustomExchange = function() {
+        const id = (new Date()).getTime();
+        const newExchange = new ExchangePair(id, KnownAssets.XLM, KnownAssets.XLM);
+        _customExchanges.push(newExchange);
         serializeToCookie();
+
+        return newExchange;
     };
 
-    /** @public Change custom exchange on given index */
-    this.UpdateCustomExchange = function(index, baseAssetCode, baseIssuerAddress, counterAssetCode, counterIssuerAddress) {
-        if (index < _customExchanges) {
-            const baseAnchor = getAnchorByAddress(baseIssuerAddress);
-            const counterAnchor = getAnchorByAddress(counterIssuerAddress);
-            const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseAnchor);
-            const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterAnchor);
+    /** @public Change custom exchange with given ID */
+    this.UpdateCustomExchange = function(exchangeId, baseAssetCode, baseIssuerAddress, counterAssetCode, counterIssuerAddress) {
+        for (let i=0; i<_customExchanges.length; i++) {
+            if (_customExchanges[i].getId() === exchangeId) {
+                const baseAnchor = getAnchorByAddress(baseIssuerAddress);
+                const counterAnchor = getAnchorByAddress(counterIssuerAddress);
+                const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseAnchor);
+                const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterAnchor);
 
-            _customExchanges[index] = new CustomExchange(baseAsset, counterAsset);
+                _customExchanges[i] = new ExchangePair(exchangeId, baseAsset, counterAsset);
+            }
         }
+
+        return false;
     };
 
-    /** @public Delete exchange by its index in the array of custom exchanges */
-    this.RemoveCustomExchange = function(index) {        //TODO: custom exchange being clicked by the user needs to know its index
-        if (index < _customExchanges.length) {
-            _customExchanges = _customExchanges.splice(index, 1);
-            serializeToCookie();
-            return true;
+    /** @public Delete exchange by its ID in the array of custom exchanges */
+    this.RemoveCustomExchange = function(exchangeId) {
+        for (let i=0; i<_customExchanges.length; i++) {
+            if (_customExchanges[i].getId() === exchangeId) {
+                _customExchanges.splice(i, 1);
+                serializeToCookie();
+                return true;
+            }
         }
 
         return false;
@@ -413,7 +417,7 @@ const AssetRepository = (function () {
     /**
      * Load user's custom exchanges
      * @private
-     * @returns {Array} array of CustomExchange instances
+     * @returns {Array} array of ExchangePair instances
      */
     const loadExchanges = function() {
         const COOKIE_NAME = "exc=";
@@ -432,10 +436,12 @@ const AssetRepository = (function () {
                     if ((exchanges[e] || "").length <= 0) {
                         continue;
                     }
-                    const exchangeText = decodeURIComponent(exchanges[e]);      //Format: USD-GABCDEFGH/XYZ-GBGBGBGBGBGBGBGB
+                    const exchangeText = decodeURIComponent(exchanges[e]);      //Format: 5366025104=USD-GABCDEFGH/XYZ-GBGBGBGBGBGBGBGB
+                    const eqSignIndex = exchangeText.indexOf("=");
+                    const id = parseInt(exchangeText.substr(0, eqSignIndex));
                     const slashIndex = exchangeText.indexOf("/");
                     //Base asset
-                    const baseAssetText = exchangeText.substr(0, slashIndex);
+                    const baseAssetText = exchangeText.substr(eqSignIndex+1, slashIndex);
                     let dashIndex = baseAssetText.indexOf("-");
                     const baseAssetCode = baseAssetText.substr(0, dashIndex);
                     const baseIssuerAddress = baseAssetText.substr(dashIndex+1);
@@ -449,7 +455,7 @@ const AssetRepository = (function () {
                     const counterIssuer = getAnchorByAddress(counterIssuerAddress);     //BUG: what if the user removed the issuer on Configuration? TODO
                     const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterIssuer);
 
-                    userExchanges.push(new CustomExchange(baseAsset, counterAsset));
+                    userExchanges.push(new ExchangePair(id, baseAsset, counterAsset));
                 }
             }
         }
@@ -499,10 +505,12 @@ const AssetRepository = (function () {
             if (e>0) {
                 cookieText += ",";
             }
-            //Format ABC-GGGGGGGGGG/XYZ-GA2222222222222222
-            cookieText += exchange.getBaseAsset().AssetCode + "-" + exchange.getBaseAsset().Issuer.Address + "/" +
+            //Format 99012367=ABC-GGGGGGGGGG/XYZ-GA2222222222222222
+            cookieText += exchange.getId() + "=" +
+                          exchange.getBaseAsset().AssetCode + "-" + exchange.getBaseAsset().Issuer.Address + "/" +
                           exchange.getCounterAsset().AssetCode + "-" + exchange.getCounterAsset().Issuer.Address;
         }
+        setCookieValue("exc", cookieText)
     };
 
     const setCookieValue = function(key, value) {

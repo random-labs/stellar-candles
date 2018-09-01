@@ -24,58 +24,14 @@
             </div>
     
             <div class="row exchanges-frame">
-                Dynamically loaded here...
-
-                
-                <div id="customExchange1" data-index="1" class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid blue;">
-                    <div class="exchange-link">
-                        <div class="assetsSelection">
-                            <div class="removeExchButton" onclick="alert('gonna delete Exch #1');">X</div>
-                            
-                            <div style="display: flex; flex-direction: row; background-color: yellow;">
-                                <div class="baseAssetCodeDropDown" style="width: 100px; background-color: blue;">Asset code drop-down here</div>
-                                <div class="baseAssetAnchorDropDown">Anchor drop-down here</div>
-                                <div class="counterAssetCodeDropDown" style="width: 100px; background-color: limegreen;">Asset code drop-down here</div>
-                                <div class="counterAssetAnchorDropDown">Anchor drop-down here</div>
-                            </div>
-                        </div>
-                        <div class="assetsDescription">
-                            <div class="lastPrice">0.00</div>
-                            <div class="baseAssetDesc">
-                                <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
-                            </div>
-                            <span class="slash">/</span>
-                            <div class="counterAssetDesc">
-                                <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
-                            </div>
-                            <div class="dailyChangePercent green">+0.00%</div>
-                        </div>
-                        <div id="highestXlmVolumeChart1" class="exchange-link-chart">
-                            <br/>Loading data...
-                        </div>
-                        <script type="text/javascript">
-                            var highestXlmVolumeChart1Ui;
-                            $(function() {
-                                highestXlmVolumeChart1Ui = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets.MOBI);
-                                highestXlmVolumeChart1Ui.Initialize("highestXlmVolumeChart1");
-
-                                $(".assetsSelection").click(function(ev){ ev.preventDefault(); return false;});
-                                $(".exchange-link").on("mouseover", function(){
-                                    $(this).find("div.removeExchButton").show();
-                                }).on("mouseout", function() {
-                                    $(this).find("div.removeExchButton").hide();
-                                });
-                            });
-                        </script>
+                <!-- User's custom markets added here dynamicaly -->
+                <div id="addCustomExchange" class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                    <div id="addExchangeButton" class="exchange-link">
+                        (add)
                     </div>
-
                 </div>
-            
-
-
             </div>
         </div>
-
 
         <sc-include src="components/footer.html"></sc-include>
     
@@ -86,11 +42,12 @@
         <script type="text/javascript" src="scripts/UIHelpers.js"></script>
         <script type="text/javascript" src="scripts/Account.js?v=20180417"> </script>
         <script type="text/javascript" src="scripts/Asset.js?v=20180412"> </script>
+        <script type="text/javascript" src="scripts/ExchangePair.js?v=20180828"></script>
         <script type="text/javascript" src="scripts/AssetRepository.js?v=20180829"> </script>
         <script type="text/javascript" src="scripts/Common.js?v=20180325"> </script>
         <script type="text/javascript" src="scripts/SmallLineChart.js?v=20180804"></script>
         <script type="text/javascript" src="scripts/ExchangeThumbnail.js?v=20180804"></script>
-        <script type="text/javascript" src="scripts/ExchangePair.js?v=20180828"></script>
         <script type="text/javascript" src="scripts/myExchanges.js?v=20180828"></script>
+        <script type="text/javascript" src="scripts/prerenderedTemplates.js?v=20180901"></script>
     </body>
 </html>

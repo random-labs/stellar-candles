@@ -64,7 +64,7 @@ function SmallLineChart(placeholderId) {
     };
 
     this.ShowError = function(errorMessage) {
-        $("#" + _placeholderId).html("<div class='error'>" + errorMessaget + "</div>");
+        $("#" + _placeholderId).html("<div class='error'>" + errorMessage + "</div>");
     };
 
     this.ShowWarning = function(message) {
