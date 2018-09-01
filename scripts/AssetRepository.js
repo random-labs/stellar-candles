@@ -93,7 +93,12 @@ const AssetRepository = (function () {
     };
 
     /** @public Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
-    this.getCustomExchanges = function() { return _customExchanges; }
+    this.getCustomExchanges = function() {
+        if (null == _customExchanges) {
+            _customExchanges = loadExchanges();
+        }
+        return _customExchanges;
+    }
 
     /**
      * Returns all available anchors issuing given asset code.
@@ -389,7 +394,7 @@ const AssetRepository = (function () {
         const customAssets = new Array();
         const cookieText = document.cookie;
         if (cookieText.length <= 0) {
-            return;
+            return customAssets;
         }
 
         const parts = cookieText.split(";");
@@ -424,7 +429,7 @@ const AssetRepository = (function () {
         const userExchanges = new Array();
         const cookieText = document.cookie;
         if (cookieText.length <= 0) {
-            return;
+            return userExchanges;
         }
 
         const parts = cookieText.split(";");
@@ -437,11 +442,11 @@ const AssetRepository = (function () {
                         continue;
                     }
                     const exchangeText = decodeURIComponent(exchanges[e]);      //Format: 5366025104=USD-GABCDEFGH/XYZ-GBGBGBGBGBGBGBGB
-                    const eqSignIndex = exchangeText.indexOf("=");
-                    const id = parseInt(exchangeText.substr(0, eqSignIndex));
+                    const hashtagIndex = exchangeText.indexOf("#");
+                    const id = parseInt(exchangeText.substr(0, hashtagIndex));
                     const slashIndex = exchangeText.indexOf("/");
                     //Base asset
-                    const baseAssetText = exchangeText.substr(eqSignIndex+1, slashIndex);
+                    const baseAssetText = exchangeText.substr(hashtagIndex+1, slashIndex);
                     let dashIndex = baseAssetText.indexOf("-");
                     const baseAssetCode = baseAssetText.substr(0, dashIndex);
                     const baseIssuerAddress = baseAssetText.substr(dashIndex+1);
@@ -500,13 +505,13 @@ const AssetRepository = (function () {
         setCookieValue("ass", cookieText);
 
         cookieText = "";
-        for (let e=0; e<_customExchanges.length; e++) {
+        for (let e=0; _customExchanges != null && e<_customExchanges.length; e++) {
             const exchange = _customExchanges[e];
             if (e>0) {
                 cookieText += ",";
             }
             //Format 99012367=ABC-GGGGGGGGGG/XYZ-GA2222222222222222
-            cookieText += exchange.getId() + "=" +
+            cookieText += exchange.getId() + "#" +
                           exchange.getBaseAsset().AssetCode + "-" + exchange.getBaseAsset().Issuer.Address + "/" +
                           exchange.getCounterAsset().AssetCode + "-" + exchange.getCounterAsset().Issuer.Address;
         }
@@ -522,7 +527,7 @@ const AssetRepository = (function () {
     const _customAssetCodes = loadAssetCodes();
     const _customAnchors = loadAnchors();
     const _customAssets = loadAssets();
-    const _customExchanges = loadExchanges();
+    let _customExchanges = null;
 
     //Return the singleton instance
     return _this;
