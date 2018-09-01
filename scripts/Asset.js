@@ -57,6 +57,7 @@ const KnownAssets = {
     "BAT" : new Asset("BAT", "Basic Attention Token", "credit_alphanum4", KnownAccounts.Papaya1),
     "BCH-Papaya" : new Asset("BCH", "Bitcoin Cash", "credit_alphanum4", KnownAccounts.Papaya4),
     "BTC-Golix" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.Golix),
+    "BTC-Interstellar" : new Asset("BTC", null, KnownAccounts.Interstellar),
     "BTC-Liquido" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.Liquido),
     "BTC-NaoBTC" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.NaoBTC),
     "BTC-Papaya" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.Papaya2),
@@ -80,6 +81,7 @@ const KnownAssets = {
     "JPY" : new Asset("JPY", "Japanese Yen", "credit_alphanum4", KnownAccounts.VcBearJPY),
     "KIN-Papaya" : new Asset("KIN", "Kin token", "credit_alphanum4", KnownAccounts.Papaya1),
     "LINK" : new Asset("LINK", "ChainLink", "credit_alphanum4", KnownAccounts.Papaya1),
+    "LTC-Interstellar" : new Asset("LTC", "Litecoin", null, KnownAccounts.Interstellar),
     "LTC-Liquido" : new Asset("LTC", "Litecoin", "credit_alphanum4", KnownAccounts.Liquido),
     "LTC-Papaya" : new Asset("LTC", "Litecoin", "credit_alphanum4", KnownAccounts.Papaya3),
     "MOBI" : new Asset("MOBI", "Mobius", "credit_alphanum4", KnownAccounts.Mobius),
@@ -106,9 +108,9 @@ const KnownAssets = {
     "XEL" : new Asset("XEL", "NaoBTC XEL", "credit_alphanum4", KnownAccounts.NaoXEL),
     "XIM" : new Asset("XIM", "Ximcoin", "credit_alphanum4", KnownAccounts.XimCoin),
     "XIR" : new Asset("XIR", "Xirkle coin", "credit_alphanum4", KnownAccounts.Xirkle),
-//WTF?    "XLM-Stronghold" : new Asset("XLM", "???", "credit_alphanum4", KnownAccounts.Stronghold),
     "XLQ" : new Asset("XLQ", "Liquido", "credit_alphanum4", KnownAccounts.Liquido),
-    "XRP" : new Asset("XRP", "Ripple", "credit_alphanum4", KnownAccounts.VcBearXRP),
+    "XRP-Interstellar" : new Asset("XRP", "XRP", null, KnownAccounts.Interstellar),
+    "XRP-VCBear" : new Asset("XRP", "XRP", null, KnownAccounts.VcBearXRP),
     "XTC" : new Asset("XTC", "Tai Chi Chain", "credit_alphanum4", KnownAccounts.TaiChiChain),
     "ZRX" : new Asset("ZRX", "0x token", "credit_alphanum4", KnownAccounts.Papaya1)
 };

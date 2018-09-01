@@ -37,6 +37,7 @@ var KnownAccounts = {
     "Firefly" : new Account("GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY", "Firefly", "fchain.io"),
     "Golix" : new Account("GCYK67DDGBOANS6UODJ62QWGLEB2A7JQ3XUV25HCMLT7CI23PMMK3W6R", "Golix", "golix.io"),
     "IreneEnergy" : new Account("GBBRMEXJMS3L7Y3DZZ2AHBD545GZ72OAEHHEFKGZAHHASHGWMHK5P6PL", "Irene Energy", "irene.energy"),
+    "Interstellar" : new Account("GCNSGHUCG5VMGLT5RIYYZSO7VQULQKAJ62QA33DBC5PPBSO57LFWVV6P", "Interstellar Exchange", "interstellar.exchange"),
     "Liquido" : new Account("GD2RRX6BKVTORZ6RIMBLWFVUOAYOLTS2QFJQUQPXLI3PBHR3TMLQNGZX", "Liquido", "liquido.i-server.org"),
     "Mobius" : new Account("GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH", "Mobius", "mobius.network"),
     "Moni" : new Account("GAKBPBDMW6CTRDCXNAPSVJZ6QAN3OBNRG6CWI27FGDQT2ZJJEMDRXPKK", "Moni", "moni.com"),
