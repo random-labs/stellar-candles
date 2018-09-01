@@ -1,7 +1,10 @@
 /**
  * UI model to candlestick chart of historical trades (used on the Exchange page). Uses ZingChart to draw SVG.
+ * @constructor
+ * @param {string} placeholderId - an element to put the chart into
  */
-function CandlestickChart() {
+function CandlestickChart(placeholderId) {
+    const _placeholderId = placeholderId;
     //Setup ZingChart
     zingchart.THEME="classic";
 
@@ -68,19 +71,23 @@ function CandlestickChart() {
         _configCandleSticks["scale-y-2"].values = "0:" + maxVolume.toFixed(3) + ":" + step.toFixed(3);
     };
 
-    this.ShowError = function(xhr, textStatus) {
-        "<div class='error'>" + textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText + "</div>";
+    this.ShowError = function(errorMessage) {
+        $("#" + _placeholderId).html("<div class='error'>" + errorMessage + "</div>");
+    };
+
+    this.ShowWarning = function(message) {
+        $("#" + _placeholderId).html("<div class='chartWarning'>" + message + "</div>");
     };
 
     /**
      * Render the candlestick chart.
-     * @param {string} placeholderId - an element to put the chart into
+     * 
      * @param {string} counterAssetCode - counter asset code (to be shown on y axis label)
      */
-    this.Render = function (placeholderId, counterAssetCode) {
+    this.Render = function (counterAssetCode) {
         _configCandleSticks["scale-y"].label.text = "Price (" + counterAssetCode + ")";
         zingchart.render({
-            id : placeholderId,
+            id : _placeholderId,
             data : _configCandleSticks,
             height: "100%",
             width: "100%"

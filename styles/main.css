@@ -78,7 +78,7 @@ th {
     color: red;
 }
 
-div.chartNoData {
+div.chartWarning {
     height: 300px;
     line-height: 300px;
     background-color: white;

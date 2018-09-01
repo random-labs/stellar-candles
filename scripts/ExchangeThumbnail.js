@@ -8,11 +8,17 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
     this.ChartInterval = 900000;    //15min candles by default
 
     const _this = this;
-    const _lineChart = new SmallLineChart();
+    let _lineChart = null;
     let _placeHolderId = null;
 
+    /** 
+     * Setup and render the exchange chart
+     * @public
+     * @param {string} placeHolderId ID of the element to put this chart into
+     */
     this.Initialize = function(placeHolderId) {
         _placeHolderId = placeHolderId;
+        _lineChart = new SmallLineChart(_placeHolderId);
         //Fill the header with asset names
         const assetsDescDIV = $("#"+_placeHolderId).siblings(".assetsDescription");
         $(assetsDescDIV).find(".baseAssetCode").text(this.BaseAsset.AssetCode);
@@ -39,7 +45,7 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
         $.getJSON(url, function(data) {
             $("#"+_placeHolderId).empty();
             if (data._embedded.records.length == 0) {
-                $("#"+_placeHolderId).html("<div class='chartNoData'>No trades in last 24 hours</div>");
+                _lineChart.ShowWarning("No trades in last 24 hours");
                 return;
             }
             //Check age of last trade
@@ -49,12 +55,11 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
             const firstTimestamp = new Date(data._embedded.records[0].timestamp).getTime();
             if (firstTimestamp < yesterday) {
                 //Last trade is older than 24hrs => we have no data
-                $("#"+_placeHolderId).html("<div class='chartNoData'>No trades in last 24 hours</div>");
+                _lineChart.ShowWarning("No trades in last 24 hours");
                 return;
             }
 
-            _lineChart.CLEAR_DATA();         //TODO: delete this now!
-
+            _lineChart.ClearData();
 
             $("#"+_placeHolderId).empty();
             var minPrice = Number.MAX_VALUE;
@@ -96,13 +101,14 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
 
             setPriceStatistics(startPrice, lastPrice);
             _lineChart.SetPriceScale(minPrice, maxPrice);
-            _lineChart.Render(_placeHolderId);
+            _lineChart.Render();
         })
         .fail(function(xhr, textStatus, error) {
-            $("#marketChart").html("<div class='error'>" + textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText + "</div>");
+            _lineChart.ShowError(textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText);
         });
     };
 
+    /** @private Show some basic statistics in the header */
     const setPriceStatistics = function(startPrice, lastPrice) {
         //Set last price
         const decimals = Utils.GetPrecisionDecimals(lastPrice);
@@ -122,10 +128,7 @@ function ExchangeThumbnail(baseAsset, counterAsset) {
         $(aDiv).removeClass("red").removeClass("green").addClass(cssClass).text(changeAsString);
     };
 
-    /**
-     * Reload the chart every 8 minutes
-     * @private
-     */
+    /** @private Reload the chart every 8 minutes */
     const initChartStream = function() {
         if (_this.BaseAsset != null && _this.CounterAsset) {    //We might not be done initializing
             renderLineChart();

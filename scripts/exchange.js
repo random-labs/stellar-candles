@@ -63,10 +63,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         highlightIntervalLink();
     };
 
-    /**
-     * Parse assets from URL and load data lists and the candlestick chart
-     * @private
-     */
+    /** @private Parse assets from URL and load data lists and the candlestick chart */
     const parseUrl = function() {
         let urlPart = window.location.href;
         let index = urlPart.indexOf("#");
@@ -101,15 +98,15 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     const renderCandlestickChart = function() {
         const dataRange = "&resolution=" + _this.ChartInterval + "&limit=70";
         const url = Constants.API_URL + "/trade_aggregations?" + _this.BaseAsset.ToUrlParameters("base") + "&" + _this.CounterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
+        const candlestickChart = new CandlestickChart("marketChart");
 
         $.getJSON(url, function(data) {
             $("#marketChart").empty();
             if (data._embedded.records.length == 0) {
-                $("#marketChart").html("<div class='chartNoData'>No data</div>");
+                candlestickChart.ShowWarning("No data");
                 return;
             }
 
-            const candlestickChart = new CandlestickChart();
             let minPrice = Number.MAX_VALUE;
             let maxPrice = -1.0;
             let maxVolume = -1.0;
@@ -145,10 +142,10 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             //Set volume chart range
             candlestickChart.SetVolumeScale(maxVolume);
 
-            candlestickChart.Render("marketChart", _this.CounterAsset.AssetCode);       //TODO: make the ID an input
+            candlestickChart.Render(_this.CounterAsset.AssetCode);
         })
         .fail(function(xhr, textStatus, error) {
-            $("#marketChart").html("<div class='error'>" + textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText + "</div>");
+            candlestickChart.ShowError(textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText);
         });
     };
 

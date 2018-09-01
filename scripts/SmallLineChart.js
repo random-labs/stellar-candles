@@ -1,21 +1,19 @@
 /**
  * UI model to simple line chart of historical trades for past 24 hours. Uses ZingChart to draw SVG.
+ * @constructor
+ * @param {string} placeholderId - an element to put the chart into
  */
-function SmallLineChart() {
+function SmallLineChart(placeholderId) {
+    const _placeholderId = placeholderId;
 
-    /**
-     * DEBUG!!!
-     */
-    this.CLEAR_DATA = function() {           //TODO: DELETE THIS
-        chartConfig.series[0].values = [];
+    /** @public Delete all data of this chart. Should be called before updating with new data. */
+    this.ClearData = function() {
+        _chartConfig.series[0].values = [];
     };
 
-
-    /**
-     * Add data for one point in the chart, i.e. timestamp and price
-     */
+    /** @public Add data for one point in the chart, i.e. timestamp and price */
     this.AddPointData = function(point) {
-        chartConfig.series[0].values.push(point);
+        _chartConfig.series[0].values.push(point);
     };
 
     /**
@@ -23,7 +21,7 @@ function SmallLineChart() {
      * @returns {Number} number of points in this chart
      */
     this.DataPointCount = function() {
-        return chartConfig.series[0].values.length;
+        return _chartConfig.series[0].values.length;
     };
 
     /**
@@ -31,7 +29,7 @@ function SmallLineChart() {
      * @param {number} timestamp - timestamp of the first candle in ticks
      */
     this.SetStartTime = function(timestamp) {
-        chartConfig["scale-x"]["min-value"] = timestamp;
+        _chartConfig["scale-x"]["min-value"] = timestamp;
     };
 
     /**
@@ -44,8 +42,8 @@ function SmallLineChart() {
         minPrice = minPrice - 0.1*diff;     //10% bottom offset so it doesn't sit on X axis
 
         const step = (maxPrice - minPrice) / 5.0;
-        chartConfig["scale-y"]["min-value"] = minPrice;
-        chartConfig["scale-y"]["max-value"] = maxPrice;
+        _chartConfig["scale-y"]["min-value"] = minPrice;
+        _chartConfig["scale-y"]["max-value"] = maxPrice;
         //NOTE: we don't set "step" here and leave ZingChart figure it out. Doing it ourselves led to the chart randomly shift vertically (ZingChart bug?)
     };
 
@@ -54,7 +52,7 @@ function SmallLineChart() {
      * @param color - CSS style color name or color code
      */
     this.SetBackgroundColor = function(color) {
-        chartConfig["background-color"] = color;
+        _chartConfig["background-color"] = color;
     };
 
     /**
@@ -62,21 +60,22 @@ function SmallLineChart() {
      * @param color - CSS style color name of color code
      */
     this.SetLineColor = function(color) {
-        chartConfig.series[0]["line-color"] = color;
+        _chartConfig.series[0]["line-color"] = color;
     };
 
-    this.ShowError = function(xhr, textStatus) {
-        "<div class='error'>" + textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText + "</div>";
+    this.ShowError = function(errorMessage) {
+        $("#" + _placeholderId).html("<div class='error'>" + errorMessaget + "</div>");
     };
 
-    /**
-     * Render the line chart.
-     * @param {string} placeholderId - an element to put the chart into
-     */
-    this.Render = function (placeholderId) {
+    this.ShowWarning = function(message) {
+        $("#" + _placeholderId).html("<div class='chartWarning'>" + message + "</div>");
+    };
+
+    /** @public Render the line chart. */
+    this.Render = function () {
         zingchart.render({
-            id : placeholderId,
-            data : chartConfig,
+            id : _placeholderId,
+            data : _chartConfig,
             height: "100%",
             width: "100%"
         });
@@ -87,10 +86,10 @@ function SmallLineChart() {
      * @param {string} url 
      */
     this.ContextMenuLink = function(url) {
-        chartConfig.gui.contextMenu.customItems[0]["function"] = "openChartInNewTab('" + url + "')";
+        _chartConfig.gui.contextMenu.customItems[0]["function"] = "openChartInNewTab('" + url + "')";
     };
 
-    const chartConfig =
+    const _chartConfig =
     {
         "type": "line",
         gui: {
@@ -120,20 +119,20 @@ function SmallLineChart() {
             "margin": "dynamic 30 60 dynamic"
         },
         "scale-x": {
-            "line-color": "#5B6A72",
+            "line-color": Constants.Style.GRAY,
             "min-value": 1383292800000, //Dummy. Real value is set before rendering
             "step": 900000,     //constant 15min interval
             "transform": {
                 "type": "date",
                 "all": "%h %A"
             },
-            "minor-ticks": 3,
             "max-labels": 6         //In fact 'min'
         },
         "scale-y": {
-            "line-color": "#5B6A72",
+            "line-color": Constants.Style.GRAY,
             "guide": {
-                "line-style": "dashed"
+                "line-style": "dashed",
+                "line-color": "#C5C5C5"
             },
             "thousands-separator": ","
         },

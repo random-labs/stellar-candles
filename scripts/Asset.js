@@ -50,10 +50,7 @@ Asset.ParseFromUrlParam = function(assetUrlParam) {
     return new Asset(assetCode, null, assetType, new Account(issuerAddress, null, null));
 };
 
-/**
- * "Database" of currently knwon assets on the Stellar network. Subject to change anytime.
- * @public
- */
+/** @public @static "Database" of currently knwon assets on the Stellar network. Subject to change anytime. */
 const KnownAssets = {
     "XLM" : new Asset("XLM", "Lumen", "native", new Account(null, "(native)", null)),
     "ABDT" : new Asset("ABDT", "Atlantis Blue", null, KnownAccounts.AtlantisBlue),
