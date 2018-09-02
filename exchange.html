@@ -9,20 +9,6 @@
     <link rel="stylesheet" href="styles/main.css?v=20180325">
     <link rel="stylesheet" href="styles/exchange.css?v=20180425">
     <link rel="stylesheet" href="styles/3rdParty/bootstrap.css?v=20180326">
-
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="scripts/3rdParty/bootstrap.min.js?v=20180326"></script>
-    <script type="text/javascript" src="scripts/3rdParty/zingcharts/zingchart.min.js"></script>
-    <script type="text/javascript"> zingchart.MODULESDIR = "scripts/3rdParty/zingcharts/modules/"; </script>
-    <script type="text/javascript" src="scripts/3rdParty/jquery.ddslick.js" ></script>
-
-    <script type="text/javascript" src="scripts/Common.js?v=20180325"> </script>
-    <script type="text/javascript" src="scripts/Account.js?v=20180417"> </script>
-    <script type="text/javascript" src="scripts/Asset.js?v=20180412"> </script>
-    <script type="text/javascript" src="scripts/AssetRepository.js?v=20180816"> </script>
-    <script type="text/javascript" src="scripts/CandlestickChart.js?v=20180429"></script>
-    <script type="text/javascript" src="scripts/exchange.js?v=20180325"></script>
-    <script type="text/javascript" src="scripts/prerenderedTemplates.js?v=20180325"></script>
 </head>
 <body>
     <div class="container-fluid">
@@ -59,7 +45,8 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-2 col-md-12 col-sm-12" style="border: 1px solid magenta;">
+            <div class="col-lg-2 col-md-12 col-sm-12">
+                <br/><br/>
                 <table>
                     <thead>
                         <th>Price</th>
@@ -80,12 +67,13 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="border: 1px solid cornflowerblue; height: 800px;">
+            <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="height: 800px;">
                 <div id="marketChart" style="min-height: 500px; height: 100%;">
                     <br/><br/>Loading chart...
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-4">
+                <br/>
                 <table id="tradeHistoryTable">
                     <thead>
                     <tr>
@@ -108,6 +96,20 @@
 
     <sc-include src="components/footer.html"></sc-include>
 
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="scripts/3rdParty/bootstrap.min.js?v=20180326"></script>
+    <script type="text/javascript" src="scripts/3rdParty/zingcharts/zingchart.min.js"></script>
+    <script type="text/javascript"> zingchart.MODULESDIR = "scripts/3rdParty/zingcharts/modules/"; </script>
+    <script type="text/javascript" src="scripts/3rdParty/jquery.ddslick.js" ></script>
+
     <script type="text/javascript" src="scripts/UIHelpers.js"></script>
+    <script type="text/javascript" src="scripts/Common.js?v=20180325"> </script>
+    <script type="text/javascript" src="scripts/Account.js?v=20180417"> </script>
+    <script type="text/javascript" src="scripts/Asset.js?v=20180412"> </script>
+    <script type="text/javascript" src="scripts/ExchangePair.js?v=20180828"></script>
+    <script type="text/javascript" src="scripts/AssetRepository.js?v=20180816"> </script>
+    <script type="text/javascript" src="scripts/CandlestickChart.js?v=20180429"></script>
+    <script type="text/javascript" src="scripts/exchange.js?v=20180325"></script>
+    <script type="text/javascript" src="scripts/prerenderedTemplates.js?v=20180325"></script>
 </body>
 </html>

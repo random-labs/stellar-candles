@@ -93,12 +93,7 @@ const AssetRepository = (function () {
     };
 
     /** @public Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
-    this.getCustomExchanges = function() {
-        if (null == _customExchanges) {
-            _customExchanges = loadExchanges();
-        }
-        return _customExchanges;
-    }
+    this.getCustomExchanges = function() { return _customExchanges; }
 
     /**
      * Returns all available anchors issuing given asset code.
@@ -538,7 +533,7 @@ const AssetRepository = (function () {
     const _customAssetCodes = loadAssetCodes();
     const _customAnchors = loadAnchors();
     const _customAssets = loadAssets();
-    let _customExchanges = null;
+    const _customExchanges = loadExchanges();
 
     //Return the singleton instance
     return _this;
