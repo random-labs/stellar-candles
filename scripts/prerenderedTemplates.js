@@ -115,10 +115,10 @@ var customExchangeContainer = function(id) {
             '        <div class="assetsSelection">' +
             '            <div class="removeExchButton">X</div>' +
             '            <div class="assetDropDowns">' +
-            '                <div class="baseAssetCodeDropDown" style="width: 100px;">Asset code drop-down here</div>' +
-            '                <div class="baseAssetAnchorDropDown">Anchor drop-down here</div>' +
-            '                <div class="counterAssetCodeDropDown" style="width: 100px;">Asset code drop-down here</div>' +
-            '                <div class="counterAssetAnchorDropDown">Anchor drop-down here</div>' +
+            '                <div id="baseAssetCodeDropDown' + id + '" style="width: 100px;">Asset code drop-down here</div>' +
+            '                <div id="baseAssetAnchorDropDown' + id + '">Anchor drop-down here</div>' +
+            '                <div id="counterAssetCodeDropDown' + id + '" style="width: 100px;">Asset code drop-down here</div>' +
+            '                <div id="counterAssetAnchorDropDown' + id + '">Anchor drop-down here</div>' +
             '            </div>' +
             '        </div>' +
             '        <div class="assetsDescription">' +

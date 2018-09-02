@@ -284,6 +284,8 @@ const AssetRepository = (function () {
                 const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterAnchor);
 
                 _customExchanges[i] = new ExchangePair(exchangeId, baseAsset, counterAsset);
+                serializeToCookie();
+                return true;
             }
         }
 
@@ -370,11 +372,11 @@ const AssetRepository = (function () {
      * @returns {Account} - first issuer with given address or NULL if no such is registered here
      */
     const getAnchorByAddress = function(issuerAddress) {
-        if ((issuerAddress || "").length <= 0) {
+/*DEL?        if ((issuerAddress || "").length <= 0) {
             //Probably native issuer
             return null;
         }
-
+*/
         for (let i=0; i<_customAnchors.length; i++) {
             if (issuerAddress === _customAnchors[i].Address) {
                 return _customAnchors[i];
@@ -441,22 +443,22 @@ const AssetRepository = (function () {
                     if ((exchanges[e] || "").length <= 0) {
                         continue;
                     }
-                    const exchangeText = decodeURIComponent(exchanges[e]);      //Format: 5366025104=USD-GABCDEFGH/XYZ-GBGBGBGBGBGBGBGB
+                    const exchangeText = decodeURIComponent(exchanges[e]);      //Format: 5366025104=USD-GABCDEFGH/XLM
                     const hashtagIndex = exchangeText.indexOf("#");
                     const id = parseInt(exchangeText.substr(0, hashtagIndex));
                     const slashIndex = exchangeText.indexOf("/");
                     //Base asset
-                    const baseAssetText = exchangeText.substr(hashtagIndex+1, slashIndex);
+                    const baseAssetText = exchangeText.substring(hashtagIndex+1, slashIndex);
                     let dashIndex = baseAssetText.indexOf("-");
-                    const baseAssetCode = baseAssetText.substr(0, dashIndex);
-                    const baseIssuerAddress = baseAssetText.substr(dashIndex+1);
+                    const baseAssetCode = dashIndex > 0 ? baseAssetText.substr(0, dashIndex) : baseAssetText/*XLM*/;
+                    const baseIssuerAddress = dashIndex > 0 ? baseAssetText.substr(dashIndex+1) : null/*native*/;
                     const baseIssuer = getAnchorByAddress(baseIssuerAddress);           //BUG: what if the user removed the issuer on Configuration? TODO
                     const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseIssuer);
                     //Counter asset
                     const counterAssetText = exchangeText.substr(slashIndex+1);
                     dashIndex = counterAssetText.indexOf("-");
-                    const counterAssetCode = counterAssetText.substr(0, dashIndex);
-                    const counterIssuerAddress = counterAssetText.substr(dashIndex+1);
+                    const counterAssetCode = dashIndex > 0 ? counterAssetText.substr(0, dashIndex) : counterAssetText;
+                    const counterIssuerAddress = dashIndex > 0 ? counterAssetText.substr(dashIndex+1) : null/*native*/;
                     const counterIssuer = getAnchorByAddress(counterIssuerAddress);     //BUG: what if the user removed the issuer on Configuration? TODO
                     const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterIssuer);
 
@@ -511,9 +513,14 @@ const AssetRepository = (function () {
                 cookieText += ",";
             }
             //Format 99012367=ABC-GGGGGGGGGG/XYZ-GA2222222222222222
-            cookieText += exchange.getId() + "#" +
-                          exchange.getBaseAsset().AssetCode + "-" + exchange.getBaseAsset().Issuer.Address + "/" +
-                          exchange.getCounterAsset().AssetCode + "-" + exchange.getCounterAsset().Issuer.Address;
+            cookieText += exchange.getId() + "#" + exchange.getBaseAsset().AssetCode;
+            if (!exchange.getBaseAsset().Issuer.IsNativeIssuer()) {
+                cookieText += "-" + exchange.getBaseAsset().Issuer.Address;
+            }
+            cookieText += "/" + exchange.getCounterAsset().AssetCode;
+            if (!exchange.getCounterAsset().Issuer.IsNativeIssuer()) {
+                cookieText += "-" + exchange.getCounterAsset().Issuer.Address;
+            }
         }
         setCookieValue("exc", cookieText)
     };

@@ -22,11 +22,6 @@ function MyExchanges() {
         const vain = new CustomExchange(exchanges[i]);
     }
 
-
-
-    var debug = new CustomExchange(new ExchangePair(536624, KnownAssets.XLM, KnownAssets.XCN));
-
-
     $("#addExchangeButton").click(function (){
         const newExchange = AssetRepository.CreateCustomExchange();
         var vain = new CustomExchange(newExchange);
@@ -44,15 +39,30 @@ function CustomExchange(exchangePair) {
     const _id = exchangePair.getId();
     const _baseAsset = exchangePair.getBaseAsset();
     const _counterAsset = exchangePair.getCounterAsset();
+    const _baseAssetCodeDropDownId = "baseAssetCodeDropDown" + _id;
+    const _baseAnchorDropDownId = "baseAssetAnchorDropDown" + _id;
+    const _counterAssetCodeDropDownId = "counterAssetCodeDropDown" + _id;
+    const _counterAnchorDropDownId = "counterAssetAnchorDropDown" + _id;
 
-    /** @private Create new DIV with proper Bootstrap classes and add it to the DOM. */
+
+    /** @private Create new DIV with proper Bootstrap classes and event handlers and add it to the DOM. */
     const setupContainer = function() {
         const divMarkup = customExchangeContainer(_id);
         //Add at the end before the [add] button
         $(divMarkup).insertBefore("#addCustomExchange");
+
+        $("#customExchange" + _id + " .assetsSelection").click(function(ev){ ev.preventDefault(); return false;});
+        $("#customExchange" + _id + " .exchange-link").on("mouseover", function(){
+            $(this).find("div.removeExchButton").show();
+        }).on("mouseout", function() {
+            $(this).find("div.removeExchButton").hide();
+        });
+        $("#customExchange" + _id + " .removeExchButton").click(function() {
+            removeExchange();
+        });
     };
 
-    const setupAssetCodesDropDown = function(dropDownSelector, selectedAssetCode) {
+    const setupAssetCodesDropDown = function(dropDownId, anchorDropDownId, selectedAssetCode) {
         const assetList = new Array();
         AssetRepository.getAssetCodesForExchange().forEach(function(assetCode) {
             assetList.push({
@@ -62,18 +72,21 @@ function CustomExchange(exchangePair) {
             });
         });
 
-        $(dropDownSelector).ddslick({
+        $("#" + dropDownId).ddslick({
             data: assetList,
             width: 100,
             onSelected: function (data) {
-                changeAssets(false);    //TODO
+                setupAnchorDropDown(anchorDropDownId, data.selectedData.value, null);
             }
         });
     };
 
-    const setupAnchorDropDown = function(dropDownSelector, assetCode, assetIssuer) {
+    const setupAnchorDropDown = function(dropDownId, assetCode, assetIssuer) {
+        //In case this is re-init after asset code change, destroy previous instance
+        $('div[id^="' + dropDownId + '"]').ddslick('destroy');
+
         const issuersArray = AssetRepository.GetIssuersByAssetCode(assetCode);
-        const issuerAccount = AssetRepository.GetIssuerByAddress(assetIssuer.Address);
+        const issuerAccount = assetIssuer != null ? AssetRepository.GetIssuerByAddress(assetIssuer.Address) : null;
         const assetIssuersDdData = new Array();
         for (let i=0; i<issuersArray.length; i++) {
             assetIssuersDdData.push({
@@ -84,43 +97,51 @@ function CustomExchange(exchangePair) {
             });
         }
 
-        $(dropDownSelector).ddslick({
+        $("#" + dropDownId).ddslick({
             data: assetIssuersDdData,
             width: "calc(50% - 100px)",
             onSelected: function (data) {
-                changeAssets(true);     //TODO
+                updateExchange();
             }
         });
+
+        if (null == issuerAccount) {
+            $('div[id^="' + dropDownId + '"]').ddslick('select', {index: 0 });
+        }
     };
 
     const setupChart = function() {
         const customExchange1Ui = new ExchangeThumbnail(_baseAsset, _counterAsset);
         customExchange1Ui.Initialize("customExchangeChart" + _id);
-
-        $("#customExchange" + _id + " .assetsSelection").click(function(ev){ ev.preventDefault(); return false;});
-        $("#customExchange" + _id + " .exchange-link").on("mouseover", function(){
-            $(this).find("div.removeExchButton").show();
-        }).on("mouseout", function() {
-            $(this).find("div.removeExchButton").hide();
-        });
-        $("#customExchange" + _id + " .removeExchButton").click(function() {
-            removeChart();
-        });
     };
 
-    /** @private Delete this chart from the UI and the data store. */
-    const removeChart = function() {
+    const updateExchange = function() {
+        const baseAssetCodeData = $('div[id^="' + _baseAssetCodeDropDownId + '"]').data("ddslick");
+        const baseIssuerData = $('div[id^="' + _baseAnchorDropDownId + '"]').data("ddslick");
+        const counterAssetCodeData = $('div[id^="' + _counterAssetCodeDropDownId + '"]').data("ddslick");
+        const counterIssuerData = $('div[id^="' + _counterAnchorDropDownId + '"]').data("ddslick");
+
+        if (!counterAssetCodeData || !counterIssuerData) {
+            //Happens when change is fired during drop-downs setup
+            return;
+        }
+        AssetRepository.UpdateCustomExchange(_id,
+                                             baseAssetCodeData.selectedData.value, baseIssuerData.selectedData.value,
+                                             counterAssetCodeData.selectedData.value, counterIssuerData.selectedData.value);
+    };
+
+    /** @private Delete this exchange from the UI and the data store. */
+    const removeExchange = function() {
         if (AssetRepository.RemoveCustomExchange(_id)) {
             $("#customExchange" + _id).remove();
         }
     };
 
+    //Initial setup
     setupContainer();
-    setupAssetCodesDropDown("#customExchange" + _id + " .baseAssetCodeDropDown", _baseAsset.AssetCode);
-    setupAnchorDropDown("#customExchange" + _id + " .baseAssetAnchorDropDown", _baseAsset.AssetCode, _baseAsset.Issuer);
-    setupAssetCodesDropDown("#customExchange" + _id + " .counterAssetCodeDropDown", _counterAsset.AssetCode);
-    setupAnchorDropDown("#customExchange" + _id + " .counterAssetAnchorDropDown", _counterAsset.AssetCode, _counterAsset.Issuer);
+    setupAssetCodesDropDown(_baseAssetCodeDropDownId, _baseAnchorDropDownId, _baseAsset.AssetCode);
+    setupAnchorDropDown(_baseAnchorDropDownId, _baseAsset.AssetCode, _baseAsset.Issuer);
+    setupAssetCodesDropDown(_counterAssetCodeDropDownId, _counterAnchorDropDownId, _counterAsset.AssetCode);
+    setupAnchorDropDown(_counterAnchorDropDownId, _counterAsset.AssetCode, _counterAsset.Issuer);
     setupChart();
 }
-
-

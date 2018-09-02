@@ -3,13 +3,19 @@
  * @constructor
  */
 function Asset(code, fullName, type, account) {
-    this.AssetCode = code || "XLM";
+    this.AssetCode = code || Constants.NATIVE_ASSET_CODE;
     this.FullName = fullName;
     this.AssetType = type;
-    if (null === type ) {
-        this.AssetType = code.length <= 4 ? "credit_alphanum4" : "credit_alphanum12";
-    }
     this.Issuer = account;
+
+    if (null === type ) {
+        if (this.AssetCode === Constants.NATIVE_ASSET_CODE) {
+            this.AssetType = Constants.NATIVE_ASSET_TYPE;
+        }
+        else {
+            this.AssetType = code.length <= 4 ? "credit_alphanum4" : "credit_alphanum12";
+        }
+    }
 
     this.ToUrlParameters = function(prefix) {
         var getParams = prefix + "_asset_code=" + this.AssetCode + "&" + prefix + "_asset_type=" + this.AssetType;

@@ -358,9 +358,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         });
     };
 
-    /**
-     * Collect base and counter assets from inputs and navigate to new market URL by that.
-     */
+    /** @private Collect base and counter assets from inputs and navigate to new market URL by that. */
     const changeAssets = function(selectingAnchor) {
         let urlAssets = $('div[id^="' + baseAssetDdId + '"]').data('ddslick').selectedData.value;
         if (selectingAnchor) {
