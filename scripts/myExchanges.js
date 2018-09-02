@@ -1,19 +1,8 @@
-let myExchangesUi = null;
-
 $(function() {
-    myExchangesUi = new MyExchanges();
-});
+    //Highlight the right link in the header
+    $("sc-include").ready(function() { $("a#myExchangesLink").addClass("selected"); });
 
-
-/**
- * UI model to the page "My Exchanges"
- * @constructor
- */
-function MyExchanges() {
-
-
-
-    //Load current list of user's custom exchanges
+    //Load and display current list of user's custom exchanges
     const exchanges = AssetRepository.getCustomExchanges();
     if (0 === exchanges.length) {
         //TODO: if the cookie was empty (e.g. new user/browser), initialize one chart that's the same as the first one on Overview.html
@@ -24,10 +13,10 @@ function MyExchanges() {
 
     $("#addExchangeButton").click(function (){
         const newExchange = AssetRepository.CreateCustomExchange();
-        var vain = new CustomExchange(newExchange);
+        CustomExchange(newExchange);
     });
-    
-}
+});
+
 
 
 /**
@@ -37,8 +26,8 @@ function MyExchanges() {
  */
 function CustomExchange(exchangePair) {
     const _id = exchangePair.getId();
-    const _baseAsset = exchangePair.getBaseAsset();
-    const _counterAsset = exchangePair.getCounterAsset();
+    let _baseAsset = exchangePair.getBaseAsset();
+    let _counterAsset = exchangePair.getCounterAsset();
     const _baseAssetCodeDropDownId = "baseAssetCodeDropDown" + _id;
     const _baseAnchorDropDownId = "baseAssetAnchorDropDown" + _id;
     const _counterAssetCodeDropDownId = "counterAssetCodeDropDown" + _id;
@@ -125,9 +114,12 @@ function CustomExchange(exchangePair) {
             //Happens when change is fired during drop-downs setup
             return;
         }
-        AssetRepository.UpdateCustomExchange(_id,
-                                             baseAssetCodeData.selectedData.value, baseIssuerData.selectedData.value,
-                                             counterAssetCodeData.selectedData.value, counterIssuerData.selectedData.value);
+        const exchange = AssetRepository.UpdateCustomExchange(_id,
+                                                              baseAssetCodeData.selectedData.value, baseIssuerData.selectedData.value,
+                                                              counterAssetCodeData.selectedData.value, counterIssuerData.selectedData.value);
+        _baseAsset = exchange.getBaseAsset();
+        _counterAsset = exchange.getCounterAsset();
+        setupChart();
     };
 
     /** @private Delete this exchange from the UI and the data store. */

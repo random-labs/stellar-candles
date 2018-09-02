@@ -274,7 +274,11 @@ const AssetRepository = (function () {
         return newExchange;
     };
 
-    /** @public Change custom exchange with given ID */
+    /**
+     * Change custom exchange with given ID
+     * @public
+     * @returns {ExchangePair} updated instance
+     */
     this.UpdateCustomExchange = function(exchangeId, baseAssetCode, baseIssuerAddress, counterAssetCode, counterIssuerAddress) {
         for (let i=0; i<_customExchanges.length; i++) {
             if (_customExchanges[i].getId() === exchangeId) {
@@ -285,11 +289,11 @@ const AssetRepository = (function () {
 
                 _customExchanges[i] = new ExchangePair(exchangeId, baseAsset, counterAsset);
                 serializeToCookie();
-                return true;
+                return _customExchanges[i];
             }
         }
 
-        return false;
+        return null;
     };
 
     /** @public Delete exchange by its ID in the array of custom exchanges */

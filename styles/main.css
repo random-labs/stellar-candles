@@ -50,6 +50,10 @@ a.link {
 a.link:hover, a.link:focus {
     color: #4d81b0;
 }
+a.link.selected {
+    font-weight: bold;
+    color: #4d81b0;
+}
 
 a#logo {
     background-image: url('../images/my-lame-logo.png');

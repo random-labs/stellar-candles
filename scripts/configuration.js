@@ -3,6 +3,9 @@ var configurationUi = null;
 $(function() {
     configurationUi = new Configuration();
     configurationUi.Initialize();
+
+    //Highlight the right link in the header
+    $("sc-include").ready(function() { $("a#configurationLink").addClass("selected"); });
 });
 
 
