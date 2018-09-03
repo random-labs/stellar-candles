@@ -513,11 +513,11 @@ const AssetRepository = (function () {
             }
             //Format 99012367=ABC-GGGGGGGGGG/XYZ-GA2222222222222222
             cookieText += exchange.getId() + "#" + exchange.getBaseAsset().AssetCode;
-            if (!exchange.getBaseAsset().Issuer.IsNativeIssuer()) {
+            if (!exchange.getBaseAsset().IsNative()) {
                 cookieText += "-" + exchange.getBaseAsset().Issuer.Address;
             }
             cookieText += "/" + exchange.getCounterAsset().AssetCode;
-            if (!exchange.getCounterAsset().Issuer.IsNativeIssuer()) {
+            if (!exchange.getCounterAsset().IsNative()) {
                 cookieText += "-" + exchange.getCounterAsset().Issuer.Address;
             }
         }

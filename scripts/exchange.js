@@ -40,7 +40,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         setupAnchorDropDown(counterAnchorDdId, this.CounterAsset.AssetCode, this.CounterAsset.Issuer);
         //Initial data load
         getPastTrades(_this.BaseAsset, _this.CounterAsset);
-        getOrderBook(_this.BaseAsset, _this.CounterAsset);
+        fillOrderBook(_this.BaseAsset, _this.CounterAsset);
         renderCandlestickChart();
     };
 
@@ -160,7 +160,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
 
     const initOrderBookStream = function() {
         if (_this.BaseAsset != null && _this.CounterAsset) {    //We might not be done initializing
-            getOrderBook(_this.BaseAsset, _this.CounterAsset);
+            fillOrderBook(_this.BaseAsset, _this.CounterAsset);
         }
         setTimeout(function() {
             initOrderBookStream();
@@ -200,35 +200,118 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         });
     };
 
-    const getOrderBook = function(baseAsset, counterAsset) {
+    /**
+     * Get order book from Horizon API and render it to table.
+     * If none of the assets is native XLM, the order book is enhanced with offers "cross-linked" through XLM, i.e. artificial offers
+     * that are calculated from orderbooks of ASSET1/XLM and ASSET2/XLM. This can be useful for some anemic or exotic order books
+     * to show that there may be a better deal when going through Lumens.
+     * NOTE: due to asynchronous nature of AJAX calls this has to be done as a chain of requests and callbacks as we need
+     *       to get the data in specific order.
+     * @param {Asset} baseAsset 
+     * @param {Asset} counterAsset 
+     */
+    const fillOrderBook = function(baseAsset, counterAsset) {
         const url = Constants.API_URL + "/order_book?" + baseAsset.ToUrlParameters("selling") + "&" + counterAsset.ToUrlParameters("buying") + "&limit=17";
 
         $.getJSON(url, function(data) {
-            data = addAutobridgedOffers(data);
-
-            $("#orderBookBids").empty();
-            let sumBidsAmount = 0.0;
-            $.each(data.bids, function(i, bid) {
-                const amount = parseFloat(bid.amount) / parseFloat(bid.price);
-                sumBidsAmount += amount;
-                $(bidOfferRow(bid, amount, sumBidsAmount)).appendTo("#orderBookBids");
-            });
-
-            $("#orderBookAsks").empty();
-            let sumAsksAmount = 0.0;
-            $.each(data.asks, function(i, ask) {
-                sumAsksAmount += parseFloat(ask.amount);
-                $(askOfferRow(ask, sumAsksAmount)).prependTo("#orderBookAsks");
-            });
-
-            const maxCumulativeAmount = Math.max(sumBidsAmount, sumAsksAmount);
-            colorizeOrderBookVolume($("#orderBookBids"), Constants.Style.LIGHT_GREEN, maxCumulativeAmount);
-            colorizeOrderBookVolume($("#orderBookAsks"), Constants.Style.LIGHT_RED, maxCumulativeAmount);
+            if (baseAsset.IsNative() || counterAsset.IsNative()) {
+                renderOrderBook(data);
+            }
+            else {
+                addCrossLinkedOffers1(data, baseAsset, counterAsset);
+            }
         })
         .fail(function(xhr, textStatus, error) {
             $("#orderBookBids").empty();
             $(getErrorRow(xhr, textStatus, error)).appendTo("#orderBookBids");
         });
+    };
+
+    /** @private Fetch the baseAsset/XLM order book for cross-linked offers */
+    const addCrossLinkedOffers1 = function(originalOrderBook, baseAsset, counterAsset) {
+        //Query baseAsset / XLM
+        let url = Constants.API_URL + "/order_book?" + baseAsset.ToUrlParameters("selling") + "&" + KnownAssets.XLM.ToUrlParameters("buying") + "&limit=8";
+        $.getJSON(url, function(data) {
+            addCrossLinkedOffers2(originalOrderBook, data, baseAsset, counterAsset);
+        })
+        .fail(function(xhr, textStatus, error) {
+            renderOrderBook(originalOrderBook);
+        });
+    };
+
+    /** @private Fetch the XLM/counterAsset order book for cross-linked offers */
+    const addCrossLinkedOffers2 = function(originalOrderBook, sellSideOrderBook, /*TODO: I may not need these two*/baseAsset, counterAsset) {
+        if (null === sellSideOrderBook) {
+            renderOrderBook(originalOrderBook);
+        }
+        //Query XLM / counterAsset
+        url = Constants.API_URL + "/order_book?" + KnownAssets.XLM.ToUrlParameters("selling") + "&" + counterAsset.ToUrlParameters("buying") + "&limit=8";
+        $.getJSON(url, function(data) {
+            mergeOrderBooks(originalOrderBook, sellSideOrderBook, data);
+        })
+        .fail(function(xhr, textStatus, error) {
+            renderOrderBook(originalOrderBook);
+        });
+    };
+
+    /** @private Take original order book, ASSET1/XLM and ASSET2/XLM and merge them adding cross-linked items to the original book. */
+    const mergeOrderBooks = function(masterOrderBook, baseSideOrderBook, counterSideOrderBook) {
+        //Do the math for "asks" (selling baseAsset)
+        if (baseSideOrderBook.bids.length > 0 && counterSideOrderBook.bids.length > 0) {
+            const amount1Xlm = parseFloat(baseSideOrderBook.bids[0].amount);
+            const baseBuyPrice = parseFloat(baseSideOrderBook.bids[0].price);
+
+            const amount2Xlm = parseFloat(counterSideOrderBook.bids[0].amount);
+            const counterBuyPrice = parseFloat(counterSideOrderBook.bids[0].price);
+            const amount = Math.min(amount1Xlm, amount2Xlm) * baseBuyPrice;
+            const price = baseBuyPrice * counterBuyPrice;
+
+            if (0 === masterOrderBook.asks.length) {
+                masterOrderBook.asks.push({
+                    "amount": amount,
+                    "price" : price,
+                    "isCrossLinked" : true
+                });
+            }
+            else for (let i=0; i<masterOrderBook.asks.length; i++) {
+                const sellPrice = parseFloat(masterOrderBook.asks[i].price);
+                if (price < sellPrice) {
+                    const newAsk = {
+                        "amount": amount.toString(),
+                        "price": price.toString(),
+                        "isCrossLinked" : true
+                    };
+                    masterOrderBook.asks.splice(i, 0, newAsk);
+                    break;
+                }
+            }
+        }
+        //todo: the other side
+
+
+
+        renderOrderBook(masterOrderBook);
+    };
+
+    const renderOrderBook = function(completeOrderBook) {
+        $("#orderBookBids").empty();
+        let sumBidsAmount = 0.0;
+        $.each(completeOrderBook.bids, function(i, bid) {
+            const amount = parseFloat(bid.amount) / parseFloat(bid.price);
+            sumBidsAmount += amount;
+            $(bidOfferRow(bid, amount, sumBidsAmount)).appendTo("#orderBookBids");
+        });
+
+        $("#orderBookAsks").empty();
+        let sumAsksAmount = 0.0;
+        $.each(completeOrderBook.asks, function(i, ask) {
+            sumAsksAmount += parseFloat(ask.amount);
+            $(askOfferRow(ask, sumAsksAmount)).prependTo("#orderBookAsks");
+        });
+
+        const maxCumulativeAmount = Math.max(sumBidsAmount, sumAsksAmount);
+        colorizeOrderBookVolume($("#orderBookBids"), Constants.Style.LIGHT_GREEN, maxCumulativeAmount);
+        colorizeOrderBookVolume($("#orderBookAsks"), Constants.Style.LIGHT_RED, maxCumulativeAmount);
     };
 
     const colorizeOrderBookVolume = function(orderBookTable, bgColor, maxAmount) {
@@ -241,10 +324,8 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         });
     };
 
-    const addAutobridgedOffers = function(orderBook) {
-        //TODO: check if one of the assets is XLM. If not, add auto-bridged offers through XLM
-        return orderBook;
-    };
+
+
 
     initPastTradesStream();
     initOrderBookStream();

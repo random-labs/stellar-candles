@@ -17,6 +17,11 @@ function Asset(code, fullName, type, account) {
         }
     }
 
+    /** @public Return true for Lumens (XLM) */
+    this.IsNative = function() {
+        return this.AssetCode === Constants.NATIVE_ASSET_CODE && this.AssetType === Constants.NATIVE_ASSET_TYPE;
+    };
+
     this.ToUrlParameters = function(prefix) {
         var getParams = prefix + "_asset_code=" + this.AssetCode + "&" + prefix + "_asset_type=" + this.AssetType;
         if (this.Issuer) {
