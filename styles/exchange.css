@@ -31,11 +31,14 @@ div.intervalButtons {
     padding-left: 8px;
 }
 
+thead> tr {
+    border-bottom: 1px solid #5B6A72;
+}
+
 #tradeHistoryTable {
     border-right: 1px solid #5B6A72;
     border-left: 1px solid #5B6A72;
     border-spacing: 0px;
-    border-collapse: separate;
 }
 
 #tradeHistoryData td.buy {
