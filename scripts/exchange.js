@@ -269,41 +269,10 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             const amount = Math.min(amount1Xlm, amount2Xlm) * baseBuyPrice;
             const price = counterBuyPrice / baseBuyPrice;
 
-            if (0 === masterOrderBook.asks.length) {
-                masterOrderBook.asks.push({
-                    "amount": amount,
-                    "price" : price,
-                    "isCrossLinked" : true
-                });
-            }
-            else for (let i=0; i<masterOrderBook.asks.length; i++) {
-                const sellPrice = parseFloat(masterOrderBook.asks[i].price);
-                if (price < sellPrice) {
-                    const newAsk = {
-                        "amount": amount,
-                        "price": price,
-                        "isCrossLinked" : true
-                    };
-                    masterOrderBook.asks.splice(i, 0, newAsk);
-                    break;
-                }
-            }
-        }
-        //Calculate "bids" (selling counterAsset)
-        if (baseSideOrderBook.bids.length > 0 && counterSideOrderBook.asks.length > 0) {    //TODO: double-check this fishy condition
-            const amount1Xlm = parseFloat(counterSideOrderBook.asks[0].amount);
-            const counterBuyPrice = parseFloat(counterSideOrderBook.asks[0].price); //Sell price of XLM in counterAsset
-
-            let amount2Xlm = parseFloat(baseSideOrderBook.bids[0].amount);
-            const baseBuyPrice = parseFloat(baseSideOrderBook.bids[0].price);       //Price of XLM in baseAsset
-            amount2Xlm /= baseBuyPrice;
-            const amount = Math.min(amount1Xlm, amount2Xlm) * baseBuyPrice;
-            const price = counterBuyPrice / baseBuyPrice;
-
             if (0 === masterOrderBook.bids.length) {
                 masterOrderBook.bids.push({
                     "amount": amount,
-                    "price": price,
+                    "price" : price,
                     "isCrossLinked" : true
                 });
             }
@@ -316,6 +285,37 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                         "isCrossLinked" : true
                     };
                     masterOrderBook.bids.splice(i, 0, newBid);
+                    break;
+                }
+            } 
+        }
+        //Calculate "bids" (selling counterAsset)
+        if (baseSideOrderBook.bids.length > 0 && counterSideOrderBook.asks.length > 0) {    //TODO: double-check this fishy condition
+            const amount1Xlm = parseFloat(counterSideOrderBook.asks[0].amount);
+            const counterBuyPrice = parseFloat(counterSideOrderBook.asks[0].price); //Sell price of XLM in counterAsset
+
+            let amount2Xlm = parseFloat(baseSideOrderBook.bids[0].amount);
+            const baseBuyPrice = parseFloat(baseSideOrderBook.bids[0].price);       //Price of XLM in baseAsset
+            amount2Xlm /= baseBuyPrice;
+            const amount = Math.min(amount1Xlm, amount2Xlm) * baseBuyPrice;
+            const price = counterBuyPrice / baseBuyPrice;
+
+            if (0 === masterOrderBook.asks.length) {
+                masterOrderBook.asks.push({
+                    "amount": amount,
+                    "price": price,
+                    "isCrossLinked" : true
+                });
+            }
+            else for (let i=0; i<masterOrderBook.asks.length; i++) {
+                const sellPrice = parseFloat(masterOrderBook.asks[i].price);
+                if (price < sellPrice) {
+                    const newAsk = {
+                        "amount": amount,
+                        "price": price,
+                        "isCrossLinked" : true
+                    };
+                    masterOrderBook.asks.splice(i, 0, newAsk);
                     break;
                 }
             }
