@@ -81,10 +81,11 @@ function CandlestickChart(placeholderId) {
 
     /**
      * Render the candlestick chart.
-     * 
-     * @param {string} counterAssetCode - counter asset code (to be shown on y axis label)
+     * @public
+     * @param {string} counterAssetCode Counter asset code (to be shown on y axis label)
+     * @param {Object} globalOhlcData Overall open/high/low/close/volume amounts to be shown in header before user picks a specific candle
      */
-    this.Render = function (counterAssetCode) {
+    this.Render = function (counterAssetCode, globalOhlcData) {
         _configCandleSticks["scale-y"].label.text = "Price (" + counterAssetCode + ")";
         zingchart.render({
             id : _placeholderId,
@@ -92,6 +93,13 @@ function CandlestickChart(placeholderId) {
             height: "100%",
             width: "100%"
         });
+
+        //Dirty hack to show global OHLC numbers in the top labels before user starts moving cursor over the chart
+        $("text[id^='marketChart-graph-id0-label-lbl_0_']").find("tspan").text("open: " + globalOhlcData.open);
+        $("text[id^='marketChart-graph-id0-label-lbl_1_']").find("tspan").text("high: " + globalOhlcData.high);
+        $("text[id^='marketChart-graph-id0-label-lbl_2_']").find("tspan").text("low: " + globalOhlcData.low);
+        $("text[id^='marketChart-graph-id0-label-lbl_3_']").find("tspan").text("close: " + globalOhlcData.close);
+        $("text[id^='marketChart-graph-id0-label-lbl_4_']").find("tspan").text("volume: " + globalOhlcData.volume);
     };
 
 

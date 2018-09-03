@@ -110,10 +110,14 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             let minPrice = Number.MAX_VALUE;
             let maxPrice = -1.0;
             let maxVolume = -1.0;
+            let globalOpen = -1.0;
+            let globalClose = -1.0
+            let volumeSum = 0.0;
 
             $.each(data._embedded.records, function(i, record) {
                 //Collect data for a single candle in the candlestick chart
                 const open = parseFloat(record.open);
+                globalOpen = open;
                 const high = parseFloat(record.high);
                 if (high > maxPrice) {
                     maxPrice = high;
@@ -123,6 +127,9 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                     minPrice = low;
                 }
                 const close = parseFloat(record.close);
+                if (-1.0 == globalClose) {
+                    globalClose = close;
+                }
                 const candle = [record.timestamp, [open, high, low, close]];      //BUG: ZingChart seems to have open and close messed
 
                 //Collect data for bar chart with volume
@@ -130,6 +137,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 if (volume > maxVolume) {
                     maxVolume = volume;
                 }
+                volumeSum += volume;
                 const volumeBar = [record.timestamp, volume];
                 candlestickChart.AddCandleData(candle, volumeBar);
 
@@ -142,7 +150,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             //Set volume chart range
             candlestickChart.SetVolumeScale(maxVolume);
 
-            candlestickChart.Render(_this.CounterAsset.AssetCode);
+            candlestickChart.Render(_this.CounterAsset.AssetCode, {open: globalOpen, high: maxPrice, low: minPrice, close: globalClose, volume: volumeSum});
         })
         .fail(function(xhr, textStatus, error) {
             candlestickChart.ShowError(textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText);
