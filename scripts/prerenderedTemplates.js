@@ -45,7 +45,7 @@ var askOfferRow = function(offer, cumulativeAmount) {
 };
 
 var bidOfferRow = function(offer, amount, cumulativeAmount) {
-    return "<tr data-cumulative-amount='" + cumulativeAmount + "'><td>" + formatPrice(offer.price) + "</td><td>" + formatAmount(amount) + "</td></tr>";
+    return "<tr data-cumulative-amount='" + cumulativeAmount + "'"+(offer.isCrossLinked ? " class='linked' title='linked thru XLM'" : "")+"><td>" + formatPrice(offer.price) + "</td><td>" + formatAmount(amount) + "</td></tr>";
 };
 
 /**********************************************************************************************************************/

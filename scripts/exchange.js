@@ -259,9 +259,9 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     /** @private Take original order book, ASSET1/XLM and ASSET2/XLM and merge them adding cross-linked items to the original book. */
     const mergeOrderBooks = function(masterOrderBook, baseSideOrderBook, counterSideOrderBook) {
         //Do the math for "asks" (selling baseAsset)
-        if (baseSideOrderBook.bids.length > 0 && counterSideOrderBook.bids.length > 0) {
+        if (baseSideOrderBook.asks.length > 0 && counterSideOrderBook.bids.length > 0) {
             const amount1Xlm = parseFloat(baseSideOrderBook.asks[0].amount);
-            const baseBuyPrice = parseFloat(baseSideOrderBook.asks[0].price);       //Price of XLM in baseAsset
+            const baseBuyPrice = parseFloat(baseSideOrderBook.asks[0].price);       //Sell price of XLM in baseAsset
 
             let amount2Xlm = parseFloat(counterSideOrderBook.bids[0].amount);
             const counterBuyPrice = parseFloat(counterSideOrderBook.bids[0].price); //Price of XLM in counterAsset
@@ -280,8 +280,8 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 const sellPrice = parseFloat(masterOrderBook.asks[i].price);
                 if (price < sellPrice) {
                     const newAsk = {
-                        "amount": amount.toString(),
-                        "price": price.toString(),
+                        "amount": amount,
+                        "price": price,
                         "isCrossLinked" : true
                     };
                     masterOrderBook.asks.splice(i, 0, newAsk);
@@ -289,9 +289,37 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                 }
             }
         }
-        //todo: the other side
+        //Calculate "bids" (selling counterAsset)
+        if (baseSideOrderBook.bids.length > 0 && counterSideOrderBook.asks.length > 0) {    //TODO: double-check this fishy condition
+            const amount1Xlm = parseFloat(counterSideOrderBook.asks[0].amount);
+            const counterBuyPrice = parseFloat(counterSideOrderBook.asks[0].price); //Sell price of XLM in counterAsset
 
+            let amount2Xlm = parseFloat(baseSideOrderBook.bids[0].amount);
+            const baseBuyPrice = parseFloat(baseSideOrderBook.bids[0].price);       //Price of XLM in baseAsset
+            amount2Xlm /= baseBuyPrice;
+            const amount = Math.min(amount1Xlm, amount2Xlm) * baseBuyPrice;
+            const price = counterBuyPrice / baseBuyPrice;
 
+            if (0 === masterOrderBook.bids.length) {
+                masterOrderBook.bids.push({
+                    "amount": amount,
+                    "price": price,
+                    "isCrossLinked" : true
+                });
+            }
+            else for (let i=0; i<masterOrderBook.bids.length; i++) {
+                const buyPrice = parseFloat(masterOrderBook.bids[i].price);
+                if (price > buyPrice) {
+                    const newBid = {
+                        "amount": amount,
+                        "price": price,
+                        "isCrossLinked" : true
+                    };
+                    masterOrderBook.bids.splice(i, 0, newBid);
+                    break;
+                }
+            }
+        }
 
         renderOrderBook(masterOrderBook);
     };
