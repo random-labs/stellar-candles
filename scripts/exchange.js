@@ -200,6 +200,8 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         });
     };
 
+    /////////////////////////////////////////// Order book ///////////////////////////////////////////
+
     /**
      * Get order book from Horizon API and render it to table.
      * If none of the assets is native XLM, the order book is enhanced with offers "cross-linked" through XLM, i.e. artificial offers
@@ -229,10 +231,10 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
 
     /** @private Fetch the baseAsset/XLM order book for cross-linked offers */
     const addCrossLinkedOffers1 = function(originalOrderBook, baseAsset, counterAsset) {
-        //Query baseAsset / XLM
-        let url = Constants.API_URL + "/order_book?" + baseAsset.ToUrlParameters("selling") + "&" + KnownAssets.XLM.ToUrlParameters("buying") + "&limit=8";
+        //Query XLM / baseAsset
+        let url = Constants.API_URL + "/order_book?" + KnownAssets.XLM.ToUrlParameters("selling") + "&" + baseAsset.ToUrlParameters("buying") + "&limit=8";
         $.getJSON(url, function(data) {
-            addCrossLinkedOffers2(originalOrderBook, data, baseAsset, counterAsset);
+            addCrossLinkedOffers2(originalOrderBook, data, counterAsset);
         })
         .fail(function(xhr, textStatus, error) {
             renderOrderBook(originalOrderBook);
@@ -240,14 +242,14 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     };
 
     /** @private Fetch the XLM/counterAsset order book for cross-linked offers */
-    const addCrossLinkedOffers2 = function(originalOrderBook, sellSideOrderBook, /*TODO: I may not need these two*/baseAsset, counterAsset) {
-        if (null === sellSideOrderBook) {
+    const addCrossLinkedOffers2 = function(originalOrderBook, baseAssetOrderBook, counterAsset) {
+        if (null === baseAssetOrderBook) {
             renderOrderBook(originalOrderBook);
         }
         //Query XLM / counterAsset
         url = Constants.API_URL + "/order_book?" + KnownAssets.XLM.ToUrlParameters("selling") + "&" + counterAsset.ToUrlParameters("buying") + "&limit=8";
         $.getJSON(url, function(data) {
-            mergeOrderBooks(originalOrderBook, sellSideOrderBook, data);
+            mergeOrderBooks(originalOrderBook, baseAssetOrderBook, data);
         })
         .fail(function(xhr, textStatus, error) {
             renderOrderBook(originalOrderBook);
@@ -258,13 +260,14 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
     const mergeOrderBooks = function(masterOrderBook, baseSideOrderBook, counterSideOrderBook) {
         //Do the math for "asks" (selling baseAsset)
         if (baseSideOrderBook.bids.length > 0 && counterSideOrderBook.bids.length > 0) {
-            const amount1Xlm = parseFloat(baseSideOrderBook.bids[0].amount);
-            const baseBuyPrice = parseFloat(baseSideOrderBook.bids[0].price);
+            const amount1Xlm = parseFloat(baseSideOrderBook.asks[0].amount);
+            const baseBuyPrice = parseFloat(baseSideOrderBook.asks[0].price);       //Price of XLM in baseAsset
 
-            const amount2Xlm = parseFloat(counterSideOrderBook.bids[0].amount);
-            const counterBuyPrice = parseFloat(counterSideOrderBook.bids[0].price);
+            let amount2Xlm = parseFloat(counterSideOrderBook.bids[0].amount);
+            const counterBuyPrice = parseFloat(counterSideOrderBook.bids[0].price); //Price of XLM in counterAsset
+            amount2Xlm /= counterBuyPrice;
             const amount = Math.min(amount1Xlm, amount2Xlm) * baseBuyPrice;
-            const price = baseBuyPrice * counterBuyPrice;
+            const price = counterBuyPrice / baseBuyPrice;
 
             if (0 === masterOrderBook.asks.length) {
                 masterOrderBook.asks.push({
@@ -323,13 +326,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             $(tableRow).css("background", bgStyle);
         });
     };
-
-
-
-
-    initPastTradesStream();
-    initOrderBookStream();
-    initChartStream();
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     const setupAssetCodesDropDown = function(dropDownId, selectedAssetCode) {
         //In case this is re-init, destroy previous instance
@@ -464,4 +461,9 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
         window.location = currentUrl.substring(0, currentUrl.indexOf("#")+1) + urlAssets + paramsPart;
         _this.Initialize();
     };
+
+
+    initPastTradesStream();
+    initOrderBookStream();
+    initChartStream();
 }
