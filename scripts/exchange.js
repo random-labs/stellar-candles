@@ -277,14 +277,8 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             const amount = Math.min(amount1Xlm, amount2Xlm) * baseBuyPrice;
             const price = counterBuyPrice / baseBuyPrice;
 
-            if (0 === masterOrderBook.bids.length) {
-                masterOrderBook.bids.push({
-                    "amount": amount,
-                    "price" : price,
-                    "isCrossLinked" : true
-                });
-            }
-            else for (let i=0; i<masterOrderBook.bids.length; i++) {
+            let added = false;
+            for (let i=0; i<masterOrderBook.bids.length; i++) {
                 const buyPrice = parseFloat(masterOrderBook.bids[i].price);
                 if (price > buyPrice) {
                     const newBid = {
@@ -293,9 +287,18 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                         "isCrossLinked" : true
                     };
                     masterOrderBook.bids.splice(i, 0, newBid);
+                    added = true;
                     break;
                 }
-            } 
+            }
+            //Couldn't place it inside current order book, put it at the end
+            if (!added) {
+                masterOrderBook.bids.push({
+                    "amount": amount,
+                    "price" : price,
+                    "isCrossLinked" : true
+                });
+            }
         }
         //Calculate "bids" (selling counterAsset)
         if (baseSideOrderBook.bids.length > 0 && counterSideOrderBook.asks.length > 0) {    //TODO: double-check this fishy condition
@@ -308,14 +311,8 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             const amount = Math.min(amount1Xlm, amount2Xlm) * baseBuyPrice;
             const price = counterBuyPrice / baseBuyPrice;
 
-            if (0 === masterOrderBook.asks.length) {
-                masterOrderBook.asks.push({
-                    "amount": amount,
-                    "price": price,
-                    "isCrossLinked" : true
-                });
-            }
-            else for (let i=0; i<masterOrderBook.asks.length; i++) {
+            let added = false;
+            for (let i=0; i<masterOrderBook.asks.length; i++) {
                 const sellPrice = parseFloat(masterOrderBook.asks[i].price);
                 if (price < sellPrice) {
                     const newAsk = {
@@ -324,8 +321,17 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
                         "isCrossLinked" : true
                     };
                     masterOrderBook.asks.splice(i, 0, newAsk);
+                    added = true;
                     break;
                 }
+            }
+            //Couldn't place it inside current order book, put it at the end
+            if (!added) {
+                masterOrderBook.asks.push({
+                    "amount": amount,
+                    "price": price,
+                    "isCrossLinked" : true
+                });
             }
         }
 
