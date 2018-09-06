@@ -196,7 +196,7 @@ function Exchange(baseAssetDropDownId, baseIssuerDropDownId, counterAssetDropDow
             }
             else {
                 document.title = currentPriceTitle(baseAsset.AssetCode, counterAsset.AssetCode, data._embedded.records[0]);
-                $("#currentPrice").html(/*TODO: Templates.*/currentPriceSpan(data._embedded.records[0]));
+                $("#currentPrice").html(/*TODO: ehm...Angular?*/currentPriceSpan(data._embedded.records[0]));
                 $.each(data._embedded.records, function(i, record) {
                     $(tradeRow(record)).appendTo("#tradeHistoryData");
                 });

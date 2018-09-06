@@ -110,6 +110,7 @@ const KnownAssets = {
     "TARI" : new Asset("TARI", "CryptoTARI", "credit_alphanum4", KnownAccounts.CryptoTari),
     "TELLUS" : new Asset("TELLUS", "Irene.energy TELLUS", "credit_alphanum12", KnownAccounts.IreneEnergy),
     "TERN" : new Asset("TERN", "Ternio.io TERN", "credit_alphanum4", KnownAccounts.Ternio),
+    "USD-AnchorUsd": new Asset("USD", "US dollar", null, new Account("GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX", "anchorusd.com", null)),
     "USD-Golix" : new Asset("USD", "US dollar", "credit_alphanum4", KnownAccounts.Golix),
     "USD-Stonghold" : new Asset("USD", "US dollar", "credit_alphanum4", KnownAccounts.StrongholdU),
     "WSD" : new Asset("WSD", "US dollar", null, KnownAccounts.WhiteStandard),

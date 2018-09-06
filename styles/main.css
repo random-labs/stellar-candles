@@ -90,7 +90,7 @@ div.chartWarning {
     font-size: 25px;
 }
 
-/* Small exchange thumb. TODO: not sure if this is so general it should be here. Decide */
+/* Small exchange thumb. */
 div.exchanges-frame {
     padding-left:40px;
     padding-right:40px;

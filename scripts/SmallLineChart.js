@@ -109,7 +109,7 @@ function SmallLineChart(placeholderId) {
                 customItems:[
                     {
                       text:"Open in new tab",
-                      "function": "todo"
+                      "function": "(set dynmically)"
                     }
                   ]
               }
